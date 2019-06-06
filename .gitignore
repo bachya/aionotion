@@ -4,3 +4,4 @@
 .tox/
 Pipfile.lock
 coverage.xml
+tags
