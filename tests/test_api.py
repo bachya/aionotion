@@ -9,7 +9,12 @@ from aionotion.errors import RequestError
 
 from .const import TEST_EMAIL, TEST_PASSWORD, TEST_TOKEN
 from .fixtures.api import (
-    sign_in_json, systems_json, base_stations_json, sensors_json, tasks_json)
+    sign_in_json,
+    systems_json,
+    base_stations_json,
+    sensors_json,
+    tasks_json,
+)
 
 
 @pytest.mark.asyncio
@@ -65,7 +70,8 @@ async def test_get_systems(aresponses, event_loop, sign_in_json, systems_json):
 
 @pytest.mark.asyncio
 async def test_get_base_stations(
-        aresponses, event_loop, sign_in_json, base_stations_json):
+    aresponses, event_loop, sign_in_json, base_stations_json
+):
     aresponses.add(
         "api.getnotion.com",
         "/api/users/sign_in",
