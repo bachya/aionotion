@@ -9,8 +9,8 @@ from aionotion.errors import NotionError
 
 _LOGGER = logging.getLogger()
 
-EMAIL = "bachya1208@gmail.com"
-PASSWORD = "izfy;QxfXsHdtKkm9D.qbZLBB"
+EMAIL = "email@address.com"
+PASSWORD = "password"
 
 
 async def main() -> None:
