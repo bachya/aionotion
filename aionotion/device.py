@@ -19,7 +19,7 @@ class Device:  # pylint: disable=too-few-public-methods
         resp = await self._request("post", "devices", json={"devices": attributes})
         return resp["devices"]
 
-    async def async_delete(self, device_id: int) -> list:
+    async def async_delete(self, device_id: int) -> None:
         """Delete a device by ID."""
         await self._request("delete", "devices/{0}".format(device_id))
 
