@@ -74,7 +74,7 @@ async def main() -> None:
         bridge = await client.bridge.async_get(12345)
 
         # Create a bridge (with associated parameters):
-        await client.bridge.async_create({"system_id": 13579, "name": "Test"})
+        await client.bridge.async_create({"system_id": 12345, "name": "Test"})
 
         # Update a bridge with new parameters:
         await client.bridge.async_update(12345, {"name": "Test"})
@@ -84,6 +84,18 @@ async def main() -> None:
 
         # Delete a bridge by ID:
         await client.bridge.async_delete(12345)
+
+        # Get all devices associated with the account:
+        devices = await client.device.async_all()
+
+        # Get a device by ID:
+        device = await client.device.async_get(12345)
+
+        # Create a device (with associated parameters):
+        await client.device.async_create({"id": 12345})
+
+        # Delete a device by ID:
+        await client.device.async_delete(12345)
 
         # Get all sensors associated with the account:
         sensors = await client.sensor.async_all()
