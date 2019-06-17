@@ -6,7 +6,7 @@ from ..const import TEST_EMAIL, TEST_TOKEN
 
 @pytest.fixture()
 def auth_success_json():
-    """Define a response to /users/sign_in."""
+    """Define a response to GET /users/sign_in."""
     return {
         "users": {
             "id": 12345,
@@ -26,3 +26,9 @@ def auth_success_json():
             "authentication_token": TEST_TOKEN,
         },
     }
+
+
+@pytest.fixture()
+def bad_api_json():
+    """Define a response to GET /bad_endpoint."""
+    return {"errors": [{"title": "No records found"}]}

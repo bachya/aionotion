@@ -47,13 +47,12 @@ class Client:  # pylint: disable=too-few-public-methods
         async with self._session.request(
             method, url, headers=headers, params=params, json=json
         ) as resp:
+            data = await resp.json(content_type=None)
             try:
                 resp.raise_for_status()
-                return await resp.json(content_type=None)
-            except ClientError as err:
-                raise RequestError(
-                    "Error requesting data from {0}: {1}".format(url, err)
-                )
+                return data
+            except ClientError:
+                raise RequestError(data["errors"][0]["title"])
 
     async def async_authenticate(self, email: str, password: str) -> None:
         """Authenticate the user and retrieve an authentication token."""
