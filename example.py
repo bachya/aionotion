@@ -18,18 +18,18 @@ async def main() -> None:
     logging.basicConfig(level=logging.INFO)
     async with ClientSession() as session:
         try:
-            api = await async_get_client(EMAIL, PASSWORD, session)
+            client = await async_get_client(EMAIL, PASSWORD, session)
 
-            systems = await api.async_get_systems()
-            _LOGGER.info("SYSTEMS: %s", systems)
+            bridges = await client.bridge.async_all()
+            _LOGGER.info("BRIDGES: %s", bridges)
 
-            base_stations = await api.async_get_base_stations()
-            _LOGGER.info("BASE STATIONS: %s", base_stations)
-
-            sensors = await api.async_get_sensors()
+            sensors = await client.sensor.async_all()
             _LOGGER.info("SENSORS: %s", sensors)
 
-            tasks = await api.async_get_tasks()
+            systems = await client.system.async_all()
+            _LOGGER.info("SYSTEMS: %s", systems)
+
+            tasks = await client.task.async_all()
             _LOGGER.info("TASKS: %s", tasks)
         except NotionError as err:
             _LOGGER.error("There was an error: %s", err)

@@ -67,8 +67,23 @@ async def main() -> None:
         # Get all "households" associated with the account:
         systems = await client.system.async_all()
 
-        # Get all base stations associated with the account:
+        # Get all bridges associated with the account:
         bridges = await client.bridge.async_all()
+
+        # Get a bridge by ID:
+        bridge = await client.bridge.async_get(12345)
+
+        # Create a bridge (with associated parameters):
+        await client.bridge.async_create({"system_id": 13579, "name": "Test"})
+
+        # Update a bridge with new parameters:
+        await client.bridge.async_update(12345, {"name": "Test"})
+
+        # Reset a bridge (deprovision its WiFi credentials):
+        await client.bridge.async_reset(12345)
+
+        # Delete a bridge by ID:
+        await client.bridge.async_delete(12345)
 
         # Get all sensors associated with the account:
         sensors = await client.sensor.async_all()
