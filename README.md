@@ -61,19 +61,20 @@ from aionotion import async_get_client
 async def main() -> None:
     """Create the aiohttp session and run the example."""
     async with ClientSession() as websession:
-        client = await async_get_client('<EMAIL>', '<PASSWORD>')
+        # Create a Notion API client:
+        client = await async_get_client('<EMAIL>', '<PASSWORD>', websession)
 
         # Get all "households" associated with the account:
-        systems = await client.async_get_systems()
+        systems = await client.system.async_all()
 
         # Get all base stations associated with the account:
-        base_stations = await client.async_get_base_stations()
+        bridges = await client.bridge.async_all()
 
         # Get all sensors associated with the account:
-        sensors = await client.async_get_sensors()
+        sensors = await client.sensor.async_all()
 
-        # Get all "tasks" (readings from sensors) associated with the account:
-        tasks = await client.async_get_tasks()
+        # Get all "tasks" (conditions monitored by sensors) associated with the account:
+        tasks = await client.task.async_all()
 
 
 asyncio.get_event_loop().run_until_complete(main())
