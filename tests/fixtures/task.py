@@ -114,3 +114,57 @@ def task_all_json():
             },
         ]
     }
+
+
+@pytest.fixture()
+def task_create_json():
+    """Define a response to POST /sensors/:id/tasks."""
+    return {
+        "tasks": {
+            "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+            "task_type": "missing",
+            "sensor_data": [],
+            "status": {"value": "missing", "received_at": "2019-04-30T03:57:41.716Z"},
+            "created_at": "2019-04-30T01:56:46.004Z",
+            "updated_at": "2019-04-30T03:57:42.004Z",
+            "sensor_id": 132470,
+            "model_version": "2.0",
+            "configuration": {},
+            "links": {"sensor": 123456},
+        }
+    }
+
+
+@pytest.fixture()
+def task_get_json():
+    """Define a response to GET /tasks/:id."""
+    return {
+        "tasks": {
+            "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+            "task_type": "missing",
+            "sensor_data": [],
+            "status": {"value": "missing", "received_at": "2019-04-30T03:57:41.716Z"},
+            "created_at": "2019-04-30T01:56:46.004Z",
+            "updated_at": "2019-04-30T03:57:42.004Z",
+            "sensor_id": 132470,
+            "model_version": "2.0",
+            "configuration": {},
+            "links": {"sensor": 123456},
+        }
+    }
+
+
+@pytest.fixture()
+def task_history_json():
+    """Define a response to GET /tasks/:id/data."""
+    return {
+        "task": {
+            "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+            "task_type": "temperature",
+            "data": [
+                {"time": "2019-06-17T04:09:55.786Z", "value": "23"},
+                {"time": "2019-06-17T04:19:46.950Z", "value": "23"},
+                {"time": "2019-06-17T04:29:37.572Z", "value": "22"},
+            ],
+        }
+    }
