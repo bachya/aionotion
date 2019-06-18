@@ -67,6 +67,18 @@ async def main() -> None:
         # Get all "households" associated with the account:
         systems = await client.system.async_all()
 
+        # Get a system by ID:
+        system = await client.system.async_get(12345)
+
+        # Create a system (with associated parameters):
+        await client.system.async_create({"system_id": 12345, "name": "Test"})
+
+        # Update a system with new parameters:
+        await client.system.async_update(12345, {"name": "Test"})
+
+        # Delete a system by ID:
+        await client.system.async_delete(12345)
+
         # Get all bridges associated with the account:
         bridges = await client.bridge.async_all()
 
