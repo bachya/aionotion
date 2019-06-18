@@ -5,6 +5,7 @@ from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientError
 
 from .bridge import Bridge
+from .device import Device
 from .errors import RequestError
 from .sensor import Sensor
 from .system import System
@@ -22,6 +23,7 @@ class Client:  # pylint: disable=too-few-public-methods
         self._token = None  # type: Optional[str]
 
         self.bridge = Bridge(self._request)
+        self.device = Device(self._request)
         self.sensor = Sensor(self._request)
         self.system = System(self._request)
         self.task = Task(self._request)
