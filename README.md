@@ -109,8 +109,20 @@ async def main() -> None:
         # Delete a device by ID:
         await client.device.async_delete(12345)
 
-        # Get all sensors associated with the account:
+        # Get all sensors:
         sensors = await client.sensor.async_all()
+
+        # Get a sensor by ID:
+        sensor = await client.sensor.async_get(12345)
+
+        # Create a sensor (with associated parameters):
+        await client.sensor.async_create({"sensor_id": 12345, "name": "Test"})
+
+        # Update a sensor with new parameters:
+        await client.sensor.async_update(12345, {"name": "Test"})
+
+        # Delete a sensor by ID:
+        await client.sensor.async_delete(12345)
 
         # Get all "tasks" (conditions monitored by sensors) associated with the account:
         tasks = await client.task.async_all()
