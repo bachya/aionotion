@@ -127,6 +127,25 @@ async def main() -> None:
         # Get all "tasks" (conditions monitored by sensors) associated with the account:
         tasks = await client.task.async_all()
 
+        # Get a task by ID:
+        task = await client.task.async_get("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
+
+        # Get a task's value history between two datetimes:
+        import datetime
+        history = await client.task.async_history(
+            "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+            data_before=datetime.datetime.now(),
+            data_after=datetime.datetime.now() - datetime.timedelta(days=3),
+        )
+
+        # Create a list of tasks for a particular sensor (e.g., sensor # 12345):
+        await client.task.async_create(
+            12345, [{"id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", "type": "missing"}]
+        )
+
+        # Delete a task for a particular sensor (e.g., sensor # 12345):
+        await client.task.async_delete(12345, "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
+
 
 asyncio.get_event_loop().run_until_complete(main())
 ```
