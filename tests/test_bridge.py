@@ -12,7 +12,6 @@ from .fixtures import auth_success_json  # noqa: F401
 from .fixtures.bridge import (  # noqa: F401
     bridge_all_json,
     bridge_create_json,
-    bridge_delete_json,
     bridge_get_json,
     bridge_reset_json,
     bridge_update_json,
@@ -68,15 +67,12 @@ async def test_bridge_create(
             {"name": "New Bridge", "system_id": 98765}
         )
 
-        assert len(create_resp) == 2
-        assert create_resp[1]["id"] == 98765
-        assert create_resp[1]["name"] == "New Bridge"
+        assert create_resp["id"] == 98765
+        assert create_resp["name"] == "New Bridge"
 
 
 @pytest.mark.asyncio
-async def test_bridge_delete(
-    aresponses, event_loop, auth_success_json, bridge_delete_json  # noqa: F811
-):
+async def test_bridge_delete(aresponses, event_loop, auth_success_json):  # noqa: F811
     """Test deleting a bridge."""
     aresponses.add(
         "api.getnotion.com",
@@ -88,14 +84,12 @@ async def test_bridge_delete(
         "api.getnotion.com",
         "/api/base_stations/12345",
         "delete",
-        aresponses.Response(text=json.dumps(bridge_delete_json), status=200),
+        aresponses.Response(text=None, status=200),
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as websession:
         client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
-        delete_resp = await client.bridge.async_delete(12345)
-
-        assert not delete_resp
+        await client.bridge.async_delete(12345)
 
 
 @pytest.mark.asyncio

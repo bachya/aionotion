@@ -21,10 +21,9 @@ class Bridge:  # pylint: disable=too-few-public-methods
         )
         return resp["base_stations"]
 
-    async def async_delete(self, bridge_id: int) -> list:
+    async def async_delete(self, bridge_id: int) -> None:
         """Delete a bridge by ID."""
-        resp = await self._request("delete", "base_stations/{0}".format(bridge_id))
-        return resp["base_stations"]
+        await self._request("delete", "base_stations/{0}".format(bridge_id))
 
     async def async_get(self, bridge_id: int) -> dict:
         """Get a bridge by ID."""
