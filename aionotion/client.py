@@ -6,7 +6,7 @@ from aiohttp.client_exceptions import ClientError
 
 from .bridge import Bridge
 from .device import Device
-from .errors import RequestError
+from .errors import RequestError, InvalidCredentialsError
 from .sensor import Sensor
 from .system import System
 from .task import Task
@@ -53,7 +53,9 @@ class Client:  # pylint: disable=too-few-public-methods
             try:
                 resp.raise_for_status()
                 return data
-            except ClientError:
+            except ClientError as err:
+                if "401" in str(err):
+                    raise InvalidCredentialsError("Invalid credentials")
                 raise RequestError(data["errors"][0]["title"])
 
     async def async_authenticate(self, email: str, password: str) -> None:

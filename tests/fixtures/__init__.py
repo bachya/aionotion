@@ -5,8 +5,14 @@ from ..const import TEST_EMAIL, TEST_TOKEN
 
 
 @pytest.fixture()
+def auth_failure_json():
+    """Define a failed response to GET /users/sign_in."""
+    return {"errors": [{"title": "Invalid email or password."}]}
+
+
+@pytest.fixture()
 def auth_success_json():
-    """Define a response to GET /users/sign_in."""
+    """Define a successful response to GET /users/sign_in."""
     return {
         "users": {
             "id": 12345,
