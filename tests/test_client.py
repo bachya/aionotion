@@ -38,7 +38,7 @@ async def test_api_error(
 
 @pytest.mark.asyncio
 async def test_auth_failure(aresponses, auth_failure_json, event_loop):  # noqa: F811
-    """Test invalid credentials"""
+    """Test invalid credentials."""
     aresponses.add(
         "api.getnotion.com",
         "/api/users/sign_in",
