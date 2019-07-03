@@ -6,7 +6,7 @@ from aiohttp.client_exceptions import ClientError
 
 from .bridge import Bridge
 from .device import Device
-from .errors import RequestError, InvalidCredentialsError
+from .errors import InvalidCredentialsError, RequestError
 from .sensor import Sensor
 from .system import System
 from .task import Task

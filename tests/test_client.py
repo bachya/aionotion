@@ -6,7 +6,7 @@ import aiohttp
 import pytest
 
 from aionotion import async_get_client
-from aionotion.errors import RequestError, InvalidCredentialsError
+from aionotion.errors import InvalidCredentialsError, RequestError
 
 from .const import TEST_EMAIL, TEST_PASSWORD, TEST_TOKEN
 from .fixtures import auth_failure_json, auth_success_json, bad_api_json  # noqa: F401
