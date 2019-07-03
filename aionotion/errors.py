@@ -13,7 +13,7 @@ class RequestError(NotionError):
     pass
 
 
-class UnauthenticatedError(NotionError):
+class InvalidCredentialsError(NotionError):
     """Define an error for unauthenticated accounts."""
 
     pass

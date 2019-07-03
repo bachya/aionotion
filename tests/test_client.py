@@ -6,7 +6,7 @@ import aiohttp
 import pytest
 
 from aionotion import async_get_client
-from aionotion.errors import RequestError, UnauthenticatedError
+from aionotion.errors import RequestError, InvalidCredentialsError
 
 from .const import TEST_EMAIL, TEST_PASSWORD, TEST_TOKEN
 from .fixtures import auth_failure_json, auth_success_json, bad_api_json  # noqa: F401
@@ -47,7 +47,7 @@ async def test_auth_failure(aresponses, auth_failure_json, event_loop):  # noqa:
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as websession:
-        with pytest.raises(UnauthenticatedError):
+        with pytest.raises(InvalidCredentialsError):
             _ = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
 
 
