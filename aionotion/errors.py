@@ -11,3 +11,9 @@ class RequestError(NotionError):
     """Define an error related to invalid requests."""
 
     pass
+
+
+class UnauthenticatedError(NotionError):
+    """Define an error for unauthenticated accounts."""
+
+    pass
