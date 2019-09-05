@@ -3,21 +3,21 @@ from datetime import datetime
 from typing import Callable, List
 
 
-class Task:  # pylint: disable=too-few-public-methods
+class Task:
     """Define an object to interact with all endpoints."""
 
     def __init__(self, request: Callable) -> None:
         """Initialize."""
-        self._request = request
+        self._request: Callable = request
 
     async def async_all(self) -> list:
         """Get all tasks."""
-        resp = await self._request("get", "tasks")
+        resp: dict = await self._request("get", "tasks")
         return resp["tasks"]
 
     async def async_create(self, sensor_id: int, tasks: List[dict]) -> list:
         """Create new tasks based upon a list of attribute dicts."""
-        resp = await self._request(
+        resp: dict = await self._request(
             "post",
             f"sensors/{sensor_id}/tasks",
             json={"sensor_id": sensor_id, "tasks": tasks},
@@ -30,14 +30,14 @@ class Task:  # pylint: disable=too-few-public-methods
 
     async def async_get(self, task_id: str) -> dict:
         """Get a task by ID."""
-        resp = await self._request("get", f"tasks/{task_id}")
+        resp: dict = await self._request("get", f"tasks/{task_id}")
         return resp["tasks"]
 
     async def async_history(
         self, task_id: str, data_before: datetime, data_after: datetime
     ) -> dict:
         """Get the history of a task's values between two datetimes."""
-        resp = await self._request(
+        resp: dict = await self._request(
             "get",
             f"tasks/{task_id}/data",
             params={
