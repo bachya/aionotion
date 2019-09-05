@@ -35,16 +35,16 @@ class Client:  # pylint: disable=too-few-public-methods
         *,
         headers: dict = None,
         params: dict = None,
-        json: dict = None
+        json: dict = None,
     ) -> dict:
         """Make a request the API.com."""
-        url = "{0}/{1}".format(API_BASE, endpoint)
+        url = f"{API_BASE}/{endpoint}"
 
         if not headers:
             headers = {}
 
         if self._token:
-            headers["Authorization"] = "Token token={0}".format(self._token)
+            headers["Authorization"] = f"Token token={self._token}"
 
         async with self._session.request(
             method, url, headers=headers, params=params, json=json

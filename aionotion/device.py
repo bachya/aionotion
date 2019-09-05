@@ -21,9 +21,9 @@ class Device:  # pylint: disable=too-few-public-methods
 
     async def async_delete(self, device_id: int) -> None:
         """Delete a device by ID."""
-        await self._request("delete", "devices/{0}".format(device_id))
+        await self._request("delete", f"devices/{device_id}")
 
     async def async_get(self, device_id: int) -> dict:
         """Get a device by ID."""
-        resp = await self._request("get", "devices/{0}".format(device_id))
+        resp = await self._request("get", f"devices/{device_id}")
         return resp["devices"]
