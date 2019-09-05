@@ -21,16 +21,16 @@ class System:  # pylint: disable=too-few-public-methods
 
     async def async_delete(self, system_id: int) -> None:
         """Delete a system by ID."""
-        await self._request("delete", "systems/{0}".format(system_id))
+        await self._request("delete", f"systems/{system_id}")
 
     async def async_get(self, system_id: int) -> dict:
         """Get a system by ID."""
-        resp = await self._request("get", "systems/{0}".format(system_id))
+        resp = await self._request("get", f"systems/{system_id}")
         return resp["systems"]
 
     async def async_update(self, system_id: int, new_attributes: dict) -> dict:
         """Update a system with a specific attribute payload."""
         resp = await self._request(
-            "put", "systems/{0}".format(system_id), json={"systems": new_attributes}
+            "put", f"systems/{system_id}", json={"systems": new_attributes}
         )
         return resp["systems"]

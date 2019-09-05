@@ -23,23 +23,21 @@ class Bridge:  # pylint: disable=too-few-public-methods
 
     async def async_delete(self, bridge_id: int) -> None:
         """Delete a bridge by ID."""
-        await self._request("delete", "base_stations/{0}".format(bridge_id))
+        await self._request("delete", f"base_stations/{bridge_id}")
 
     async def async_get(self, bridge_id: int) -> dict:
         """Get a bridge by ID."""
-        resp = await self._request("get", "base_stations/{0}".format(bridge_id))
+        resp = await self._request("get", f"base_stations/{bridge_id}")
         return resp["base_stations"]
 
     async def async_reset(self, bridge_id: int) -> dict:
         """Reset a bridge (clear its wifi credentials) by ID."""
-        resp = await self._request("put", "base_stations/{0}/reset".format(bridge_id))
+        resp = await self._request("put", f"base_stations/{bridge_id}/reset")
         return resp["base_stations"]
 
     async def async_update(self, bridge_id: int, new_attributes: dict) -> dict:
         """Update a bridge with a specific attribute payload."""
         resp = await self._request(
-            "put",
-            "base_stations/{0}".format(bridge_id),
-            json={"base_stations": new_attributes},
+            "put", f"base_stations/{bridge_id}", json={"base_stations": new_attributes}
         )
         return resp["base_stations"]
