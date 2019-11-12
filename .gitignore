@@ -3,7 +3,7 @@
 .tox/
 .venv
 __pycache__/
-aioambient.egg-info
+aionotion.egg-info
 coverage.xml
 poetry.lock
 tags
