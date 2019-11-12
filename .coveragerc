@@ -1,6 +1,2 @@
 [run]
 source = aionotion
-
-omit =
-    aionotion/const.py
-
