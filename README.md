@@ -1,6 +1,6 @@
 # 📟 aionotion: a Python3, asyncio-friendly library for Notion® Home Monitoring
 
-[![Travis CI](https://travis-ci.org/bachya/aionotion.svg?branch=master)](https://travis-ci.org/bachya/aionotion)
+[![CI](https://github.com/bachya/aionotion/workflows/CI/badge.svg)](https://github.com/bachya/aionotion/actions)
 [![PyPi](https://img.shields.io/pypi/v/aionotion.svg)](https://pypi.python.org/pypi/aionotion)
 [![Version](https://img.shields.io/pypi/pyversions/aionotion.svg)](https://pypi.python.org/pypi/aionotion)
 [![License](https://img.shields.io/pypi/l/aionotion.svg)](https://github.com/bachya/aionotion/blob/master/LICENSE)
