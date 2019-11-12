@@ -1,7 +1,9 @@
-*.egg-info
 .coverage
 .mypy_cache
 .tox/
-Pipfile.lock
+.venv
+__pycache__/
+aioambient.egg-info
 coverage.xml
+poetry.lock
 tags
