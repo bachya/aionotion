@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aionotion"
-version = "2.0.0"
+version = "2.0.1"
 description = "A simple Python 3 library for Notion Home Monitoring"
 readme = "README.md"
 authors = ["Aaron Bach <bachya1208@gmail.com>"]
