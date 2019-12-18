@@ -39,7 +39,7 @@ from aiohttp import ClientSession
 async def main() -> None:
     """Create the aiohttp session and run the example."""
     async with ClientSession() as websession:
-      # YOUR CODE HERE
+        # YOUR CODE HERE
 
 
 asyncio.get_event_loop().run_until_complete(main())
@@ -59,7 +59,7 @@ async def main() -> None:
     """Create the aiohttp session and run the example."""
     async with ClientSession() as websession:
         # Create a Notion API client:
-        client = await async_get_client('<EMAIL>', '<PASSWORD>', websession)
+        client = await async_get_client("<EMAIL>", "<PASSWORD>", websession)
 
         # Get all "households" associated with the account:
         systems = await client.system.async_all()
@@ -129,6 +129,7 @@ async def main() -> None:
 
         # Get a task's value history between two datetimes:
         import datetime
+
         history = await client.task.async_history(
             "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
             data_before=datetime.datetime.now(),
