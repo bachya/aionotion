@@ -1,0 +1,20 @@
+{
+  "task": {
+    "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "task_type": "temperature",
+    "data": [
+      {
+        "time": "2019-06-17T04:09:55.786Z",
+        "value": "23"
+      },
+      {
+        "time": "2019-06-17T04:19:46.950Z",
+        "value": "23"
+      },
+      {
+        "time": "2019-06-17T04:29:37.572Z",
+        "value": "22"
+      }
+    ]
+  }
+}
