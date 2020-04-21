@@ -25,8 +25,8 @@ async def test_device_all(aresponses):
         aresponses.Response(text=load_fixture("device_all_response.json"), status=200),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         devices = await client.device.async_all()
         assert len(devices) == 1
 
@@ -51,8 +51,8 @@ async def test_device_create(aresponses):
         ),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         create_resp = await client.device.async_create({"id": 12345})
         assert create_resp["id"] == 12345
         assert create_resp["token"] == "123456abcde"
@@ -76,8 +76,8 @@ async def test_device_delete(aresponses):
         aresponses.Response(text=None, status=200),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         await client.device.async_delete(12345)
 
 
@@ -99,8 +99,8 @@ async def test_device_get(aresponses):
         aresponses.Response(text=load_fixture("device_get_response.json"), status=200),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         device = await client.device.async_get(12345)
         assert device["id"] == 12345
         assert device["token"] == "123456abcde"

@@ -27,9 +27,9 @@ async def test_api_error(aresponses):
         aresponses.Response(text=load_fixture("bad_api_response.json"), status=404),
     )
 
-    async with aiohttp.ClientSession() as websession:
+    async with aiohttp.ClientSession() as session:
         with pytest.raises(RequestError):
-            client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+            client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
             await client._request("get", "bad_endpoint")
 
 
@@ -45,9 +45,9 @@ async def test_auth_failure(aresponses):
         ),
     )
 
-    async with aiohttp.ClientSession() as websession:
+    async with aiohttp.ClientSession() as session:
         with pytest.raises(InvalidCredentialsError):
-            _ = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+            _ = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
 
 
 @pytest.mark.asyncio
@@ -62,6 +62,22 @@ async def test_auth_success(aresponses):
         ),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         assert client._token == TEST_TOKEN
+
+
+@pytest.mark.asyncio
+async def test_no_explicit_session(aresponses):
+    """Test authentication without an explicit ClientSession."""
+    aresponses.add(
+        "api.getnotion.com",
+        "/api/users/sign_in",
+        "post",
+        aresponses.Response(
+            text=load_fixture("auth_success_response.json"), status=200
+        ),
+    )
+
+    client = await async_get_client(TEST_EMAIL, TEST_PASSWORD)
+    assert client._token == TEST_TOKEN

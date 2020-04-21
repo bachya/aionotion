@@ -27,25 +27,110 @@ pip install aionotion
 
 # Usage
 
-`aionotion` starts within an
-[aiohttp](https://aiohttp.readthedocs.io/en/stable/) `ClientSession`:
-
 ```python
 import asyncio
 
 from aiohttp import ClientSession
 
+from aionotion import async_get_client
+
 
 async def main() -> None:
     """Create the aiohttp session and run the example."""
-    async with ClientSession() as websession:
-        # YOUR CODE HERE
+    client = await async_get_client("<EMAIL>", "<PASSWORD>", session=session)
+
+    # Get all "households" associated with the account:
+    systems = await client.system.async_all()
+
+    # Get a system by ID:
+    system = await client.system.async_get(12345)
+
+    # Create a system (with associated parameters):
+    await client.system.async_create({"system_id": 12345, "name": "Test"})
+
+    # Update a system with new parameters:
+    await client.system.async_update(12345, {"name": "Test"})
+
+    # Delete a system by ID:
+    await client.system.async_delete(12345)
+
+    # Get all bridges associated with the account:
+    bridges = await client.bridge.async_all()
+
+    # Get a bridge by ID:
+    bridge = await client.bridge.async_get(12345)
+
+    # Create a bridge (with associated parameters):
+    await client.bridge.async_create({"system_id": 12345, "name": "Test"})
+
+    # Update a bridge with new parameters:
+    await client.bridge.async_update(12345, {"name": "Test"})
+
+    # Reset a bridge (deprovision its WiFi credentials):
+    await client.bridge.async_reset(12345)
+
+    # Delete a bridge by ID:
+    await client.bridge.async_delete(12345)
+
+    # Get all devices associated with the account:
+    devices = await client.device.async_all()
+
+    # Get a device by ID:
+    device = await client.device.async_get(12345)
+
+    # Create a device (with associated parameters):
+    await client.device.async_create({"id": 12345})
+
+    # Delete a device by ID:
+    await client.device.async_delete(12345)
+
+    # Get all sensors:
+    sensors = await client.sensor.async_all()
+
+    # Get a sensor by ID:
+    sensor = await client.sensor.async_get(12345)
+
+    # Create a sensor (with associated parameters):
+    await client.sensor.async_create({"sensor_id": 12345, "name": "Test"})
+
+    # Update a sensor with new parameters:
+    await client.sensor.async_update(12345, {"name": "Test"})
+
+    # Delete a sensor by ID:
+    await client.sensor.async_delete(12345)
+
+    # Get all "tasks" (conditions monitored by sensors) associated with the account:
+    tasks = await client.task.async_all()
+
+    # Get a task by ID:
+    task = await client.task.async_get("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
+
+    # Get a task's value history between two datetimes:
+    import datetime
+
+    history = await client.task.async_history(
+        "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+        data_before=datetime.datetime.now(),
+        data_after=datetime.datetime.now() - datetime.timedelta(days=3),
+    )
+
+    # Create a list of tasks for a particular sensor (e.g., sensor # 12345):
+    await client.task.async_create(
+        12345, [{"id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", "type": "missing"}]
+    )
+
+    # Delete a task for a particular sensor (e.g., sensor # 12345):
+    await client.task.async_delete(12345, "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
 
 
-asyncio.get_event_loop().run_until_complete(main())
+asyncio.run(main())
 ```
 
-Create a client and get to work:
+By default, the library creates a new connection to Notion with each coroutine. If you
+are calling a large number of coroutines (or merely want to squeeze out every second of
+runtime savings possible), an
+[`aiohttp`](https://github.com/aio-libs/aiohttp) `ClientSession` can be used for connection
+pooling:
 
 ```python
 import asyncio
@@ -57,95 +142,14 @@ from aionotion import async_get_client
 
 async def main() -> None:
     """Create the aiohttp session and run the example."""
-    async with ClientSession() as websession:
+    async with ClientSession() as session:
         # Create a Notion API client:
-        client = await async_get_client("<EMAIL>", "<PASSWORD>", websession)
+        client = await async_get_client("<EMAIL>", "<PASSWORD>", session=session)
 
-        # Get all "households" associated with the account:
-        systems = await client.system.async_all()
-
-        # Get a system by ID:
-        system = await client.system.async_get(12345)
-
-        # Create a system (with associated parameters):
-        await client.system.async_create({"system_id": 12345, "name": "Test"})
-
-        # Update a system with new parameters:
-        await client.system.async_update(12345, {"name": "Test"})
-
-        # Delete a system by ID:
-        await client.system.async_delete(12345)
-
-        # Get all bridges associated with the account:
-        bridges = await client.bridge.async_all()
-
-        # Get a bridge by ID:
-        bridge = await client.bridge.async_get(12345)
-
-        # Create a bridge (with associated parameters):
-        await client.bridge.async_create({"system_id": 12345, "name": "Test"})
-
-        # Update a bridge with new parameters:
-        await client.bridge.async_update(12345, {"name": "Test"})
-
-        # Reset a bridge (deprovision its WiFi credentials):
-        await client.bridge.async_reset(12345)
-
-        # Delete a bridge by ID:
-        await client.bridge.async_delete(12345)
-
-        # Get all devices associated with the account:
-        devices = await client.device.async_all()
-
-        # Get a device by ID:
-        device = await client.device.async_get(12345)
-
-        # Create a device (with associated parameters):
-        await client.device.async_create({"id": 12345})
-
-        # Delete a device by ID:
-        await client.device.async_delete(12345)
-
-        # Get all sensors:
-        sensors = await client.sensor.async_all()
-
-        # Get a sensor by ID:
-        sensor = await client.sensor.async_get(12345)
-
-        # Create a sensor (with associated parameters):
-        await client.sensor.async_create({"sensor_id": 12345, "name": "Test"})
-
-        # Update a sensor with new parameters:
-        await client.sensor.async_update(12345, {"name": "Test"})
-
-        # Delete a sensor by ID:
-        await client.sensor.async_delete(12345)
-
-        # Get all "tasks" (conditions monitored by sensors) associated with the account:
-        tasks = await client.task.async_all()
-
-        # Get a task by ID:
-        task = await client.task.async_get("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
-
-        # Get a task's value history between two datetimes:
-        import datetime
-
-        history = await client.task.async_history(
-            "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-            data_before=datetime.datetime.now(),
-            data_after=datetime.datetime.now() - datetime.timedelta(days=3),
-        )
-
-        # Create a list of tasks for a particular sensor (e.g., sensor # 12345):
-        await client.task.async_create(
-            12345, [{"id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", "type": "missing"}]
-        )
-
-        # Delete a task for a particular sensor (e.g., sensor # 12345):
-        await client.task.async_delete(12345, "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
+        # Get to work...
 
 
-asyncio.get_event_loop().run_until_complete(main())
+asyncio.run(main())
 ```
 
 Check out the examples, the tests, and the source files themselves for method

@@ -18,7 +18,7 @@ async def main() -> None:
     logging.basicConfig(level=logging.INFO)
     async with ClientSession() as session:
         try:
-            client = await async_get_client(EMAIL, PASSWORD, session)
+            client = await async_get_client(EMAIL, PASSWORD, session=session)
 
             bridges = await client.bridge.async_all()
             _LOGGER.info("BRIDGES: %s", bridges)
@@ -35,4 +35,4 @@ async def main() -> None:
             _LOGGER.error("There was an error: %s", err)
 
 
-asyncio.get_event_loop().run_until_complete(main())
+asyncio.run(main())
