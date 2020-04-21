@@ -25,8 +25,8 @@ async def test_sensor_all(aresponses):
         aresponses.Response(text=load_fixture("sensor_all_response.json"), status=200),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         sensors = await client.sensor.async_all()
         assert len(sensors) == 2
 
@@ -51,8 +51,8 @@ async def test_sensor_create(aresponses):
         ),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         create_resp = await client.sensor.async_create(
             {"name": "New Sensor", "id": 123456}
         )
@@ -78,8 +78,8 @@ async def test_sensor_delete(aresponses):
         aresponses.Response(text=None, status=200),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         await client.sensor.async_delete(123456)
 
 
@@ -101,8 +101,8 @@ async def test_sensor_get(aresponses):
         aresponses.Response(text=load_fixture("sensor_get_response.json"), status=200),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         sensor = await client.sensor.async_get(123456)
         assert sensor["id"] == 123456
         assert sensor["name"] == "Bathroom Sensor"
@@ -128,8 +128,8 @@ async def test_sensor_update(aresponses):
         ),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         reset_resp = await client.sensor.async_update(
             123456, {"name": "Updated Sensor Name"}
         )

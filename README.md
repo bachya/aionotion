@@ -27,26 +27,6 @@ pip install aionotion
 
 # Usage
 
-`aionotion` starts within an
-[aiohttp](https://aiohttp.readthedocs.io/en/stable/) `ClientSession`:
-
-```python
-import asyncio
-
-from aiohttp import ClientSession
-
-
-async def main() -> None:
-    """Create the aiohttp session and run the example."""
-    async with ClientSession() as websession:
-        # YOUR CODE HERE
-
-
-asyncio.get_event_loop().run_until_complete(main())
-```
-
-Create a client and get to work:
-
 ```python
 import asyncio
 
@@ -57,9 +37,9 @@ from aionotion import async_get_client
 
 async def main() -> None:
     """Create the aiohttp session and run the example."""
-    async with ClientSession() as websession:
+    async with ClientSession() as session:
         # Create a Notion API client:
-        client = await async_get_client("<EMAIL>", "<PASSWORD>", websession)
+        client = await async_get_client("<EMAIL>", "<PASSWORD>", session=session)
 
         # Get all "households" associated with the account:
         systems = await client.system.async_all()
@@ -145,7 +125,33 @@ async def main() -> None:
         await client.task.async_delete(12345, "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
 
 
-asyncio.get_event_loop().run_until_complete(main())
+asyncio.run(main())
+```
+
+By default, the library creates a new connection to Notion with each coroutine. If you
+are calling a large number of coroutines (or merely want to squeeze out every second of
+runtime savings possible), an
+[`aiohttp`](https://github.com/aio-libs/aiohttp) `ClientSession` can be used for connection
+pooling:
+
+```python
+import asyncio
+
+from aiohttp import ClientSession
+
+from aionotion import async_get_client
+
+
+async def main() -> None:
+    """Create the aiohttp session and run the example."""
+    async with ClientSession() as session:
+        # Create a Notion API client:
+        client = await async_get_client("<EMAIL>", "<PASSWORD>", session=session)
+
+        # Get to work...
+
+
+asyncio.run(main())
 ```
 
 Check out the examples, the tests, and the source files themselves for method

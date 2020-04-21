@@ -1,7 +1,7 @@
 """Define a base client for interacting with Notion."""
 from typing import Optional
 
-from aiohttp import ClientSession
+from aiohttp import ClientSession, ClientTimeout
 from aiohttp.client_exceptions import ClientError
 
 from .bridge import Bridge
@@ -13,11 +13,13 @@ from .task import Task
 
 API_BASE: str = "https://api.getnotion.com/api"
 
+DEFAULT_TIMEOUT: int = 10
+
 
 class Client:  # pylint: disable=too-few-public-methods
     """Define the API object."""
 
-    def __init__(self, session: ClientSession) -> None:
+    def __init__(self, *, session: Optional[ClientSession] = None) -> None:
         """Initialize."""
         self._session: ClientSession = session
         self._token: Optional[str] = None
@@ -40,23 +42,31 @@ class Client:  # pylint: disable=too-few-public-methods
         """Make a request the API.com."""
         url: str = f"{API_BASE}/{endpoint}"
 
-        if not headers:
-            headers = {}
-
+        _headers = headers or {}
         if self._token:
-            headers["Authorization"] = f"Token token={self._token}"
+            _headers["Authorization"] = f"Token token={self._token}"
 
-        async with self._session.request(
-            method, url, headers=headers, params=params, json=json
-        ) as resp:
-            data: dict = await resp.json(content_type=None)
-            try:
+        use_running_session = self._session and not self._session.closed
+
+        if use_running_session:
+            session = self._session
+        else:
+            session = ClientSession(timeout=ClientTimeout(total=DEFAULT_TIMEOUT))
+
+        try:
+            async with session.request(
+                method, url, headers=_headers, params=params, json=json
+            ) as resp:
+                data: dict = await resp.json(content_type=None)
                 resp.raise_for_status()
                 return data
-            except ClientError as err:
-                if "401" in str(err):
-                    raise InvalidCredentialsError("Invalid credentials")
-                raise RequestError(data["errors"][0]["title"])
+        except ClientError as err:
+            if "401" in str(err):
+                raise InvalidCredentialsError("Invalid credentials")
+            raise RequestError(data["errors"][0]["title"])
+        finally:
+            if not use_running_session:
+                await session.close()
 
     async def async_authenticate(self, email: str, password: str) -> None:
         """Authenticate the user and retrieve an authentication token."""
@@ -69,8 +79,10 @@ class Client:  # pylint: disable=too-few-public-methods
         self._token = auth_response["session"]["authentication_token"]
 
 
-async def async_get_client(email: str, password: str, session: ClientSession) -> Client:
+async def async_get_client(
+    email: str, password: str, *, session: Optional[ClientSession] = None
+) -> Client:
     """Return an authenticated API object."""
-    client: Client = Client(session)
+    client: Client = Client(session=session)
     await client.async_authenticate(email, password)
     return client

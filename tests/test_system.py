@@ -25,8 +25,8 @@ async def test_system_all(aresponses):
         aresponses.Response(text=load_fixture("system_all_response.json"), status=200),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         systems = await client.system.async_all()
         assert len(systems) == 1
 
@@ -51,8 +51,8 @@ async def test_system_create(aresponses):
         ),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         create_resp = await client.system.async_create(
             {"name": "New System", "id": 12345}
         )
@@ -78,8 +78,8 @@ async def test_system_delete(aresponses):
         aresponses.Response(text=None, status=200),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         await client.system.async_delete(12345)
 
 
@@ -101,8 +101,8 @@ async def test_system_get(aresponses):
         aresponses.Response(text=load_fixture("system_get_response.json"), status=200),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         system = await client.system.async_get(12345)
         assert system["id"] == 12345
         assert system["name"] == "Home"
@@ -128,8 +128,8 @@ async def test_system_update(aresponses):
         ),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         reset_resp = await client.system.async_update(
             12345, {"name": "Updated System Name"}
         )

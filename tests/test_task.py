@@ -27,8 +27,8 @@ async def test_task_all(aresponses):
         aresponses.Response(text=load_fixture("task_all_response.json"), status=200),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         tasks = await client.task.async_all()
         assert len(tasks) == 7
 
@@ -51,8 +51,8 @@ async def test_task_create(aresponses):
         aresponses.Response(text=load_fixture("task_create_response.json"), status=200),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         create_resp = await client.task.async_create(
             12345, [{"id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", "type": "missing"}]
         )
@@ -78,8 +78,8 @@ async def test_task_delete(aresponses):
         aresponses.Response(text=None, status=200),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         await client.task.async_delete(12345, "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
 
 
@@ -101,8 +101,8 @@ async def test_task_get(aresponses):
         aresponses.Response(text=load_fixture("task_get_response.json"), status=200),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         task = await client.task.async_get("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
         assert task["id"] == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
         assert task["task_type"] == "missing"
@@ -128,8 +128,8 @@ async def test_task_history(aresponses):
         ),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         history = await client.task.async_history(
             "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
             data_before=datetime.datetime.now(),

@@ -25,8 +25,8 @@ async def test_bridge_all(aresponses):
         aresponses.Response(text=load_fixture("bridge_all_response.json"), status=200),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         bridges = await client.bridge.async_all()
         assert len(bridges) == 1
 
@@ -51,8 +51,8 @@ async def test_bridge_create(aresponses):
         ),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         create_resp = await client.bridge.async_create(
             {"name": "New Bridge", "system_id": 98765}
         )
@@ -78,8 +78,8 @@ async def test_bridge_delete(aresponses):
         aresponses.Response(text=None, status=200),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         await client.bridge.async_delete(12345)
 
 
@@ -101,8 +101,8 @@ async def test_bridge_get(aresponses):
         aresponses.Response(text=load_fixture("bridge_get_response.json"), status=200),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         bridge = await client.bridge.async_get(12345)
         assert bridge["id"] == 12345
         assert bridge["name"] == "My Bridge"
@@ -128,8 +128,8 @@ async def test_bridge_reset(aresponses):
         ),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         reset_resp = await client.bridge.async_reset(12345)
         assert reset_resp["id"] == 12345
         assert reset_resp["name"] == "My Bridge"
@@ -155,8 +155,8 @@ async def test_bridge_update(aresponses):
         ),
     )
 
-    async with aiohttp.ClientSession() as websession:
-        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, websession)
+    async with aiohttp.ClientSession() as session:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         reset_resp = await client.bridge.async_update(
             12345, {"name": "My Updated Name"}
         )
