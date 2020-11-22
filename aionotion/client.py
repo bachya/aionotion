@@ -30,21 +30,13 @@ class Client:  # pylint: disable=too-few-public-methods
         self.system: System = System(self._request)
         self.task: Task = Task(self._request)
 
-    async def _request(
-        self,
-        method: str,
-        endpoint: str,
-        *,
-        headers: dict = None,
-        params: dict = None,
-        json: dict = None,
-    ) -> dict:
+    async def _request(self, method: str, endpoint: str, **kwargs) -> dict:
         """Make a request the API.com."""
         url: str = f"{API_BASE}/{endpoint}"
 
-        _headers = headers or {}
+        kwargs.setdefault("headers", {})
         if self._token:
-            _headers["Authorization"] = f"Token token={self._token}"
+            kwargs["headers"]["Authorization"] = f"Token token={self._token}"
 
         use_running_session = self._session and not self._session.closed
 
@@ -54,16 +46,14 @@ class Client:  # pylint: disable=too-few-public-methods
             session = ClientSession(timeout=ClientTimeout(total=DEFAULT_TIMEOUT))
 
         try:
-            async with session.request(
-                method, url, headers=_headers, params=params, json=json
-            ) as resp:
+            async with session.request(method, url, **kwargs) as resp:
                 data: dict = await resp.json(content_type=None)
                 resp.raise_for_status()
                 return data
         except ClientError as err:
             if "401" in str(err):
-                raise InvalidCredentialsError("Invalid credentials")
-            raise RequestError(data["errors"][0]["title"])
+                raise InvalidCredentialsError("Invalid credentials") from err
+            raise RequestError(data["errors"][0]["title"]) from err
         finally:
             if not use_running_session:
                 await session.close()
