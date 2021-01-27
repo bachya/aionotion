@@ -30,7 +30,9 @@ async def test_task_all(aresponses):
     async with aiohttp.ClientSession() as session:
         client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         tasks = await client.task.async_all()
-        assert len(tasks) == 7
+        assert len(tasks) == 4
+        assert tasks[0]["status"]["value"] == "not_missing"
+        assert tasks[1]["status"]["insights"]["primary"]["to_state"] == "no_leak"
 
 
 @pytest.mark.asyncio
