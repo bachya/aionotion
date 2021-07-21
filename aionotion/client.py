@@ -67,7 +67,7 @@ class Client:  # pylint: disable=too-few-public-methods
 
     async def async_authenticate(self, email: str, password: str) -> None:
         """Authenticate the user and retrieve an authentication token."""
-        auth_response: dict = await self._request(
+        auth_response = await self._request(
             "post",
             "users/sign_in",
             json={"sessions": {"email": email, "password": password}},

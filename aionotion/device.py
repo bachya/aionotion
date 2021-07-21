@@ -1,5 +1,5 @@
 """Define endpoints for interacting with devices (phones, etc. with Notion)."""
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict, List, cast
 
 
 class Device:
@@ -11,15 +11,13 @@ class Device:
 
     async def async_all(self) -> List[Dict[str, Any]]:
         """Get all devices."""
-        resp: dict = await self._request("get", "devices")
-        return resp["devices"]
+        resp = await self._request("get", "devices")
+        return cast(List[Dict[str, Any]], resp["devices"])
 
     async def async_create(self, attributes: Dict[str, Any]) -> Dict[str, Any]:
         """Create a device with a specific attribute payload."""
-        resp: dict = await self._request(
-            "post", "devices", json={"devices": attributes}
-        )
-        return resp["devices"]
+        resp = await self._request("post", "devices", json={"devices": attributes})
+        return cast(Dict[str, Any], resp["devices"])
 
     async def async_delete(self, device_id: int) -> None:
         """Delete a device by ID."""
@@ -27,5 +25,5 @@ class Device:
 
     async def async_get(self, device_id: int) -> Dict[str, Any]:
         """Get a device by ID."""
-        resp: dict = await self._request("get", f"devices/{device_id}")
-        return resp["devices"]
+        resp = await self._request("get", f"devices/{device_id}")
+        return cast(Dict[str, Any], resp["devices"])

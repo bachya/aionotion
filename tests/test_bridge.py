@@ -24,8 +24,11 @@ async def test_bridge_all(aresponses):
         "api.getnotion.com",
         "/api/base_stations",
         "get",
-        aresponses.Response(text=load_fixture("bridge_all_response.json"), status=200),
-        headers={"Content-Type": "application/json; charset=utf-8"},
+        aresponses.Response(
+            text=load_fixture("bridge_all_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
+        ),
     )
 
     async with aiohttp.ClientSession() as session:
@@ -113,7 +116,11 @@ async def test_bridge_get(aresponses):
         "api.getnotion.com",
         "/api/base_stations/12345",
         "get",
-        aresponses.Response(text=load_fixture("bridge_get_response.json"), status=200),
+        aresponses.Response(
+            text=load_fixture("bridge_get_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
+        ),
     )
 
     async with aiohttp.ClientSession() as session:

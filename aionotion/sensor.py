@@ -1,5 +1,5 @@
 """Define endpoints for interacting with sensors."""
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict, List, cast
 
 
 class Sensor:
@@ -11,15 +11,13 @@ class Sensor:
 
     async def async_all(self) -> List[Dict[str, Any]]:
         """Get all sensors."""
-        resp: dict = await self._request("get", "sensors")
-        return resp["sensors"]
+        resp = await self._request("get", "sensors")
+        return cast(List[Dict[str, Any]], resp["sensors"])
 
     async def async_create(self, attributes: Dict[str, Any]) -> Dict[str, Any]:
         """Create a sensor with a specific attribute payload."""
-        resp: dict = await self._request(
-            "post", "sensors", json={"sensors": attributes}
-        )
-        return resp["sensors"]
+        resp = await self._request("post", "sensors", json={"sensors": attributes})
+        return cast(Dict[str, Any], resp["sensors"])
 
     async def async_delete(self, sensor_id: int) -> None:
         """Delete a sensor by ID."""
@@ -27,14 +25,14 @@ class Sensor:
 
     async def async_get(self, sensor_id: int) -> Dict[str, Any]:
         """Get a sensor by ID."""
-        resp: dict = await self._request("get", f"sensors/{sensor_id}")
-        return resp["sensors"]
+        resp = await self._request("get", f"sensors/{sensor_id}")
+        return cast(Dict[str, Any], resp["sensors"])
 
     async def async_update(
         self, sensor_id: int, new_attributes: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Update a sensor with a specific attribute payload."""
-        resp: dict = await self._request(
+        resp = await self._request(
             "put", f"sensors/{sensor_id}", json={"sensors": new_attributes}
         )
-        return resp["sensors"]
+        return cast(Dict[str, Any], resp["sensors"])

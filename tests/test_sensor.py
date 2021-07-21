@@ -87,7 +87,11 @@ async def test_sensor_delete(aresponses):
         "api.getnotion.com",
         "/api/sensors/123456",
         "delete",
-        aresponses.Response(text=None, status=200),
+        aresponses.Response(
+            text=None,
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
+        ),
     )
 
     async with aiohttp.ClientSession() as session:
