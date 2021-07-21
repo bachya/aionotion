@@ -1,6 +1,6 @@
 """Define endpoints for interacting with tasks (monitored conditions)."""
 from datetime import datetime
-from typing import Callable, List
+from typing import Any, Callable, Dict, List
 
 
 class Task:
@@ -8,14 +8,16 @@ class Task:
 
     def __init__(self, request: Callable) -> None:
         """Initialize."""
-        self._request: Callable = request
+        self._request = request
 
-    async def async_all(self) -> list:
+    async def async_all(self) -> List[Dict[str, Any]]:
         """Get all tasks."""
         resp: dict = await self._request("get", "tasks")
         return resp["tasks"]
 
-    async def async_create(self, sensor_id: int, tasks: List[dict]) -> list:
+    async def async_create(
+        self, sensor_id: int, tasks: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
         """Create new tasks based upon a list of attribute dicts."""
         resp: dict = await self._request(
             "post",
@@ -28,14 +30,14 @@ class Task:
         """Delete a task by ID."""
         await self._request("delete", f"sensors/{sensor_id}/tasks/{task_id}")
 
-    async def async_get(self, task_id: str) -> dict:
+    async def async_get(self, task_id: str) -> Dict[str, Any]:
         """Get a task by ID."""
         resp: dict = await self._request("get", f"tasks/{task_id}")
         return resp["tasks"]
 
     async def async_history(
         self, task_id: str, data_before: datetime, data_after: datetime
-    ) -> dict:
+    ) -> Dict[str, Any]:
         """Get the history of a task's values between two datetimes."""
         resp: dict = await self._request(
             "get",
