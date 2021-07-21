@@ -17,14 +17,20 @@ async def test_api_error(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
         "api.getnotion.com",
         "/api/bad_endpoint",
         "get",
-        aresponses.Response(text=load_fixture("bad_api_response.json"), status=404),
+        aresponses.Response(
+            text=load_fixture("bad_api_response.json"),
+            status=404,
+            headers={"Content-Type": "application/json; charset=utf-8"},
+        ),
     )
 
     async with aiohttp.ClientSession() as session:
@@ -41,7 +47,9 @@ async def test_auth_failure(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=401
+            text=load_fixture("auth_success_response.json"),
+            status=401,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
 
@@ -58,7 +66,9 @@ async def test_auth_success(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
 
@@ -75,7 +85,9 @@ async def test_no_explicit_session(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
 

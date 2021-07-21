@@ -15,14 +15,20 @@ async def test_device_all(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
         "api.getnotion.com",
         "/api/devices",
         "get",
-        aresponses.Response(text=load_fixture("device_all_response.json"), status=200),
+        aresponses.Response(
+            text=load_fixture("device_all_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
+        ),
     )
 
     async with aiohttp.ClientSession() as session:
@@ -39,7 +45,9 @@ async def test_device_create(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
@@ -47,7 +55,9 @@ async def test_device_create(aresponses):
         "/api/devices",
         "post",
         aresponses.Response(
-            text=load_fixture("device_create_response.json"), status=200
+            text=load_fixture("device_create_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
 
@@ -66,14 +76,20 @@ async def test_device_delete(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
         "api.getnotion.com",
         "/api/devices/12345",
         "delete",
-        aresponses.Response(text=None, status=200),
+        aresponses.Response(
+            text=None,
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
+        ),
     )
 
     async with aiohttp.ClientSession() as session:
@@ -89,14 +105,20 @@ async def test_device_get(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
         "api.getnotion.com",
         "/api/devices/12345",
         "get",
-        aresponses.Response(text=load_fixture("device_get_response.json"), status=200),
+        aresponses.Response(
+            text=load_fixture("device_get_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
+        ),
     )
 
     async with aiohttp.ClientSession() as session:

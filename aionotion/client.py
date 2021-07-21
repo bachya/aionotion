@@ -1,5 +1,5 @@
 """Define a base client for interacting with Notion."""
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from aiohttp import ClientSession, ClientTimeout
 from aiohttp.client_exceptions import ClientError
@@ -21,17 +21,19 @@ class Client:  # pylint: disable=too-few-public-methods
 
     def __init__(self, *, session: Optional[ClientSession] = None) -> None:
         """Initialize."""
-        self._session: ClientSession = session
+        self._session: Optional[ClientSession] = session
         self._token: Optional[str] = None
 
-        self.bridge: Bridge = Bridge(self._request)
-        self.device: Device = Device(self._request)
-        self.sensor: Sensor = Sensor(self._request)
-        self.system: System = System(self._request)
-        self.task: Task = Task(self._request)
+        self.bridge = Bridge(self._request)
+        self.device = Device(self._request)
+        self.sensor = Sensor(self._request)
+        self.system = System(self._request)
+        self.task = Task(self._request)
 
-    async def _request(self, method: str, endpoint: str, **kwargs) -> dict:
-        """Make a request the API.com."""
+    async def _request(
+        self, method: str, endpoint: str, **kwargs: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """Make an API request."""
         url: str = f"{API_BASE}/{endpoint}"
 
         kwargs.setdefault("headers", {})
@@ -45,11 +47,14 @@ class Client:  # pylint: disable=too-few-public-methods
         else:
             session = ClientSession(timeout=ClientTimeout(total=DEFAULT_TIMEOUT))
 
+        assert session
+
+        data: Dict[str, Any] = {}
+
         try:
             async with session.request(method, url, **kwargs) as resp:
-                data: dict = await resp.json(content_type=None)
+                data = await resp.json()
                 resp.raise_for_status()
-                return data
         except ClientError as err:
             if "401" in str(err):
                 raise InvalidCredentialsError("Invalid credentials") from err
@@ -58,9 +63,11 @@ class Client:  # pylint: disable=too-few-public-methods
             if not use_running_session:
                 await session.close()
 
+        return data
+
     async def async_authenticate(self, email: str, password: str) -> None:
         """Authenticate the user and retrieve an authentication token."""
-        auth_response: dict = await self._request(
+        auth_response = await self._request(
             "post",
             "users/sign_in",
             json={"sessions": {"email": email, "password": password}},

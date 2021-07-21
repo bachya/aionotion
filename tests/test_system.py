@@ -15,14 +15,20 @@ async def test_system_all(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
         "api.getnotion.com",
         "/api/systems",
         "get",
-        aresponses.Response(text=load_fixture("system_all_response.json"), status=200),
+        aresponses.Response(
+            text=load_fixture("system_all_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
+        ),
     )
 
     async with aiohttp.ClientSession() as session:
@@ -39,7 +45,9 @@ async def test_system_create(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
@@ -47,7 +55,9 @@ async def test_system_create(aresponses):
         "/api/systems",
         "post",
         aresponses.Response(
-            text=load_fixture("system_create_response.json"), status=200
+            text=load_fixture("system_create_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
 
@@ -68,14 +78,20 @@ async def test_system_delete(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
         "api.getnotion.com",
         "/api/systems/12345",
         "delete",
-        aresponses.Response(text=None, status=200),
+        aresponses.Response(
+            text=None,
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
+        ),
     )
 
     async with aiohttp.ClientSession() as session:
@@ -91,14 +107,20 @@ async def test_system_get(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
         "api.getnotion.com",
         "/api/systems/12345",
         "get",
-        aresponses.Response(text=load_fixture("system_get_response.json"), status=200),
+        aresponses.Response(
+            text=load_fixture("system_get_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
+        ),
     )
 
     async with aiohttp.ClientSession() as session:
@@ -116,7 +138,9 @@ async def test_system_update(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
@@ -124,7 +148,9 @@ async def test_system_update(aresponses):
         "/api/systems/12345",
         "put",
         aresponses.Response(
-            text=load_fixture("system_update_response.json"), status=200
+            text=load_fixture("system_update_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
 
