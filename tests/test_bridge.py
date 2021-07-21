@@ -15,7 +15,9 @@ async def test_bridge_all(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
@@ -23,6 +25,7 @@ async def test_bridge_all(aresponses):
         "/api/base_stations",
         "get",
         aresponses.Response(text=load_fixture("bridge_all_response.json"), status=200),
+        headers={"Content-Type": "application/json; charset=utf-8"},
     )
 
     async with aiohttp.ClientSession() as session:
@@ -39,7 +42,9 @@ async def test_bridge_create(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
@@ -47,7 +52,9 @@ async def test_bridge_create(aresponses):
         "/api/base_stations",
         "post",
         aresponses.Response(
-            text=load_fixture("bridge_create_response.json"), status=200
+            text=load_fixture("bridge_create_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
 
@@ -68,14 +75,20 @@ async def test_bridge_delete(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
         "api.getnotion.com",
         "/api/base_stations/12345",
         "delete",
-        aresponses.Response(text=None, status=200),
+        aresponses.Response(
+            text=None,
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
+        ),
     )
 
     async with aiohttp.ClientSession() as session:
@@ -91,7 +104,9 @@ async def test_bridge_get(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
@@ -116,7 +131,9 @@ async def test_bridge_reset(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
@@ -124,7 +141,9 @@ async def test_bridge_reset(aresponses):
         "/api/base_stations/12345/reset",
         "put",
         aresponses.Response(
-            text=load_fixture("bridge_reset_response.json"), status=200
+            text=load_fixture("bridge_reset_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
 
@@ -143,7 +162,9 @@ async def test_bridge_update(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
@@ -151,7 +172,9 @@ async def test_bridge_update(aresponses):
         "/api/base_stations/12345",
         "put",
         aresponses.Response(
-            text=load_fixture("bridge_update_response.json"), status=200
+            text=load_fixture("bridge_update_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
 

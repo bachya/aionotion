@@ -17,14 +17,20 @@ async def test_task_all(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
         "api.getnotion.com",
         "/api/tasks",
         "get",
-        aresponses.Response(text=load_fixture("task_all_response.json"), status=200),
+        aresponses.Response(
+            text=load_fixture("task_all_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
+        ),
     )
 
     async with aiohttp.ClientSession() as session:
@@ -43,14 +49,20 @@ async def test_task_create(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
         "api.getnotion.com",
         "/api/sensors/12345/tasks",
         "post",
-        aresponses.Response(text=load_fixture("task_create_response.json"), status=200),
+        aresponses.Response(
+            text=load_fixture("task_create_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
+        ),
     )
 
     async with aiohttp.ClientSession() as session:
@@ -70,7 +82,9 @@ async def test_task_delete(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
@@ -93,14 +107,20 @@ async def test_task_get(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
         "api.getnotion.com",
         "/api/tasks/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
         "get",
-        aresponses.Response(text=load_fixture("task_get_response.json"), status=200),
+        aresponses.Response(
+            text=load_fixture("task_get_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
+        ),
     )
 
     async with aiohttp.ClientSession() as session:
@@ -118,7 +138,9 @@ async def test_task_history(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
@@ -126,7 +148,9 @@ async def test_task_history(aresponses):
         "/api/tasks/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/data",
         "get",
         aresponses.Response(
-            text=load_fixture("task_history_response.json"), status=200
+            text=load_fixture("task_history_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
 

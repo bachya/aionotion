@@ -15,14 +15,20 @@ async def test_sensor_all(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
         "api.getnotion.com",
         "/api/sensors",
         "get",
-        aresponses.Response(text=load_fixture("sensor_all_response.json"), status=200),
+        aresponses.Response(
+            text=load_fixture("sensor_all_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
+        ),
     )
 
     async with aiohttp.ClientSession() as session:
@@ -39,7 +45,9 @@ async def test_sensor_create(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
@@ -47,7 +55,9 @@ async def test_sensor_create(aresponses):
         "/api/sensors",
         "post",
         aresponses.Response(
-            text=load_fixture("sensor_create_response.json"), status=200
+            text=load_fixture("sensor_create_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
 
@@ -68,7 +78,9 @@ async def test_sensor_delete(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
@@ -91,14 +103,20 @@ async def test_sensor_get(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
         "api.getnotion.com",
         "/api/sensors/123456",
         "get",
-        aresponses.Response(text=load_fixture("sensor_get_response.json"), status=200),
+        aresponses.Response(
+            text=load_fixture("sensor_get_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
+        ),
     )
 
     async with aiohttp.ClientSession() as session:
@@ -116,7 +134,9 @@ async def test_sensor_update(aresponses):
         "/api/users/sign_in",
         "post",
         aresponses.Response(
-            text=load_fixture("auth_success_response.json"), status=200
+            text=load_fixture("auth_success_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
     aresponses.add(
@@ -124,7 +144,9 @@ async def test_sensor_update(aresponses):
         "/api/sensors/123456",
         "put",
         aresponses.Response(
-            text=load_fixture("sensor_update_response.json"), status=200
+            text=load_fixture("sensor_update_response.json"),
+            status=200,
+            headers={"Content-Type": "application/json; charset=utf-8"},
         ),
     )
 
