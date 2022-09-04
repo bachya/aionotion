@@ -4,7 +4,7 @@
 [![PyPi](https://img.shields.io/pypi/v/aionotion.svg)](https://pypi.python.org/pypi/aionotion)
 [![Version](https://img.shields.io/pypi/pyversions/aionotion.svg)](https://pypi.python.org/pypi/aionotion)
 [![License](https://img.shields.io/pypi/l/aionotion.svg)](https://github.com/bachya/aionotion/blob/main/LICENSE)
-[![Code Coverage](https://codecov.io/gh/bachya/aionotion/branch/main/graph/badge.svg)](https://codecov.io/gh/bachya/aionotion)
+[![Code Coverage](https://codecov.io/gh/bachya/aionotion/branch/dev/graph/badge.svg)](https://codecov.io/gh/bachya/aionotion)
 [![Maintainability](https://api.codeclimate.com/v1/badges/bd79edca07c8e4529cba/maintainability)](https://codeclimate.com/github/bachya/aionotion/maintainability)
 [![Say Thanks](https://img.shields.io/badge/SayThanks-!-1EAEDB.svg)](https://saythanks.io/to/bachya)
 
