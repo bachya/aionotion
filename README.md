@@ -17,8 +17,6 @@
 
 `aionotion` is currently supported on:
 
-* Python 3.7
-* Python 3.8
 * Python 3.9
 * Python 3.10
 * Python 3.11
