@@ -10,7 +10,7 @@ from aionotion.errors import NotionError
 _LOGGER = logging.getLogger()
 
 EMAIL = "email@address.com"
-PASSWORD = "password"
+PASSWORD = "password"  # noqa: S105
 
 
 async def main() -> None:

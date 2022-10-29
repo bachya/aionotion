@@ -17,13 +17,13 @@
 
 `aionotion` is currently supported on:
 
-* Python 3.9
-* Python 3.10
-* Python 3.11
+- Python 3.9
+- Python 3.10
+- Python 3.11
 
 # Installation
 
-```python
+```bash
 pip install aionotion
 ```
 
@@ -160,7 +160,7 @@ signatures and more examples.
 # Contributing
 
 1. [Check for open features/bugs](https://github.com/bachya/aionotion/issues)
-  or [initiate a discussion on one](https://github.com/bachya/aionotion/issues/new).
+   or [initiate a discussion on one](https://github.com/bachya/aionotion/issues/new).
 2. [Fork the repository](https://github.com/bachya/aionotion/fork).
 3. (_optional, but highly recommended_) Create a virtual environment: `python3 -m venv .venv`
 4. (_optional, but highly recommended_) Enter the virtual environment: `source ./venv/bin/activate`

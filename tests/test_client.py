@@ -1,7 +1,10 @@
 """Define tests for the client."""
 # pylint: disable=protected-access
+import json
+
 import aiohttp
 import pytest
+from aresponses import ResponsesMockServer
 
 from aionotion import async_get_client
 from aionotion.errors import InvalidCredentialsError, RequestError
@@ -10,46 +13,49 @@ from .common import TEST_EMAIL, TEST_PASSWORD, TEST_TOKEN, load_fixture
 
 
 @pytest.mark.asyncio
-async def test_api_error(aresponses):
-    """Test an invalid API call."""
-    aresponses.add(
-        "api.getnotion.com",
-        "/api/users/sign_in",
-        "post",
-        aresponses.Response(
-            text=load_fixture("auth_success_response.json"),
-            status=200,
-            headers={"Content-Type": "application/json; charset=utf-8"},
-        ),
-    )
-    aresponses.add(
-        "api.getnotion.com",
-        "/api/bad_endpoint",
-        "get",
-        aresponses.Response(
-            text=load_fixture("bad_api_response.json"),
-            status=404,
-            headers={"Content-Type": "application/json; charset=utf-8"},
-        ),
-    )
+async def test_api_error(
+    aresponses: ResponsesMockServer,
+    authenticated_notion_api_server: ResponsesMockServer,
+) -> None:
+    """Test an invalid API call.
 
-    async with aiohttp.ClientSession() as session:
-        with pytest.raises(RequestError):
-            client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
-            await client._request("get", "bad_endpoint")
+    Args:
+        aresponses: An aresponses server.
+        authenticated_notion_api_server: A mock authenticated Notion API server
+    """
+    async with authenticated_notion_api_server:
+        authenticated_notion_api_server.add(
+            "api.getnotion.com",
+            "/api/bad_endpoint",
+            "get",
+            response=aiohttp.web_response.json_response(
+                json.loads(load_fixture("bad_api_response.json")), status=404
+            ),
+        )
+
+        async with aiohttp.ClientSession() as session:
+            with pytest.raises(RequestError):
+                client = await async_get_client(
+                    TEST_EMAIL, TEST_PASSWORD, session=session
+                )
+                await client._request("get", "bad_endpoint")
+
+    aresponses.assert_plan_strictly_followed()
 
 
 @pytest.mark.asyncio
-async def test_auth_failure(aresponses):
-    """Test invalid credentials."""
+async def test_auth_failure(aresponses: ResponsesMockServer) -> None:
+    """Test invalid credentials.
+
+    Args:
+        aresponses: An aresponses server.
+    """
     aresponses.add(
         "api.getnotion.com",
         "/api/users/sign_in",
         "post",
-        aresponses.Response(
-            text=load_fixture("auth_success_response.json"),
-            status=401,
-            headers={"Content-Type": "application/json; charset=utf-8"},
+        response=aiohttp.web_response.json_response(
+            json.loads(load_fixture("auth_failure_response.json")), status=401
         ),
     )
 
@@ -57,39 +63,40 @@ async def test_auth_failure(aresponses):
         with pytest.raises(InvalidCredentialsError):
             _ = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
 
+    aresponses.assert_plan_strictly_followed()
+
 
 @pytest.mark.asyncio
-async def test_auth_success(aresponses):
-    """Test authenticating against the API and getting a token."""
-    aresponses.add(
-        "api.getnotion.com",
-        "/api/users/sign_in",
-        "post",
-        aresponses.Response(
-            text=load_fixture("auth_success_response.json"),
-            status=200,
-            headers={"Content-Type": "application/json; charset=utf-8"},
-        ),
-    )
+async def test_auth_success(
+    aresponses: ResponsesMockServer,
+    authenticated_notion_api_server: ResponsesMockServer,
+) -> None:
+    """Test authenticating against the API and getting a token.
 
-    async with aiohttp.ClientSession() as session:
+    Args:
+        aresponses: An aresponses server.
+        authenticated_notion_api_server: A mock authenticated Notion API server
+    """
+    async with authenticated_notion_api_server, aiohttp.ClientSession() as session:
         client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         assert client._token == TEST_TOKEN
 
+    aresponses.assert_plan_strictly_followed()
+
 
 @pytest.mark.asyncio
-async def test_no_explicit_session(aresponses):
-    """Test authentication without an explicit ClientSession."""
-    aresponses.add(
-        "api.getnotion.com",
-        "/api/users/sign_in",
-        "post",
-        aresponses.Response(
-            text=load_fixture("auth_success_response.json"),
-            status=200,
-            headers={"Content-Type": "application/json; charset=utf-8"},
-        ),
-    )
+async def test_no_explicit_session(
+    aresponses: ResponsesMockServer,
+    authenticated_notion_api_server: ResponsesMockServer,
+) -> None:
+    """Test authentication without an explicit ClientSession.
 
-    client = await async_get_client(TEST_EMAIL, TEST_PASSWORD)
-    assert client._token == TEST_TOKEN
+    Args:
+        aresponses: An aresponses server.
+        authenticated_notion_api_server: A mock authenticated Notion API server
+    """
+    async with authenticated_notion_api_server:
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD)
+        assert client._token == TEST_TOKEN
+
+    aresponses.assert_plan_strictly_followed()
