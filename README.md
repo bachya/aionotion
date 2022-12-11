@@ -1,17 +1,21 @@
 # 📟 aionotion: a Python3, asyncio-friendly library for Notion® Home Monitoring
 
-[![CI](https://github.com/bachya/aionotion/workflows/CI/badge.svg)](https://github.com/bachya/aionotion/actions)
-[![PyPi](https://img.shields.io/pypi/v/aionotion.svg)](https://pypi.python.org/pypi/aionotion)
-[![Version](https://img.shields.io/pypi/pyversions/aionotion.svg)](https://pypi.python.org/pypi/aionotion)
-[![License](https://img.shields.io/pypi/l/aionotion.svg)](https://github.com/bachya/aionotion/blob/main/LICENSE)
-[![Code Coverage](https://codecov.io/gh/bachya/aionotion/branch/dev/graph/badge.svg)](https://codecov.io/gh/bachya/aionotion)
-[![Maintainability](https://api.codeclimate.com/v1/badges/bd79edca07c8e4529cba/maintainability)](https://codeclimate.com/github/bachya/aionotion/maintainability)
-[![Say Thanks](https://img.shields.io/badge/SayThanks-!-1EAEDB.svg)](https://saythanks.io/to/bachya)
+[![CI][ci-badge]][ci]
+[![PyPI][pypi-badge]][pypi]
+[![Version][version-badge]][version]
+[![License][license-badge]][license]
+[![Code Coverage][codecov-badge]][codecov]
+[![Maintainability][maintainability-badge]][maintainability]
 
 <a href="https://www.buymeacoffee.com/bachya1208P" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
-`aionotion` is a Python 3, asyncio-friendly library for interacting with
-[Notion](https://getnotion.com) home monitoring sensors.
+`aionotion` is a Python 3, asyncio-friendly library for interacting with [Notion][notion]
+home monitoring sensors.
+
+- [Installation](#installation)
+- [Python Versions](#python-versions)
+- [Usage](#usage)
+- [Contributing](#contributing)
 
 # Python Versions
 
@@ -159,15 +163,35 @@ signatures and more examples.
 
 # Contributing
 
-1. [Check for open features/bugs](https://github.com/bachya/aionotion/issues)
-   or [initiate a discussion on one](https://github.com/bachya/aionotion/issues/new).
-2. [Fork the repository](https://github.com/bachya/aionotion/fork).
+Thanks to all of [our contributors][contributors] so far!
+
+1. [Check for open features/bugs][issues] or [initiate a discussion on one][new-issue].
+2. [Fork the repository][fork].
 3. (_optional, but highly recommended_) Create a virtual environment: `python3 -m venv .venv`
-4. (_optional, but highly recommended_) Enter the virtual environment: `source ./venv/bin/activate`
+4. (_optional, but highly recommended_) Enter the virtual environment: `source ./.venv/bin/activate`
 5. Install the dev environment: `script/setup`
-6. Code your new feature or bug fix.
+6. Code your new feature or bug fix on a new branch.
 7. Write tests that cover your new functionality.
 8. Run tests and ensure 100% code coverage: `poetry run pytest --cov aionotion tests`
 9. Update `README.md` with any new documentation.
-10. Add yourself to `AUTHORS.md`.
-11. Submit a pull request!
+10. Submit a pull request!
+
+[aiohttp]: https://github.com/aio-libs/aiohttp
+[ci-badge]: https://github.com/bachya/aionotion/workflows/CI/badge.svg
+[ci]: https://github.com/bachya/aionotion/actions
+[codecov-badge]: https://codecov.io/gh/bachya/aionotion/branch/dev/graph/badge.svg
+[codecov]: https://codecov.io/gh/bachya/aionotion
+[contributors]: https://github.com/bachya/aionotion/graphs/contributors
+[fork]: https://github.com/bachya/aionotion/fork
+[issues]: https://github.com/bachya/aionotion/issues
+[license-badge]: https://img.shields.io/pypi/l/aionotion.svg
+[license]: https://github.com/bachya/aionotion/blob/main/LICENSE
+[maintainability-badge]: https://api.codeclimate.com/v1/badges/a03c9e96f19a3dc37f98/maintainability
+[maintainability]: https://codeclimate.com/github/bachya/aionotion/maintainability
+[new-issue]: https://github.com/bachya/aionotion/issues/new
+[new-issue]: https://github.com/bachya/aionotion/issues/new
+[notion]: https://getnotion.com
+[pypi-badge]: https://img.shields.io/pypi/v/aionotion.svg
+[pypi]: https://pypi.python.org/pypi/aionotion
+[version-badge]: https://img.shields.io/pypi/pyversions/aionotion.svg
+[version]: https://pypi.python.org/pypi/aionotion
