@@ -12,8 +12,8 @@
 `aionotion` is a Python 3, asyncio-friendly library for interacting with [Notion][notion]
 home monitoring sensors.
 
-- [Installation](#installation)
 - [Python Versions](#python-versions)
+- [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
 
