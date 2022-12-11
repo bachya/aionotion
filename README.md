@@ -134,9 +134,8 @@ asyncio.run(main())
 
 By default, the library creates a new connection to Notion with each coroutine. If you
 are calling a large number of coroutines (or merely want to squeeze out every second of
-runtime savings possible), an
-[`aiohttp`](https://github.com/aio-libs/aiohttp) `ClientSession` can be used for connection
-pooling:
+runtime savings possible), an [`aiohttp`][aiohttp] `ClientSession` can be used for
+connection pooling:
 
 ```python
 import asyncio
