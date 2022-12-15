@@ -185,7 +185,7 @@ Thanks to all of [our contributors][contributors] so far!
 [issues]: https://github.com/bachya/aionotion/issues
 [license-badge]: https://img.shields.io/pypi/l/aionotion.svg
 [license]: https://github.com/bachya/aionotion/blob/main/LICENSE
-[maintainability-badge]: https://api.codeclimate.com/v1/badges/a03c9e96f19a3dc37f98/maintainability
+[maintainability-badge]: https://api.codeclimate.com/v1/badges/bd79edca07c8e4529cba/maintainability
 [maintainability]: https://codeclimate.com/github/bachya/aionotion/maintainability
 [new-issue]: https://github.com/bachya/aionotion/issues/new
 [new-issue]: https://github.com/bachya/aionotion/issues/new
