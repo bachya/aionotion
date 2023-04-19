@@ -26,11 +26,11 @@ async def main() -> None:
             sensors = await client.sensor.async_all()
             _LOGGER.info("SENSORS: %s", sensors)
 
+            listeners = await client.sensor.async_listeners()
+            _LOGGER.info("LISTENERS: %s", listeners)
+
             systems = await client.system.async_all()
             _LOGGER.info("SYSTEMS: %s", systems)
-
-            tasks = await client.task.async_all()
-            _LOGGER.info("TASKS: %s", tasks)
         except NotionError as err:
             _LOGGER.error("There was an error: %s", err)
 

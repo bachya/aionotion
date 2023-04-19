@@ -132,6 +132,66 @@ async def test_sensor_get(
 
 
 @pytest.mark.asyncio
+async def test_sensor_listeners(
+    aresponses: ResponsesMockServer,
+    authenticated_notion_api_server: ResponsesMockServer,
+) -> None:
+    """Test getting listeners for all sensors.
+
+    Args:
+        aresponses: An aresponses server.
+        authenticated_notion_api_server: A mock authenticated Notion API server
+    """
+    async with authenticated_notion_api_server:
+        authenticated_notion_api_server.add(
+            "api.getnotion.com",
+            "/api/sensor/listeners",
+            "get",
+            response=aiohttp.web_response.json_response(
+                json.loads(load_fixture("sensor_listeners.json")), status=200
+            ),
+        )
+
+        async with aiohttp.ClientSession() as session:
+            client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
+            sensors = await client.sensor.async_listeners()
+            assert len(sensors) == 2
+
+    aresponses.assert_plan_strictly_followed()
+
+
+@pytest.mark.asyncio
+async def test_sensor_listeners_for_sensor(
+    aresponses: ResponsesMockServer,
+    authenticated_notion_api_server: ResponsesMockServer,
+) -> None:
+    """Test getting listeners for a specific sensor.
+
+    Args:
+        aresponses: An aresponses server.
+        authenticated_notion_api_server: A mock authenticated Notion API server
+    """
+    async with authenticated_notion_api_server:
+        authenticated_notion_api_server.add(
+            "api.getnotion.com",
+            "/api/sensors/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/listeners",
+            "get",
+            response=aiohttp.web_response.json_response(
+                json.loads(load_fixture("sensor_listeners_for_sensor.json")), status=200
+            ),
+        )
+
+        async with aiohttp.ClientSession() as session:
+            client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
+            sensors = await client.sensor.async_listeners_for_sensor(
+                "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+            )
+            assert len(sensors) == 2
+
+    aresponses.assert_plan_strictly_followed()
+
+
+@pytest.mark.asyncio
 async def test_sensor_update(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,

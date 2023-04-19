@@ -57,6 +57,30 @@ class Sensor:
         resp = await self._request("get", f"sensors/{sensor_id}")
         return cast(dict[str, Any], resp["sensors"])
 
+    async def async_listeners(self) -> dict[str, Any]:
+        """Get all listeners for all sensors.
+
+        Returns:
+            An API response payload.
+        """
+        resp = await self._request("get", "sensor/listeners")
+        return cast(dict[str, Any], resp["listeners"])
+
+    async def async_listeners_for_sensor(self, sensor_uuid: str) -> dict[str, Any]:
+        """Get all listeners for a sensor by UUID.
+
+        Note that unlike other sensor endpoints, the sensor ID won't work here; the
+        sensor UUID is required.
+
+        Args:
+            sensor_uuid: The UUID of the sensor to get.
+
+        Returns:
+            An API response payload.
+        """
+        resp = await self._request("get", f"sensors/{sensor_uuid}/listeners")
+        return cast(dict[str, Any], resp["listeners"])
+
     async def async_update(
         self, sensor_id: int, new_attributes: dict[str, Any]
     ) -> dict[str, Any]:

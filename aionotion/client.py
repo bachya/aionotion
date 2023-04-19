@@ -6,12 +6,11 @@ from typing import Any
 from aiohttp import ClientSession, ClientTimeout
 from aiohttp.client_exceptions import ClientError
 
-from .bridge import Bridge
-from .device import Device
-from .errors import InvalidCredentialsError, RequestError
-from .sensor import Sensor
-from .system import System
-from .task import Task
+from aionotion.bridge import Bridge
+from aionotion.device import Device
+from aionotion.errors import InvalidCredentialsError, RequestError
+from aionotion.sensor import Sensor
+from aionotion.system import System
 
 API_BASE: str = "https://api.getnotion.com/api"
 
@@ -34,7 +33,6 @@ class Client:  # pylint: disable=too-few-public-methods
         self.device = Device(self._request)
         self.sensor = Sensor(self._request)
         self.system = System(self._request)
-        self.task = Task(self._request)
 
     async def _request(
         self, method: str, endpoint: str, **kwargs: dict[str, Any]
@@ -66,17 +64,18 @@ class Client:  # pylint: disable=too-few-public-methods
 
         data: dict[str, Any] = {}
 
-        try:
-            async with session.request(method, url, **kwargs) as resp:
-                data = await resp.json()
+        async with session.request(method, url, **kwargs) as resp:
+            data = await resp.json()
+
+            try:
                 resp.raise_for_status()
-        except ClientError as err:
-            if "401" in str(err):
-                raise InvalidCredentialsError("Invalid credentials") from err
-            raise RequestError(data["errors"][0]["title"]) from err
-        finally:
-            if not use_running_session:
-                await session.close()
+            except ClientError as err:
+                if "401" in str(err):
+                    raise InvalidCredentialsError("Invalid credentials") from err
+                raise RequestError(data["errors"][0]["title"]) from err
+
+        if not use_running_session:
+            await session.close()
 
         return data
 
