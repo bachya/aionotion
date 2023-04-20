@@ -6,7 +6,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Literal, Optional
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, Extra, validator
 
 from aionotion.const import LOGGER
 from aionotion.helpers.validators import validate_timestamp
@@ -105,7 +105,7 @@ class SensorGetResponse(BaseModel):
         }
 
 
-class ListenerStatus(BaseModel):
+class ListenerStatus(BaseModel, extra=Extra.allow):
     """Define a listener status."""
 
     trigger_value: str
@@ -152,10 +152,16 @@ class ListenerKind(Enum):
     """Define the kinds of listener."""
 
     BATTERY = 0
+    MOLD = 2
     TEMPERATURE = 3
     LEAK_STATUS = 4
-    ALARM = 7
+    SAFE = 5
+    DOOR = 6
+    SMOKE = 7
     CONNECTED = 10
+    HINGED_WINDOW = 12
+    GARAGE_DOOR = 13
+    SLIDING_DOOR_OR_WINDOW = 32
     UNKNOWN = 99
 
 
