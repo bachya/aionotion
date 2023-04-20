@@ -5,10 +5,13 @@ from typing import Any
 
 from aiohttp import ClientSession, ClientTimeout
 from aiohttp.client_exceptions import ClientError
+from pydantic import ValidationError
 
 from aionotion.bridge import Bridge
+from aionotion.const import LOGGER
 from aionotion.device import Device
 from aionotion.errors import InvalidCredentialsError, RequestError
+from aionotion.helpers.typing import BaseModelT
 from aionotion.sensor import Sensor
 from aionotion.system import System
 
@@ -29,10 +32,10 @@ class Client:  # pylint: disable=too-few-public-methods
         self._session = session
         self._token: str | None = None
 
-        self.bridge = Bridge(self._request)
-        self.device = Device(self._request)
-        self.sensor = Sensor(self._request)
-        self.system = System(self._request)
+        self.bridge = Bridge(self._request, self._request_and_validate)
+        self.device = Device(self._request, self._request_and_validate)
+        self.sensor = Sensor(self._request, self._request_and_validate)
+        self.system = System(self._request, self._request_and_validate)
 
     async def _request(
         self, method: str, endpoint: str, **kwargs: dict[str, Any]
@@ -77,7 +80,36 @@ class Client:  # pylint: disable=too-few-public-methods
         if not use_running_session:
             await session.close()
 
+        LOGGER.debug("Received data from %s: %s", endpoint, data)
+
         return data
+
+    async def _request_and_validate(
+        self,
+        method: str,
+        endpoint: str,
+        model: BaseModelT,
+        **kwargs: dict[str, Any],
+    ) -> BaseModelT:
+        """Make an API request and validate the response against a Pydantic model.
+
+        Args:
+            method: An HTTP method.
+            endpoint: A relative API endpoint.
+            model: A Pydantic model to validate the response against.
+            **kwargs: Additional kwargs to send with the request.
+
+        Returns:
+            A parsed, validated Pydantic model representing the response.
+        """
+        raw_data = await self._request(method, endpoint, **kwargs)
+
+        try:
+            return model.parse_obj(raw_data)
+        except ValidationError as err:
+            raise RequestError(
+                f"Error while parsing response from {endpoint}: {err}"
+            ) from err
 
     async def async_authenticate(self, email: str, password: str) -> None:
         """Authenticate the user and retrieve an authentication token.
