@@ -1,4 +1,6 @@
 """Define tests for sensors."""
+from __future__ import annotations
+
 import json
 from datetime import datetime, timezone
 
@@ -7,6 +9,7 @@ import pytest
 from aresponses import ResponsesMockServer
 
 from aionotion import async_get_client
+from aionotion.sensor.models import ListenerKind
 from tests.common import TEST_EMAIL, TEST_PASSWORD, load_fixture
 
 
@@ -264,11 +267,11 @@ async def test_sensor_listeners(
             assert len(listeners) == 2
 
             assert listeners[0].id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-            assert listeners[0].definition_id == 24
+            assert listeners[0].listener_kind == ListenerKind.UNKNOWN
             assert listeners[0].created_at == datetime(
                 2019, 6, 28, 22, 12, 20, 497000, tzinfo=timezone.utc
             )
-            assert listeners[0].type == "sensor"
+            assert listeners[0].device_type == "sensor"
             assert listeners[0].model_version == "1.0"
             assert listeners[0].sensor_id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
             assert listeners[0].status.trigger_value == ""
@@ -284,11 +287,11 @@ async def test_sensor_listeners(
             assert listeners[0].pro_monitoring_status == "ineligible"
 
             assert listeners[1].id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-            assert listeners[1].definition_id == 4
+            assert listeners[1].listener_kind == ListenerKind.LEAK_STATUS
             assert listeners[1].created_at == datetime(
                 2019, 6, 28, 22, 12, 49, 651000, tzinfo=timezone.utc
             )
-            assert listeners[1].type == "sensor"
+            assert listeners[1].device_type == "sensor"
             assert listeners[1].model_version == "2.1"
             assert listeners[1].sensor_id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
             assert listeners[1].status.trigger_value == "no_leak"
@@ -342,11 +345,11 @@ async def test_sensor_listeners_for_sensor(
             assert len(listeners) == 2
 
             assert listeners[0].id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-            assert listeners[0].definition_id == 24
+            assert listeners[0].listener_kind == ListenerKind.UNKNOWN
             assert listeners[0].created_at == datetime(
                 2019, 6, 28, 22, 12, 20, 497000, tzinfo=timezone.utc
             )
-            assert listeners[0].type == "sensor"
+            assert listeners[0].device_type == "sensor"
             assert listeners[0].model_version == "1.0"
             assert listeners[0].sensor_id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
             assert listeners[0].status.trigger_value == ""
@@ -362,11 +365,11 @@ async def test_sensor_listeners_for_sensor(
             assert listeners[0].pro_monitoring_status == "ineligible"
 
             assert listeners[1].id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-            assert listeners[1].definition_id == 4
+            assert listeners[1].listener_kind == ListenerKind.LEAK_STATUS
             assert listeners[1].created_at == datetime(
                 2019, 6, 28, 22, 12, 49, 651000, tzinfo=timezone.utc
             )
-            assert listeners[1].type == "sensor"
+            assert listeners[1].device_type == "sensor"
             assert listeners[1].model_version == "2.1"
             assert listeners[1].sensor_id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
             assert listeners[1].status.trigger_value == "no_leak"

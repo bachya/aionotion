@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 from datetime import datetime
+from enum import Enum
 from typing import Any, Literal
 
 from pydantic import BaseModel, validator
 
+from aionotion.const import LOGGER
 from aionotion.helpers.validators import validate_timestamp
 
 
@@ -146,13 +148,24 @@ class ListenerInsights(BaseModel):
     primary: PrimaryListenerInsight
 
 
+class ListenerKind(Enum):
+    """Define the kinds of listener."""
+
+    BATTERY = 0
+    TEMPERATURE = 3
+    LEAK_STATUS = 4
+    ALARM = 7
+    CONNECTED = 10
+    UNKNOWN = 99
+
+
 class Listener(BaseModel):
     """Define a listener."""
 
     id: str
-    definition_id: int
+    listener_kind: ListenerKind
     created_at: datetime
-    type: str
+    device_type: str
     model_version: str
     sensor_id: str
     status: ListenerStatus
@@ -161,9 +174,37 @@ class Listener(BaseModel):
     configuration: dict[str, Any]
     pro_monitoring_status: Literal["eligible", "ineligible"]
 
+    @validator("listener_kind", pre=True)
+    @classmethod
+    def validate_listener_kind(cls, value: str) -> ListenerKind:
+        """Validate the API key type.
+
+        Args:
+            value: An API key to validate.
+
+        Returns:
+            A parsed ApiKeyType.
+
+        Raises:
+            ValueError: An invalid API key type was received.
+        """
+        try:
+            return ListenerKind(value)
+        except ValueError:
+            LOGGER.error("Received an unknown listener kind: %s", value)
+            return ListenerKind.UNKNOWN
+
     validate_created_at = validator("created_at", allow_reuse=True, pre=True)(
         validate_timestamp
     )
+
+    class Config:
+        """Define model configuration."""
+
+        fields = {
+            "device_type": "type",
+            "listener_kind": "definition_id",
+        }
 
 
 class ListenerAllResponse(BaseModel):
