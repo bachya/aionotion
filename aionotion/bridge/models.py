@@ -1,8 +1,9 @@
 """Define bridge models."""
-# pylint: disable=too-few-public-methods
+# pylint: disable=consider-alternative-union-syntax,too-few-public-methods
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Optional, Union
 
 from pydantic import BaseModel, validator
 
@@ -26,12 +27,12 @@ class Bridge(BaseModel):
     hardware_id: str
     hardware_revision: int
     firmware_version: FirmwareVersion
-    missing_at: datetime | None
+    missing_at: Optional[datetime]
     created_at: datetime
     updated_at: datetime
     system_id: int
     firmware: FirmwareVersion
-    links: dict[str, int | str]
+    links: dict[str, Union[int, str]]
 
     validate_missing_at = validator("missing_at", allow_reuse=True, pre=True)(
         validate_timestamp

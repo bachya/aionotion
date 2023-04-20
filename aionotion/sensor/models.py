@@ -1,10 +1,10 @@
 """Define sensor models."""
-# pylint: disable=too-few-public-methods
+# pylint: disable=consider-alternative-union-syntax,too-few-public-methods
 from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Literal
+from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, validator
 
@@ -59,12 +59,12 @@ class Sensor(BaseModel):
     installed_at: datetime
     calibrated_at: datetime
     last_reported_at: datetime
-    missing_at: datetime | None
+    missing_at: Optional[datetime]
     updated_at: datetime
     created_at: datetime
     signal_strength: int
     firmware: Firmware
-    surface_type: SurfaceType | None
+    surface_type: Optional[SurfaceType]
 
     validate_installed_at = validator("installed_at", allow_reuse=True, pre=True)(
         validate_timestamp
@@ -126,16 +126,16 @@ class ListenerLocalizedStatus(BaseModel):
 class InsightOrigin(BaseModel):
     """Define an insight origin."""
 
-    type: str | None
-    id: str | None
+    type: Optional[str]
+    id: Optional[str]
 
 
 class PrimaryListenerInsight(BaseModel):
     """Define a primary listener insight."""
 
-    origin: InsightOrigin | None
-    value: str | None
-    data_received_at: datetime | None
+    origin: Optional[InsightOrigin]
+    value: Optional[str]
+    data_received_at: Optional[datetime]
 
     validate_data_received_at = validator(
         "data_received_at", allow_reuse=True, pre=True

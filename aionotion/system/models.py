@@ -1,8 +1,9 @@
 """Define system models."""
-# pylint: disable=too-few-public-methods
+# pylint: disable=consider-alternative-union-syntax,too-few-public-methods
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel, validator
 
@@ -30,8 +31,8 @@ class System(BaseModel):
     fire_number: str
     police_number: str
     emergency_number: str
-    address: str | None
-    notion_pro_permit: str | None
+    address: Optional[str]
+    notion_pro_permit: Optional[str]
 
     validate_created_at = validator("created_at", allow_reuse=True, pre=True)(
         validate_timestamp
