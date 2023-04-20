@@ -104,6 +104,7 @@ repos:
         types: [python]
         entry: poetry run mypy
         require_serial: true
+        exclude: ^vulture_whitelist.py$
       - id: no-commit-to-branch
         name: 🛑 Checking for commit to protected branch
         language: system
@@ -124,6 +125,7 @@ repos:
         language: system
         types: [python]
         entry: poetry run pylint
+        exclude: ^vulture_whitelist.py$
       - id: pyupgrade
         name: 🆙 Checking for upgradable syntax with pyupgrade
         language: system
@@ -135,6 +137,7 @@ repos:
         language: system
         types: [python]
         entry: poetry run ruff --fix
+        exclude: ^vulture_whitelist.py$
       - id: trailing-whitespace
         name: ✄  Trimming trailing whitespace
         language: system
@@ -145,7 +148,7 @@ repos:
         name: 🔍 Finding unused Python code with Vulture
         language: system
         types: [python]
-        entry: poetry run vulture
+        entry: poetry run vulture vulture_whitelist.py
         pass_filenames: false
         require_serial: true
       - id: yamllint

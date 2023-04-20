@@ -23,6 +23,9 @@ async def main() -> None:
             bridges = await client.bridge.async_all()
             _LOGGER.info("BRIDGES: %s", bridges)
 
+            devices = await client.device.async_all()
+            _LOGGER.info("DEVICES: %s", devices)
+
             sensors = await client.sensor.async_all()
             _LOGGER.info("SENSORS: %s", sensors)
 
