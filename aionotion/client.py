@@ -80,7 +80,7 @@ class Client:  # pylint: disable=too-few-public-methods
         if not use_running_session:
             await session.close()
 
-        LOGGER.debug("Received data from %s: %s", endpoint, data)
+        LOGGER.debug("Received data from /%s: %s", endpoint, data)
 
         return data
 
