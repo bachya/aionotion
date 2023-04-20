@@ -15,4 +15,4 @@ def validate_timestamp(value: str | None) -> datetime | None:
     """
     if not value:
         return None
-    return datetime.fromisoformat(value)
+    return datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f%z")
