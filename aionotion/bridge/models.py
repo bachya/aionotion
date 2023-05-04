@@ -22,7 +22,7 @@ class Bridge(BaseModel):
     """Define a bridge."""
 
     id: int
-    name: str | None
+    name: Optional[str]
     mode: str
     hardware_id: str
     hardware_revision: int
