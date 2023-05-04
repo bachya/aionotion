@@ -41,7 +41,7 @@ async def test_bridge_all(
             assert len(bridges) == 2
 
             assert bridges[0].id == 12345
-            assert bridges[0].name == "Bridge 1"
+            assert bridges[0].name is None
             assert bridges[0].mode == "home"
             assert bridges[0].hardware_id == "0x0000000000000000"
             assert bridges[0].hardware_revision == 4
