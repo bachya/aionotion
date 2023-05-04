@@ -2,7 +2,7 @@
   "base_stations": [
     {
       "id": 12345,
-      "name": "Bridge 1",
+      "name": null,
       "mode": "home",
       "hardware_id": "0x0000000000000000",
       "hardware_revision": 4,
