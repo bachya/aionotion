@@ -56,9 +56,9 @@ class Sensor(BaseModel):
     firmware_version: str
     device_key: str
     encryption_key: bool
-    installed_at: datetime
-    calibrated_at: datetime
-    last_reported_at: datetime
+    installed_at: Optional[datetime]
+    calibrated_at: Optional[datetime]
+    last_reported_at: Optional[datetime]
     missing_at: Optional[datetime]
     updated_at: datetime
     created_at: datetime

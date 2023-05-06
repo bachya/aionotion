@@ -60,9 +60,7 @@ async def test_sensor_all(
             assert sensors[0].installed_at == datetime(
                 2019, 6, 28, 22, 12, 51, 209000, tzinfo=timezone.utc
             )
-            assert sensors[0].calibrated_at == datetime(
-                2023, 3, 7, 19, 51, 56, 838000, tzinfo=timezone.utc
-            )
+            assert sensors[0].calibrated_at is None
             assert sensors[0].last_reported_at == datetime(
                 2023, 4, 19, 18, 9, 40, 479000, tzinfo=timezone.utc
             )
