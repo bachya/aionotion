@@ -272,12 +272,8 @@ async def test_sensor_listeners(
             assert listeners[0].device_type == "sensor"
             assert listeners[0].model_version == "1.0"
             assert listeners[0].sensor_id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-            assert listeners[0].status.trigger_value == ""
-            assert listeners[0].status.data_received_at == datetime(
-                2019, 6, 28, 22, 12, 20, 498000, tzinfo=timezone.utc
-            )
-            assert listeners[0].status_localized.state == "Unknown"
-            assert listeners[0].status_localized.description == "Jun 28 at 4:12pm"
+            assert listeners[0].status is None
+            assert listeners[0].status_localized is None
             assert listeners[0].insights.primary.origin is None
             assert listeners[0].insights.primary.value is None
             assert listeners[0].insights.primary.data_received_at is None
@@ -292,10 +288,12 @@ async def test_sensor_listeners(
             assert listeners[1].device_type == "sensor"
             assert listeners[1].model_version == "2.1"
             assert listeners[1].sensor_id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+            assert listeners[1].status is not None
             assert listeners[1].status.trigger_value == "no_leak"
             assert listeners[1].status.data_received_at == datetime(
                 2022, 3, 20, 8, 0, 29, 763000, tzinfo=timezone.utc
             )
+            assert listeners[1].status_localized is not None
             assert listeners[1].status_localized.state == "No Leak"
             assert listeners[1].status_localized.description == "Mar 20 at 2:00am"
             assert listeners[1].insights.primary.origin
@@ -350,10 +348,12 @@ async def test_sensor_listeners_for_sensor(
             assert listeners[0].device_type == "sensor"
             assert listeners[0].model_version == "1.0"
             assert listeners[0].sensor_id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+            assert listeners[0].status is not None
             assert listeners[0].status.trigger_value == ""
             assert listeners[0].status.data_received_at == datetime(
                 2019, 6, 28, 22, 12, 20, 498000, tzinfo=timezone.utc
             )
+            assert listeners[0].status_localized is not None
             assert listeners[0].status_localized.state == "Unknown"
             assert listeners[0].status_localized.description == "Jun 28 at 4:12pm"
             assert listeners[0].insights.primary.origin is None
@@ -370,10 +370,12 @@ async def test_sensor_listeners_for_sensor(
             assert listeners[1].device_type == "sensor"
             assert listeners[1].model_version == "2.1"
             assert listeners[1].sensor_id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+            assert listeners[1].status is not None
             assert listeners[1].status.trigger_value == "no_leak"
             assert listeners[1].status.data_received_at == datetime(
                 2022, 3, 20, 8, 0, 29, 763000, tzinfo=timezone.utc
             )
+            assert listeners[1].status_localized is not None
             assert listeners[1].status_localized.state == "No Leak"
             assert listeners[1].status_localized.description == "Mar 20 at 2:00am"
             assert listeners[1].insights.primary.origin
