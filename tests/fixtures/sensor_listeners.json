@@ -7,14 +7,6 @@
       "type": "sensor",
       "model_version": "1.0",
       "sensor_id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-      "status": {
-        "trigger_value": "",
-        "data_received_at": "2019-06-28T22:12:20.498Z"
-      },
-      "status_localized": {
-        "state": "Unknown",
-        "description": "Jun 28 at 4:12pm"
-      },
       "insights": {
         "primary": {
           "origin": null,

@@ -174,11 +174,12 @@ class Listener(BaseModel):
     device_type: str
     model_version: str
     sensor_id: str
-    status: ListenerStatus
-    status_localized: ListenerLocalizedStatus
     insights: ListenerInsights
     configuration: dict[str, Any]
     pro_monitoring_status: Literal["eligible", "ineligible"]
+
+    status: Optional[ListenerStatus] = None
+    status_localized: Optional[ListenerLocalizedStatus] = None
 
     @validator("listener_kind", pre=True)
     @classmethod
