@@ -35,17 +35,19 @@ async def test_device_all(
 
         async with aiohttp.ClientSession() as session:
             client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
-            devices = await client.device.async_all()
-            assert len(devices) == 1
+            response = await client.device.async_all()
+            assert len(response.devices) == 1
 
-            assert devices[0].id == 12345
-            assert devices[0].token == "123456abcde"
-            assert devices[0].platform == "ios"
-            assert devices[0].endpoint == "arn:aws:sns:us-west-2:307936840629:..."
-            assert devices[0].created_at == datetime(
+            assert response.devices[0].id == 12345
+            assert response.devices[0].token == "123456abcde"
+            assert response.devices[0].platform == "ios"
+            assert (
+                response.devices[0].endpoint == "arn:aws:sns:us-west-2:307936840629:..."
+            )
+            assert response.devices[0].created_at == datetime(
                 2019, 6, 17, 0, 57, 9, 937000, tzinfo=timezone.utc
             )
-            assert devices[0].updated_at == datetime(
+            assert response.devices[0].updated_at == datetime(
                 2019, 6, 17, 0, 57, 9, 937000, tzinfo=timezone.utc
             )
 
@@ -75,15 +77,15 @@ async def test_device_create(
 
         async with aiohttp.ClientSession() as session:
             client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
-            device = await client.device.async_create({"id": 12345})
-            assert device.id == 12345
-            assert device.token == "123456abcde"
-            assert device.platform == "ios"
-            assert device.endpoint == "arn:aws:sns:us-west-2:307936840629:..."
-            assert device.created_at == datetime(
+            response = await client.device.async_create({"id": 12345})
+            assert response.device.id == 12345
+            assert response.device.token == "123456abcde"
+            assert response.device.platform == "ios"
+            assert response.device.endpoint == "arn:aws:sns:us-west-2:307936840629:..."
+            assert response.device.created_at == datetime(
                 2019, 6, 17, 0, 57, 9, 937000, tzinfo=timezone.utc
             )
-            assert device.updated_at == datetime(
+            assert response.device.updated_at == datetime(
                 2019, 6, 17, 0, 57, 9, 937000, tzinfo=timezone.utc
             )
 
@@ -143,15 +145,15 @@ async def test_device_get(
 
         async with aiohttp.ClientSession() as session:
             client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
-            device = await client.device.async_get(12345)
-            assert device.id == 12345
-            assert device.token == "123456abcde"
-            assert device.platform == "ios"
-            assert device.endpoint == "arn:aws:sns:us-west-2:307936840629:..."
-            assert device.created_at == datetime(
+            response = await client.device.async_get(12345)
+            assert response.device.id == 12345
+            assert response.device.token == "123456abcde"
+            assert response.device.platform == "ios"
+            assert response.device.endpoint == "arn:aws:sns:us-west-2:307936840629:..."
+            assert response.device.created_at == datetime(
                 2019, 6, 17, 0, 57, 9, 937000, tzinfo=timezone.utc
             )
-            assert device.updated_at == datetime(
+            assert response.device.updated_at == datetime(
                 2019, 6, 17, 0, 57, 9, 937000, tzinfo=timezone.utc
             )
 
