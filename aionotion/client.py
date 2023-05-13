@@ -1,11 +1,11 @@
 """Define a base client for interacting with Notion."""
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
 from aiohttp import ClientSession, ClientTimeout
 from aiohttp.client_exceptions import ClientError
-from pydantic import ValidationError
+from pydantic import BaseModel, ValidationError
 
 from aionotion.bridge import Bridge
 from aionotion.const import LOGGER
@@ -32,12 +32,27 @@ class Client:  # pylint: disable=too-few-public-methods
         self._session = session
         self._token: str | None = None
 
-        self.bridge = Bridge(self._request, self._request_and_validate)
-        self.device = Device(self._request, self._request_and_validate)
-        self.sensor = Sensor(self._request, self._request_and_validate)
-        self.system = System(self._request, self._request_and_validate)
+        self.bridge = Bridge(self)
+        self.device = Device(self)
+        self.sensor = Sensor(self)
+        self.system = System(self)
 
-    async def _request(
+    async def async_authenticate(self, email: str, password: str) -> None:
+        """Authenticate the user and retrieve an authentication token.
+
+        Args:
+            email: The email address of a Notion account.
+            password: The account password.
+        """
+        auth_response = await self.async_request(
+            "post",
+            "users/sign_in",
+            json={"sessions": {"email": email, "password": password}},
+        )
+
+        self._token = auth_response["session"]["authentication_token"]
+
+    async def async_request(
         self, method: str, endpoint: str, **kwargs: dict[str, Any]
     ) -> dict[str, Any]:
         """Make an API request.
@@ -84,11 +99,11 @@ class Client:  # pylint: disable=too-few-public-methods
 
         return data
 
-    async def _request_and_validate(
+    async def async_request_and_validate(
         self,
         method: str,
         endpoint: str,
-        model: BaseModelT,
+        model: type[BaseModel],
         **kwargs: dict[str, Any],
     ) -> BaseModelT:
         """Make an API request and validate the response against a Pydantic model.
@@ -102,29 +117,14 @@ class Client:  # pylint: disable=too-few-public-methods
         Returns:
             A parsed, validated Pydantic model representing the response.
         """
-        raw_data = await self._request(method, endpoint, **kwargs)
+        raw_data = await self.async_request(method, endpoint, **kwargs)
 
         try:
-            return model.parse_obj(raw_data)
+            return cast(BaseModelT, model.parse_obj(raw_data))
         except ValidationError as err:
             raise RequestError(
                 f"Error while parsing response from {endpoint}: {err}"
             ) from err
-
-    async def async_authenticate(self, email: str, password: str) -> None:
-        """Authenticate the user and retrieve an authentication token.
-
-        Args:
-            email: The email address of a Notion account.
-            password: The account password.
-        """
-        auth_response = await self._request(
-            "post",
-            "users/sign_in",
-            json={"sessions": {"email": email, "password": password}},
-        )
-
-        self._token = auth_response["session"]["authentication_token"]
 
 
 async def async_get_client(
@@ -140,6 +140,6 @@ async def async_get_client(
     Returns:
         An authenticated Client object.
     """
-    client: Client = Client(session=session)
+    client = Client(session=session)
     await client.async_authenticate(email, password)
     return client

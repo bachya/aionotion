@@ -1,30 +1,25 @@
 """Define endpoints for interacting with devices (phones, etc. with Notion)."""
 from __future__ import annotations
 
-from collections.abc import Awaitable, Callable
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any
 
 from aionotion.device.models import Device as DeviceModel
 from aionotion.device.models import DeviceAllResponse, DeviceGetResponse
-from aionotion.helpers.typing import BaseModelT
+
+if TYPE_CHECKING:
+    from aionotion.client import Client
 
 
 class Device:
-    """Define an object to interact with all endpoints."""
+    """Define an object to interact with device endpoints."""
 
-    def __init__(
-        self,
-        request: Callable[..., Awaitable[dict[str, Any]]],
-        request_and_validate: Callable[..., Awaitable[BaseModelT]],
-    ) -> None:
+    def __init__(self, client: Client) -> None:
         """Initialize.
 
         Args:
-            request: The _request method from the Client.
-            request_and_validated: The _request_and_validate method from the Client.
+            client: The aionotion client
         """
-        self._request = request
-        self._request_and_validate = request_and_validate
+        self._client = client
 
     async def async_all(self) -> list[DeviceModel]:
         """Get all devices.
@@ -32,9 +27,8 @@ class Device:
         Returns:
             A validated API response payload.
         """
-        resp = cast(
-            DeviceAllResponse,
-            await self._request_and_validate("get", "devices", DeviceAllResponse),
+        resp: DeviceAllResponse = await self._client.async_request_and_validate(
+            "get", "devices", DeviceAllResponse
         )
         return resp.devices
 
@@ -47,11 +41,8 @@ class Device:
         Returns:
             A validated API response payload.
         """
-        resp = cast(
-            DeviceGetResponse,
-            await self._request_and_validate(
-                "post", "devices", DeviceGetResponse, json={"devices": attributes}
-            ),
+        resp: DeviceGetResponse = await self._client.async_request_and_validate(
+            "post", "devices", DeviceGetResponse, json={"devices": attributes}
         )
         return resp.device
 
@@ -61,7 +52,7 @@ class Device:
         Args:
             device_id: The ID of the device to delete.
         """
-        await self._request("delete", f"devices/{device_id}")
+        await self._client.async_request("delete", f"devices/{device_id}")
 
     async def async_get(self, device_id: int) -> DeviceModel:
         """Get a device by ID.
@@ -72,10 +63,7 @@ class Device:
         Returns:
             A validated API response payload.
         """
-        resp = cast(
-            DeviceGetResponse,
-            await self._request_and_validate(
-                "get", f"devices/{device_id}", DeviceGetResponse
-            ),
+        resp: DeviceGetResponse = await self._client.async_request_and_validate(
+            "get", f"devices/{device_id}", DeviceGetResponse
         )
         return resp.device

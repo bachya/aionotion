@@ -1,27 +1,25 @@
 """Define endpoints for interacting with systems (accounts)."""
-from collections.abc import Awaitable, Callable
-from typing import Any, cast
+from __future__ import annotations
 
-from aionotion.helpers.typing import BaseModelT
+from typing import TYPE_CHECKING, Any
+
 from aionotion.system.models import System as SystemModel
 from aionotion.system.models import SystemAllResponse, SystemGetResponse
 
+if TYPE_CHECKING:
+    from aionotion.client import Client
+
 
 class System:
-    """Define an object to interact with all endpoints."""
+    """Define an object to interact with system endpoints."""
 
-    def __init__(
-        self,
-        request: Callable[..., Awaitable[dict[str, Any]]],
-        request_and_validate: Callable[..., Awaitable[BaseModelT]],
-    ) -> None:
+    def __init__(self, client: Client) -> None:
         """Initialize.
 
         Args:
-            request: The request method from the Client object.
+            client: The aionotion client
         """
-        self._request = request
-        self._request_and_validate = request_and_validate
+        self._client = client
 
     async def async_all(self) -> list[SystemModel]:
         """Get all systems.
@@ -29,9 +27,8 @@ class System:
         Returns:
             An API response payload.
         """
-        resp = cast(
-            SystemAllResponse,
-            await self._request_and_validate("get", "systems", SystemAllResponse),
+        resp: SystemAllResponse = await self._client.async_request_and_validate(
+            "get", "systems", SystemAllResponse
         )
         return resp.systems
 
@@ -44,11 +41,8 @@ class System:
         Returns:
             An API response payload.
         """
-        resp = cast(
-            SystemGetResponse,
-            await self._request_and_validate(
-                "post", "systems", SystemGetResponse, json={"systems": attributes}
-            ),
+        resp: SystemGetResponse = await self._client.async_request_and_validate(
+            "post", "systems", SystemGetResponse, json={"systems": attributes}
         )
         return resp.system
 
@@ -58,7 +52,7 @@ class System:
         Args:
             system_id: The ID of the system to delete.
         """
-        await self._request("delete", f"systems/{system_id}")
+        await self._client.async_request("delete", f"systems/{system_id}")
 
     async def async_get(self, system_id: int) -> SystemModel:
         """Get a system by ID.
@@ -69,11 +63,8 @@ class System:
         Returns:
             An API response payload.
         """
-        resp = cast(
-            SystemGetResponse,
-            await self._request_and_validate(
-                "get", f"systems/{system_id}", SystemGetResponse
-            ),
+        resp: SystemGetResponse = await self._client.async_request_and_validate(
+            "get", f"systems/{system_id}", SystemGetResponse
         )
         return resp.system
 
@@ -89,13 +80,10 @@ class System:
         Returns:
             An API response payload.
         """
-        resp = cast(
+        resp: SystemGetResponse = await self._client.async_request_and_validate(
+            "put",
+            f"systems/{system_id}",
             SystemGetResponse,
-            await self._request_and_validate(
-                "put",
-                f"systems/{system_id}",
-                SystemGetResponse,
-                json={"systems": new_attributes},
-            ),
+            json={"systems": new_attributes},
         )
         return resp.system
