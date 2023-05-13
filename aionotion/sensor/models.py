@@ -198,7 +198,7 @@ class Listener(BaseModel):
         try:
             return ListenerKind(value)
         except ValueError:
-            LOGGER.error("Received an unknown listener kind: %s", value)
+            LOGGER.warning("Received an unknown listener kind: %s", value)
             return ListenerKind.UNKNOWN
 
     validate_created_at = validator("created_at", allow_reuse=True, pre=True)(
