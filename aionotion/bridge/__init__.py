@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from aionotion.bridge.models import Bridge as BridgeModel
 from aionotion.bridge.models import BridgeAllResponse, BridgeGetResponse
 
 if TYPE_CHECKING:
@@ -21,19 +20,17 @@ class Bridge:
         """
         self._client = client
 
-    async def async_all(self) -> list[BridgeModel]:
+    async def async_all(self) -> BridgeAllResponse:
         """Get all bridges.
 
         Returns:
             A validated API response payload.
         """
-        resp: BridgeAllResponse = await self._client.async_request_and_validate(
+        return await self._client.async_request_and_validate(
             "get", "base_stations", BridgeAllResponse
         )
 
-        return resp.bridges
-
-    async def async_create(self, attributes: dict[str, Any]) -> BridgeModel:
+    async def async_create(self, attributes: dict[str, Any]) -> BridgeGetResponse:
         """Create a bridge with a specific attribute payload.
 
         Args:
@@ -42,13 +39,12 @@ class Bridge:
         Returns:
             A validated API response payload.
         """
-        resp: BridgeGetResponse = await self._client.async_request_and_validate(
+        return await self._client.async_request_and_validate(
             "post",
             "base_stations",
             BridgeGetResponse,
             json={"base_stations": attributes},
         )
-        return resp.bridge
 
     async def async_delete(self, bridge_id: int) -> None:
         """Delete a bridge by ID.
@@ -58,7 +54,7 @@ class Bridge:
         """
         await self._client.async_request("delete", f"base_stations/{bridge_id}")
 
-    async def async_get(self, bridge_id: int) -> BridgeModel:
+    async def async_get(self, bridge_id: int) -> BridgeGetResponse:
         """Get a bridge by ID.
 
         Args:
@@ -67,12 +63,11 @@ class Bridge:
         Returns:
             A validated API response payload.
         """
-        resp: BridgeGetResponse = await self._client.async_request_and_validate(
+        return await self._client.async_request_and_validate(
             "get", f"base_stations/{bridge_id}", BridgeGetResponse
         )
-        return resp.bridge
 
-    async def async_reset(self, bridge_id: int) -> BridgeModel:
+    async def async_reset(self, bridge_id: int) -> BridgeGetResponse:
         """Reset a bridge (clear its wifi credentials) by ID.
 
         Args:
@@ -81,14 +76,13 @@ class Bridge:
         Returns:
             A validated API response payload.
         """
-        resp: BridgeGetResponse = await self._client.async_request_and_validate(
+        return await self._client.async_request_and_validate(
             "put", f"base_stations/{bridge_id}/reset", BridgeGetResponse
         )
-        return resp.bridge
 
     async def async_update(
         self, bridge_id: int, new_attributes: dict[str, Any]
-    ) -> BridgeModel:
+    ) -> BridgeGetResponse:
         """Update a bridge with a specific attribute payload.
 
         Args:
@@ -98,10 +92,9 @@ class Bridge:
         Returns:
             A validated API response payload.
         """
-        resp: BridgeGetResponse = await self._client.async_request_and_validate(
+        return await self._client.async_request_and_validate(
             "put",
             f"base_stations/{bridge_id}",
             BridgeGetResponse,
             json={"base_stations": new_attributes},
         )
-        return resp.bridge

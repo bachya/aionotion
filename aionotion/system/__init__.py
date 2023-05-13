@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from aionotion.system.models import System as SystemModel
 from aionotion.system.models import SystemAllResponse, SystemGetResponse
 
 if TYPE_CHECKING:
@@ -21,18 +20,17 @@ class System:
         """
         self._client = client
 
-    async def async_all(self) -> list[SystemModel]:
+    async def async_all(self) -> SystemAllResponse:
         """Get all systems.
 
         Returns:
             An API response payload.
         """
-        resp: SystemAllResponse = await self._client.async_request_and_validate(
+        return await self._client.async_request_and_validate(
             "get", "systems", SystemAllResponse
         )
-        return resp.systems
 
-    async def async_create(self, attributes: dict[str, Any]) -> SystemModel:
+    async def async_create(self, attributes: dict[str, Any]) -> SystemGetResponse:
         """Create a system with a specific attribute payload.
 
         Args:
@@ -41,10 +39,9 @@ class System:
         Returns:
             An API response payload.
         """
-        resp: SystemGetResponse = await self._client.async_request_and_validate(
+        return await self._client.async_request_and_validate(
             "post", "systems", SystemGetResponse, json={"systems": attributes}
         )
-        return resp.system
 
     async def async_delete(self, system_id: int) -> None:
         """Delete a system by ID.
@@ -54,7 +51,7 @@ class System:
         """
         await self._client.async_request("delete", f"systems/{system_id}")
 
-    async def async_get(self, system_id: int) -> SystemModel:
+    async def async_get(self, system_id: int) -> SystemGetResponse:
         """Get a system by ID.
 
         Args:
@@ -63,14 +60,13 @@ class System:
         Returns:
             An API response payload.
         """
-        resp: SystemGetResponse = await self._client.async_request_and_validate(
+        return await self._client.async_request_and_validate(
             "get", f"systems/{system_id}", SystemGetResponse
         )
-        return resp.system
 
     async def async_update(
         self, system_id: int, new_attributes: dict[str, Any]
-    ) -> SystemModel:
+    ) -> SystemGetResponse:
         """Update a system with a specific attribute payload.
 
         Args:
@@ -80,10 +76,9 @@ class System:
         Returns:
             An API response payload.
         """
-        resp: SystemGetResponse = await self._client.async_request_and_validate(
+        return await self._client.async_request_and_validate(
             "put",
             f"systems/{system_id}",
             SystemGetResponse,
             json={"systems": new_attributes},
         )
-        return resp.system

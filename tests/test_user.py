@@ -32,10 +32,10 @@ async def test_user_preferences(
 
         async with aiohttp.ClientSession() as session:
             client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
-            preferences = await client.user.async_preferences()
-            assert preferences.user_id == 12345
-            assert preferences.military_time_enabled is False
-            assert preferences.celsius_enabled is False
-            assert preferences.disconnect_alerts_enabled is True
-            assert preferences.home_away_alerts_enabled is False
-            assert preferences.battery_alerts_enabled is True
+            response = await client.user.async_preferences()
+            assert response.user_preferences.user_id == 12345
+            assert response.user_preferences.military_time_enabled is False
+            assert response.user_preferences.celsius_enabled is False
+            assert response.user_preferences.disconnect_alerts_enabled is True
+            assert response.user_preferences.home_away_alerts_enabled is False
+            assert response.user_preferences.battery_alerts_enabled is True

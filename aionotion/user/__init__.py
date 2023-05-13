@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from aionotion.user.models import UserPreferences, UserPreferencesResponse
+from aionotion.user.models import UserPreferencesResponse
 
 if TYPE_CHECKING:
     from aionotion.client import Client
@@ -20,15 +20,14 @@ class User:  # pylint: disable=too-few-public-methods
         """
         self._client = client
 
-    async def async_preferences(self) -> UserPreferences:
+    async def async_preferences(self) -> UserPreferencesResponse:
         """Get user preferences.
 
         Returns:
             A validated API response payload.
         """
-        resp: UserPreferencesResponse = await self._client.async_request_and_validate(
+        return await self._client.async_request_and_validate(
             "get",
             f"users/{self._client.user_uuid}/user_preferences",
             UserPreferencesResponse,
         )
-        return resp.user_preferences
