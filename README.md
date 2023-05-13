@@ -115,6 +115,9 @@ async def main() -> None:
     # Delete a sensor by ID:
     await client.sensor.async_delete(12345)
 
+    # Get user preferences:
+    user_preferences = await client.user.async_preferences()
+
 
 asyncio.run(main())
 ```
