@@ -14,6 +14,7 @@ from aionotion.errors import InvalidCredentialsError, RequestError
 from aionotion.helpers.typing import BaseModelT
 from aionotion.sensor import Sensor
 from aionotion.system import System
+from aionotion.user import User
 
 API_BASE: str = "https://api.getnotion.com/api"
 
@@ -31,11 +32,13 @@ class Client:  # pylint: disable=too-few-public-methods
         """
         self._session = session
         self._token: str | None = None
+        self.user_uuid: str = ""
 
         self.bridge = Bridge(self)
         self.device = Device(self)
         self.sensor = Sensor(self)
         self.system = System(self)
+        self.user = User(self)
 
     async def async_authenticate(self, email: str, password: str) -> None:
         """Authenticate the user and retrieve an authentication token.
@@ -51,6 +54,7 @@ class Client:  # pylint: disable=too-few-public-methods
         )
 
         self._token = auth_response["session"]["authentication_token"]
+        self.user_uuid = auth_response["session"]["user_id"]
 
     async def async_request(
         self, method: str, endpoint: str, **kwargs: dict[str, Any]
