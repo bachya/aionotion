@@ -1,31 +1,26 @@
 """Define endpoints for interacting with sensors."""
 from __future__ import annotations
 
-from collections.abc import Awaitable, Callable
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any
 
-from aionotion.helpers.typing import BaseModelT
 from aionotion.sensor.models import Listener, ListenerAllResponse
 from aionotion.sensor.models import Sensor as SensorModel
 from aionotion.sensor.models import SensorAllResponse, SensorGetResponse
 
+if TYPE_CHECKING:
+    from aionotion.client import Client
+
 
 class Sensor:
-    """Define an object to interact with all endpoints."""
+    """Define an object to interact with sensor endpoints."""
 
-    def __init__(
-        self,
-        request: Callable[..., Awaitable[dict[str, Any]]],
-        request_and_validate: Callable[..., Awaitable[BaseModelT]],
-    ) -> None:
+    def __init__(self, client: Client) -> None:
         """Initialize.
 
         Args:
-            request: The _request method from the Client.
-            request_and_validated: The _request_and_validate method from the Client.
+            client: The aionotion client
         """
-        self._request = request
-        self._request_and_validate = request_and_validate
+        self._client = client
 
     async def async_all(self) -> list[SensorModel]:
         """Get all sensors.
@@ -33,9 +28,8 @@ class Sensor:
         Returns:
             A validated API response payload.
         """
-        resp = cast(
-            SensorAllResponse,
-            await self._request_and_validate("get", "sensors", SensorAllResponse),
+        resp: SensorAllResponse = await self._client.async_request_and_validate(
+            "get", "sensors", SensorAllResponse
         )
         return resp.sensors
 
@@ -48,11 +42,8 @@ class Sensor:
         Returns:
             A validated API response payload.
         """
-        resp = cast(
-            SensorGetResponse,
-            await self._request_and_validate(
-                "post", "sensors", SensorGetResponse, json={"sensors": attributes}
-            ),
+        resp: SensorGetResponse = await self._client.async_request_and_validate(
+            "post", "sensors", SensorGetResponse, json={"sensors": attributes}
         )
         return resp.sensor
 
@@ -62,7 +53,7 @@ class Sensor:
         Args:
             sensor_id: The ID of the sensor to delete.
         """
-        await self._request("delete", f"sensors/{sensor_id}")
+        await self._client.async_request("delete", f"sensors/{sensor_id}")
 
     async def async_get(self, sensor_id: int) -> SensorModel:
         """Get a sensor by ID.
@@ -73,11 +64,8 @@ class Sensor:
         Returns:
             A validated API response payload.
         """
-        resp = cast(
-            SensorGetResponse,
-            await self._request_and_validate(
-                "get", f"sensors/{sensor_id}", SensorGetResponse
-            ),
+        resp: SensorGetResponse = await self._client.async_request_and_validate(
+            "get", f"sensors/{sensor_id}", SensorGetResponse
         )
         return resp.sensor
 
@@ -87,11 +75,8 @@ class Sensor:
         Returns:
             A validated API response payload.
         """
-        resp = cast(
-            ListenerAllResponse,
-            await self._request_and_validate(
-                "get", "sensor/listeners", ListenerAllResponse
-            ),
+        resp: ListenerAllResponse = await self._client.async_request_and_validate(
+            "get", "sensor/listeners", ListenerAllResponse
         )
         return resp.listeners
 
@@ -107,11 +92,8 @@ class Sensor:
         Returns:
             A validated API response payload.
         """
-        resp = cast(
-            ListenerAllResponse,
-            await self._request_and_validate(
-                "get", f"sensors/{sensor_uuid}/listeners", ListenerAllResponse
-            ),
+        resp: ListenerAllResponse = await self._client.async_request_and_validate(
+            "get", f"sensors/{sensor_uuid}/listeners", ListenerAllResponse
         )
         return resp.listeners
 
@@ -127,13 +109,10 @@ class Sensor:
         Returns:
             A validated API response payload.
         """
-        resp = cast(
+        resp: SensorGetResponse = await self._client.async_request_and_validate(
+            "put",
+            f"sensors/{sensor_id}",
             SensorGetResponse,
-            await self._request_and_validate(
-                "put",
-                f"sensors/{sensor_id}",
-                SensorGetResponse,
-                json={"sensors": new_attributes},
-            ),
+            json={"sensors": new_attributes},
         )
         return resp.sensor

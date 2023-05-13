@@ -40,7 +40,7 @@ async def test_api_error(
                 client = await async_get_client(
                     TEST_EMAIL, TEST_PASSWORD, session=session
                 )
-                await client._request("get", "bad_endpoint")
+                await client.async_request("get", "bad_endpoint")
 
     aresponses.assert_plan_strictly_followed()
 
