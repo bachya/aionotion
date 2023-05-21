@@ -13,9 +13,10 @@ from aionotion.helpers.validators import validate_timestamp
 class FirmwareVersion(BaseModel):
     """Define firmware version info."""
 
-    silabs: str
     wifi: str
     wifi_app: str
+    silabs: Optional[str] = None
+    ti: Optional[str] = None
 
 
 class Bridge(BaseModel):
