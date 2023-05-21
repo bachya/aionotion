@@ -57,6 +57,7 @@ async def test_bridge_all(
             )
             assert response.bridges[0].system_id == 11111
             assert response.bridges[0].firmware.silabs == "1.1.2"
+            assert response.bridges[0].firmware.ti is None
             assert response.bridges[0].firmware.wifi == "0.121.0"
             assert response.bridges[0].firmware.wifi_app == "3.3.0"
             assert response.bridges[0].links["system"] == 11111
@@ -77,7 +78,8 @@ async def test_bridge_all(
                 2023, 1, 2, 19, 9, 58, 251000, tzinfo=timezone.utc
             )
             assert response.bridges[1].system_id == 11111
-            assert response.bridges[1].firmware.silabs == "1.1.2"
+            assert response.bridges[1].firmware.silabs is None
+            assert response.bridges[1].firmware.ti == "2.1.26"
             assert response.bridges[1].firmware.wifi == "0.121.0"
             assert response.bridges[1].firmware.wifi_app == "3.3.0"
             assert response.bridges[1].links["system"] == 11111

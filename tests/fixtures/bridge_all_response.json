@@ -42,7 +42,7 @@
       "firmware": {
         "wifi": "0.121.0",
         "wifi_app": "3.3.0",
-        "silabs": "1.1.2"
+        "ti": "2.1.26"
       },
       "links": {
         "system": 11111
