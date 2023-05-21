@@ -15,8 +15,8 @@ class FirmwareVersion(BaseModel):
 
     wifi: str
     wifi_app: str
-    silabs: str | None = None
-    ti: str | None = None
+    silabs: Optional[str] = None
+    ti: Optional[str] = None
 
 
 class Bridge(BaseModel):
