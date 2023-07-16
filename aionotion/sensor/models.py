@@ -6,7 +6,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Literal, Optional
 
-from pydantic import BaseModel, Extra, validator
+from pydantic.v1 import BaseModel, Extra, validator
 
 from aionotion.const import LOGGER
 from aionotion.helpers.validators import validate_timestamp
