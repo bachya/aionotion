@@ -2,7 +2,7 @@
 # pylint: disable=too-few-public-methods
 from __future__ import annotations
 
-from pydantic import BaseModel
+from pydantic.v1 import BaseModel
 
 
 class UserPreferences(BaseModel):

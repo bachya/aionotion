@@ -5,7 +5,7 @@ from typing import Any, cast
 
 from aiohttp import ClientSession, ClientTimeout
 from aiohttp.client_exceptions import ClientError
-from pydantic import BaseModel, ValidationError
+from pydantic.v1 import BaseModel, ValidationError
 
 from aionotion.bridge import Bridge
 from aionotion.const import LOGGER
