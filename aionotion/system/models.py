@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Optional
 
-from pydantic.v1 import BaseModel, validator
+from pydantic import BaseModel, field_validator
 
 from aionotion.helpers.validators import validate_timestamp
 
@@ -34,16 +34,16 @@ class System(BaseModel):
     address: Optional[str]
     notion_pro_permit: Optional[str]
 
-    validate_created_at = validator("created_at", allow_reuse=True, pre=True)(
+    validate_created_at = field_validator("created_at", mode="before")(
         validate_timestamp
     )
-    validate_updated_at = validator("updated_at", allow_reuse=True, pre=True)(
+    validate_updated_at = field_validator("updated_at", mode="before")(
         validate_timestamp
     )
-    validate_night_time_start = validator(
-        "night_time_start", allow_reuse=True, pre=True
-    )(validate_timestamp)
-    validate_night_time_end = validator("night_time_end", allow_reuse=True, pre=True)(
+    validate_night_time_start = field_validator("night_time_start", mode="before")(
+        validate_timestamp
+    )
+    validate_night_time_end = field_validator("night_time_end", mode="before")(
         validate_timestamp
     )
 
@@ -57,11 +57,9 @@ class SystemAllResponse(BaseModel):
 class SystemGetResponse(BaseModel):
     """Define an API response containing a single system."""
 
-    system: System
-
-    class Config:
-        """Define model configuration."""
-
-        fields = {
+    model_config = {
+        "fields": {
             "system": "systems",
         }
+    }
+    system: System

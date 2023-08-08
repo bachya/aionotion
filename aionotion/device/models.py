@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from pydantic.v1 import BaseModel, validator
+from pydantic import BaseModel, field_validator
 
 from aionotion.helpers.validators import validate_timestamp
 
@@ -19,10 +19,10 @@ class Device(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    validate_created_at = validator("created_at", allow_reuse=True, pre=True)(
+    validate_created_at = field_validator("created_at", mode="before")(
         validate_timestamp
     )
-    validate_updated_at = validator("updated_at", allow_reuse=True, pre=True)(
+    validate_updated_at = field_validator("updated_at", mode="before")(
         validate_timestamp
     )
 
@@ -37,10 +37,8 @@ class DeviceGetResponse(BaseModel):
     """Define an API response containing a single device."""
 
     device: Device
-
-    class Config:
-        """Define model configuration."""
-
-        fields = {
-            "device": "devices",
+    model_config = {
+        "fields": {
+            "device": "device",
         }
+    }

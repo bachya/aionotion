@@ -6,7 +6,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Literal, Optional
 
-from pydantic.v1 import BaseModel, Extra, validator
+from pydantic import BaseModel, field_validator
 
 from aionotion.const import LOGGER
 from aionotion.helpers.validators import validate_timestamp
@@ -66,22 +66,22 @@ class Sensor(BaseModel):
     firmware: Firmware
     surface_type: Optional[SurfaceType]
 
-    validate_installed_at = validator("installed_at", allow_reuse=True, pre=True)(
+    validate_installed_at = field_validator("installed_at", mode="before")(
         validate_timestamp
     )
-    validate_calibrated_at = validator("calibrated_at", allow_reuse=True, pre=True)(
+    validate_calibrated_at = field_validator("calibrated_at", mode="before")(
         validate_timestamp
     )
-    validate_last_reported_at = validator(
-        "last_reported_at", allow_reuse=True, pre=True
-    )(validate_timestamp)
-    validate_missing_at = validator("missing_at", allow_reuse=True, pre=True)(
+    validate_last_reported_at = field_validator("last_reported_at", mode="before")(
         validate_timestamp
     )
-    validate_created_at = validator("created_at", allow_reuse=True, pre=True)(
+    validate_missing_at = field_validator("missing_at", mode="before")(
         validate_timestamp
     )
-    validate_updated_at = validator("updated_at", allow_reuse=True, pre=True)(
+    validate_created_at = field_validator("created_at", mode="before")(
+        validate_timestamp
+    )
+    validate_updated_at = field_validator("updated_at", mode="before")(
         validate_timestamp
     )
 
@@ -95,25 +95,23 @@ class SensorAllResponse(BaseModel):
 class SensorGetResponse(BaseModel):
     """Define an API response containing a single sensor."""
 
-    sensor: Sensor
-
-    class Config:
-        """Define model configuration."""
-
-        fields = {
+    model_config = {
+        "fields": {
             "sensor": "sensors",
         }
+    }
+    sensor: Sensor
 
 
-class ListenerStatus(BaseModel, extra=Extra.allow):
+class ListenerStatus(BaseModel, extra="allow"):
     """Define a listener status."""
 
     trigger_value: str
     data_received_at: datetime
 
-    validate_data_received_at = validator(
-        "data_received_at", allow_reuse=True, pre=True
-    )(validate_timestamp)
+    validate_data_received_at = field_validator("data_received_at", mode="before")(
+        validate_timestamp
+    )
 
 
 class ListenerLocalizedStatus(BaseModel):
@@ -137,9 +135,9 @@ class PrimaryListenerInsight(BaseModel):
     value: Optional[str]
     data_received_at: Optional[datetime]
 
-    validate_data_received_at = validator(
-        "data_received_at", allow_reuse=True, pre=True
-    )(validate_timestamp)
+    validate_data_received_at = field_validator("data_received_at", mode="before")(
+        validate_timestamp
+    )
 
 
 class ListenerInsights(BaseModel):
@@ -168,6 +166,13 @@ class ListenerKind(Enum):
 class Listener(BaseModel):
     """Define a listener."""
 
+    model_config = {
+        "fields": {
+            "device_type": "type",
+            "listener_kind": "definition_id",
+        }
+    }
+
     id: str
     listener_kind: ListenerKind
     created_at: datetime
@@ -181,7 +186,7 @@ class Listener(BaseModel):
     status: Optional[ListenerStatus] = None
     status_localized: Optional[ListenerLocalizedStatus] = None
 
-    @validator("listener_kind", pre=True)
+    @field_validator("listener_kind", mode="before")
     @classmethod
     def validate_listener_kind(cls, value: str) -> ListenerKind:
         """Validate the API key type.
@@ -201,17 +206,9 @@ class Listener(BaseModel):
             LOGGER.warning("Received an unknown listener kind: %s", value)
             return ListenerKind.UNKNOWN
 
-    validate_created_at = validator("created_at", allow_reuse=True, pre=True)(
+    validate_created_at = field_validator("created_at", mode="before")(
         validate_timestamp
     )
-
-    class Config:
-        """Define model configuration."""
-
-        fields = {
-            "device_type": "type",
-            "listener_kind": "definition_id",
-        }
 
 
 class ListenerAllResponse(BaseModel):
