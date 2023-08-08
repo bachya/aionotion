@@ -5,13 +5,13 @@ from typing import Any, cast
 
 from aiohttp import ClientSession, ClientTimeout
 from aiohttp.client_exceptions import ClientError
-from pydantic.v1 import BaseModel, ValidationError
+from pydantic import ValidationError
 
 from aionotion.bridge import Bridge
 from aionotion.const import LOGGER
 from aionotion.device import Device
 from aionotion.errors import InvalidCredentialsError, RequestError
-from aionotion.helpers.typing import BaseModelT
+from aionotion.helpers.model import NotionBaseModel, NotionBaseModelT
 from aionotion.sensor import Sensor
 from aionotion.system import System
 from aionotion.user import User
@@ -107,9 +107,9 @@ class Client:  # pylint: disable=too-few-public-methods
         self,
         method: str,
         endpoint: str,
-        model: type[BaseModel],
+        model: type[NotionBaseModel],
         **kwargs: dict[str, Any],
-    ) -> BaseModelT:
+    ) -> NotionBaseModelT:
         """Make an API request and validate the response against a Pydantic model.
 
         Args:
@@ -124,7 +124,7 @@ class Client:  # pylint: disable=too-few-public-methods
         raw_data = await self.async_request(method, endpoint, **kwargs)
 
         try:
-            return cast(BaseModelT, model.parse_obj(raw_data))
+            return cast(NotionBaseModelT, model.model_validate(raw_data))
         except ValidationError as err:
             raise RequestError(
                 f"Error while parsing response from {endpoint}: {err}"

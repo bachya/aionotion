@@ -1,16 +1,15 @@
 """Define system models."""
-# pylint: disable=consider-alternative-union-syntax,too-few-public-methods
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Optional
 
-from pydantic import BaseModel, field_validator
+from pydantic import Field, field_validator
 
-from aionotion.helpers.validators import validate_timestamp
+from aionotion.helpers.model import NotionBaseModel
+from aionotion.helpers.validator import validate_timestamp
 
 
-class System(BaseModel):
+class System(NotionBaseModel):
     """Define a system."""
 
     uuid: str
@@ -31,8 +30,8 @@ class System(BaseModel):
     fire_number: str
     police_number: str
     emergency_number: str
-    address: Optional[str]
-    notion_pro_permit: Optional[str]
+    address: str | None
+    notion_pro_permit: str | None
 
     validate_created_at = field_validator("created_at", mode="before")(
         validate_timestamp
@@ -48,18 +47,13 @@ class System(BaseModel):
     )
 
 
-class SystemAllResponse(BaseModel):
+class SystemAllResponse(NotionBaseModel):
     """Define an API response containing all systems."""
 
     systems: list[System]
 
 
-class SystemGetResponse(BaseModel):
+class SystemGetResponse(NotionBaseModel):
     """Define an API response containing a single system."""
 
-    model_config = {
-        "fields": {
-            "system": "systems",
-        }
-    }
-    system: System
+    system: System = Field(alias="systems")

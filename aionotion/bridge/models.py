@@ -1,14 +1,12 @@
 """Define bridge models."""
-# pylint: disable=consider-alternative-union-syntax,too-few-public-methods
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Optional, Union
 
 from pydantic import Field, field_validator
 
 from aionotion.helpers.model import NotionBaseModel
-from aionotion.helpers.validators import validate_timestamp
+from aionotion.helpers.validator import validate_timestamp
 
 
 class FirmwareVersion(NotionBaseModel):
@@ -16,25 +14,25 @@ class FirmwareVersion(NotionBaseModel):
 
     wifi: str
     wifi_app: str
-    silabs: Optional[str] = None
-    ti: Optional[str] = None
+    silabs: str | None = None
+    ti: str | None = None
 
 
 class Bridge(NotionBaseModel):
     """Define a bridge."""
 
     id: int
-    name: Optional[str]
+    name: str | None
     mode: str
     hardware_id: str
     hardware_revision: int
     firmware_version: FirmwareVersion
-    missing_at: Optional[datetime]
+    missing_at: datetime | None
     created_at: datetime
     updated_at: datetime
     system_id: int
     firmware: FirmwareVersion
-    links: dict[str, Union[int, str]]
+    links: dict[str, int | str]
 
     validate_missing_at = field_validator("missing_at", mode="before")(
         validate_timestamp

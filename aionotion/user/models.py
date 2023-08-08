@@ -1,11 +1,10 @@
 """Define user models."""
-# pylint: disable=too-few-public-methods
 from __future__ import annotations
 
-from pydantic import BaseModel
+from aionotion.helpers.model import NotionBaseModel
 
 
-class UserPreferences(BaseModel):
+class UserPreferences(NotionBaseModel):
     """Define user preferences."""
 
     user_id: int
@@ -16,7 +15,7 @@ class UserPreferences(BaseModel):
     battery_alerts_enabled: bool
 
 
-class UserPreferencesResponse(BaseModel):
+class UserPreferencesResponse(NotionBaseModel):
     """Define an API response containing all devices."""
 
     user_preferences: UserPreferences

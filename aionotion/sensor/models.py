@@ -1,31 +1,31 @@
 """Define sensor models."""
-# pylint: disable=consider-alternative-union-syntax,too-few-public-methods
 from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Literal, Optional
+from typing import Any, Literal
 
-from pydantic import BaseModel, field_validator
+from pydantic import ConfigDict, Field, field_validator
 
 from aionotion.const import LOGGER
-from aionotion.helpers.validators import validate_timestamp
+from aionotion.helpers.model import NotionBaseModel
+from aionotion.helpers.validator import validate_timestamp
 
 
-class Bridge(BaseModel):
+class Bridge(NotionBaseModel):
     """Define a bridge representation."""
 
     id: int
     hardware_id: str
 
 
-class Firmware(BaseModel):
+class Firmware(NotionBaseModel):
     """Define firmware information."""
 
     status: str
 
 
-class SurfaceType(BaseModel):
+class SurfaceType(NotionBaseModel):
     """Define a surface type."""
 
     id: str
@@ -33,14 +33,14 @@ class SurfaceType(BaseModel):
     slug: str
 
 
-class User(BaseModel):
+class User(NotionBaseModel):
     """Define a user representation."""
 
     id: int
     email: str
 
 
-class Sensor(BaseModel):
+class Sensor(NotionBaseModel):
     """Define a sensor."""
 
     id: int
@@ -56,15 +56,15 @@ class Sensor(BaseModel):
     firmware_version: str
     device_key: str
     encryption_key: bool
-    installed_at: Optional[datetime]
-    calibrated_at: Optional[datetime]
-    last_reported_at: Optional[datetime]
-    missing_at: Optional[datetime]
+    installed_at: datetime | None
+    calibrated_at: datetime | None
+    last_reported_at: datetime | None
+    missing_at: datetime | None
     updated_at: datetime
     created_at: datetime
     signal_strength: int
     firmware: Firmware
-    surface_type: Optional[SurfaceType]
+    surface_type: SurfaceType | None
 
     validate_installed_at = field_validator("installed_at", mode="before")(
         validate_timestamp
@@ -86,24 +86,19 @@ class Sensor(BaseModel):
     )
 
 
-class SensorAllResponse(BaseModel):
+class SensorAllResponse(NotionBaseModel):
     """Define an API response containing all sensors."""
 
-    sensors: list[Sensor]
+    sensors: list[Sensor] = Field(alias="sensors")
 
 
-class SensorGetResponse(BaseModel):
+class SensorGetResponse(NotionBaseModel):
     """Define an API response containing a single sensor."""
 
-    model_config = {
-        "fields": {
-            "sensor": "sensors",
-        }
-    }
-    sensor: Sensor
+    sensor: Sensor = Field(alias="sensors")
 
 
-class ListenerStatus(BaseModel, extra="allow"):
+class ListenerStatus(NotionBaseModel, extra="allow"):
     """Define a listener status."""
 
     trigger_value: str
@@ -114,33 +109,33 @@ class ListenerStatus(BaseModel, extra="allow"):
     )
 
 
-class ListenerLocalizedStatus(BaseModel):
+class ListenerLocalizedStatus(NotionBaseModel):
     """Define a localized listener status."""
 
     state: str
     description: str
 
 
-class InsightOrigin(BaseModel):
+class InsightOrigin(NotionBaseModel):
     """Define an insight origin."""
 
-    type: Optional[str]
-    id: Optional[str]
+    type: str | None
+    id: str | None
 
 
-class PrimaryListenerInsight(BaseModel):
+class PrimaryListenerInsight(NotionBaseModel):
     """Define a primary listener insight."""
 
-    origin: Optional[InsightOrigin]
-    value: Optional[str]
-    data_received_at: Optional[datetime]
+    origin: InsightOrigin | None
+    value: str | None
+    data_received_at: datetime | None
 
     validate_data_received_at = field_validator("data_received_at", mode="before")(
         validate_timestamp
     )
 
 
-class ListenerInsights(BaseModel):
+class ListenerInsights(NotionBaseModel):
     """Define listener insights:"""
 
     primary: PrimaryListenerInsight
@@ -163,28 +158,23 @@ class ListenerKind(Enum):
     UNKNOWN = 99
 
 
-class Listener(BaseModel):
+class Listener(NotionBaseModel):
     """Define a listener."""
 
-    model_config = {
-        "fields": {
-            "device_type": "type",
-            "listener_kind": "definition_id",
-        }
-    }
+    model_config = ConfigDict(frozen=True, protected_namespaces=())
 
     id: str
-    listener_kind: ListenerKind
     created_at: datetime
-    device_type: str
     model_version: str
     sensor_id: str
     insights: ListenerInsights
     configuration: dict[str, Any]
     pro_monitoring_status: Literal["eligible", "ineligible"]
 
-    status: Optional[ListenerStatus] = None
-    status_localized: Optional[ListenerLocalizedStatus] = None
+    device_type: str = Field(alias="type")
+    listener_kind: ListenerKind = Field(alias="definition_id")
+    status: ListenerStatus | None = None
+    status_localized: ListenerLocalizedStatus | None = None
 
     @field_validator("listener_kind", mode="before")
     @classmethod
@@ -211,7 +201,7 @@ class Listener(BaseModel):
     )
 
 
-class ListenerAllResponse(BaseModel):
+class ListenerAllResponse(NotionBaseModel):
     """Define an API response containing all listeners."""
 
     listeners: list[Listener]
