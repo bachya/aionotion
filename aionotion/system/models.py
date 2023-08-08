@@ -1,7 +1,9 @@
 """Define system models."""
+# pylint: disable=consider-alternative-union-syntax
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Optional
 
 from pydantic import Field, field_validator
 
@@ -30,8 +32,8 @@ class System(NotionBaseModel):
     fire_number: str
     police_number: str
     emergency_number: str
-    address: str | None
-    notion_pro_permit: str | None
+    address: Optional[str]
+    notion_pro_permit: Optional[str]
 
     validate_created_at = field_validator("created_at", mode="before")(
         validate_timestamp

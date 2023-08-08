@@ -1,9 +1,10 @@
 """Define sensor models."""
+# pylint: disable=consider-alternative-union-syntax
 from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Literal
+from typing import Any, Literal, Optional
 
 from pydantic import ConfigDict, Field, field_validator
 
@@ -56,15 +57,15 @@ class Sensor(NotionBaseModel):
     firmware_version: str
     device_key: str
     encryption_key: bool
-    installed_at: datetime | None
-    calibrated_at: datetime | None
-    last_reported_at: datetime | None
-    missing_at: datetime | None
+    installed_at: Optional[datetime]
+    calibrated_at: Optional[datetime]
+    last_reported_at: Optional[datetime]
+    missing_at: Optional[datetime]
     updated_at: datetime
     created_at: datetime
     signal_strength: int
     firmware: Firmware
-    surface_type: SurfaceType | None
+    surface_type: Optional[SurfaceType]
 
     validate_installed_at = field_validator("installed_at", mode="before")(
         validate_timestamp
@@ -119,16 +120,16 @@ class ListenerLocalizedStatus(NotionBaseModel):
 class InsightOrigin(NotionBaseModel):
     """Define an insight origin."""
 
-    type: str | None
-    id: str | None
+    type: Optional[str]
+    id: Optional[str]
 
 
 class PrimaryListenerInsight(NotionBaseModel):
     """Define a primary listener insight."""
 
-    origin: InsightOrigin | None
-    value: str | None
-    data_received_at: datetime | None
+    origin: Optional[InsightOrigin]
+    value: Optional[str]
+    data_received_at: Optional[datetime]
 
     validate_data_received_at = field_validator("data_received_at", mode="before")(
         validate_timestamp
@@ -173,8 +174,8 @@ class Listener(NotionBaseModel):
 
     device_type: str = Field(alias="type")
     listener_kind: ListenerKind = Field(alias="definition_id")
-    status: ListenerStatus | None = None
-    status_localized: ListenerLocalizedStatus | None = None
+    status: Optional[ListenerStatus] = None
+    status_localized: Optional[ListenerLocalizedStatus] = None
 
     @field_validator("listener_kind", mode="before")
     @classmethod
