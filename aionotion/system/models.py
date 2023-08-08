@@ -1,16 +1,17 @@
 """Define system models."""
-# pylint: disable=consider-alternative-union-syntax,too-few-public-methods
+# pylint: disable=consider-alternative-union-syntax
 from __future__ import annotations
 
 from datetime import datetime
 from typing import Optional
 
-from pydantic.v1 import BaseModel, validator
+from pydantic import Field, field_validator
 
-from aionotion.helpers.validators import validate_timestamp
+from aionotion.helpers.model import NotionBaseModel
+from aionotion.helpers.validator import validate_timestamp
 
 
-class System(BaseModel):
+class System(NotionBaseModel):
     """Define a system."""
 
     uuid: str
@@ -34,34 +35,27 @@ class System(BaseModel):
     address: Optional[str]
     notion_pro_permit: Optional[str]
 
-    validate_created_at = validator("created_at", allow_reuse=True, pre=True)(
+    validate_created_at = field_validator("created_at", mode="before")(
         validate_timestamp
     )
-    validate_updated_at = validator("updated_at", allow_reuse=True, pre=True)(
+    validate_updated_at = field_validator("updated_at", mode="before")(
         validate_timestamp
     )
-    validate_night_time_start = validator(
-        "night_time_start", allow_reuse=True, pre=True
-    )(validate_timestamp)
-    validate_night_time_end = validator("night_time_end", allow_reuse=True, pre=True)(
+    validate_night_time_start = field_validator("night_time_start", mode="before")(
+        validate_timestamp
+    )
+    validate_night_time_end = field_validator("night_time_end", mode="before")(
         validate_timestamp
     )
 
 
-class SystemAllResponse(BaseModel):
+class SystemAllResponse(NotionBaseModel):
     """Define an API response containing all systems."""
 
     systems: list[System]
 
 
-class SystemGetResponse(BaseModel):
+class SystemGetResponse(NotionBaseModel):
     """Define an API response containing a single system."""
 
-    system: System
-
-    class Config:
-        """Define model configuration."""
-
-        fields = {
-            "system": "systems",
-        }
+    system: System = Field(alias="systems")

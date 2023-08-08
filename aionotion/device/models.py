@@ -1,15 +1,15 @@
 """Define device models."""
-# pylint: disable=too-few-public-methods
 from __future__ import annotations
 
 from datetime import datetime
 
-from pydantic.v1 import BaseModel, validator
+from pydantic import Field, field_validator
 
-from aionotion.helpers.validators import validate_timestamp
+from aionotion.helpers.model import NotionBaseModel
+from aionotion.helpers.validator import validate_timestamp
 
 
-class Device(BaseModel):
+class Device(NotionBaseModel):
     """Define a device."""
 
     id: int
@@ -19,28 +19,21 @@ class Device(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    validate_created_at = validator("created_at", allow_reuse=True, pre=True)(
+    validate_created_at = field_validator("created_at", mode="before")(
         validate_timestamp
     )
-    validate_updated_at = validator("updated_at", allow_reuse=True, pre=True)(
+    validate_updated_at = field_validator("updated_at", mode="before")(
         validate_timestamp
     )
 
 
-class DeviceAllResponse(BaseModel):
+class DeviceAllResponse(NotionBaseModel):
     """Define an API response containing all devices."""
 
     devices: list[Device]
 
 
-class DeviceGetResponse(BaseModel):
+class DeviceGetResponse(NotionBaseModel):
     """Define an API response containing a single device."""
 
-    device: Device
-
-    class Config:
-        """Define model configuration."""
-
-        fields = {
-            "device": "devices",
-        }
+    device: Device = Field(alias="devices")
