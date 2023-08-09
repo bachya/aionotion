@@ -47,72 +47,72 @@ async def main() -> None:
 
     # Get all "households" associated with the account:
     response = await client.system.async_all()
-    # >>> response -> systems=[System(...), ...]
+    # >>> [System(...), System(...), ...]
 
     # Get a system by ID:
     response = await client.system.async_get(12345)
-    # >>> response -> system=System(...)
+    # >>> System(...)
 
     # Create a system (with associated parameters):
     response = await client.system.async_create({"system_id": 12345, "name": "Test"})
-    # >>> response -> system=System(...)
+    # >>> System(...)
 
     # Update a system with new parameters:
     response = await client.system.async_update(12345, {"name": "Test"})
-    # >>> response -> system=System(...)
+    # >>> System(...)
 
     # Delete a system by ID:
     await client.system.async_delete(12345)
 
     # Get all bridges associated with the account:
     response = await client.bridge.async_all()
-    # >>> response -> bridges=[Bridge(...), ...]
+    # >>> [Bridge(...), Bridge(...), ...]
 
     # Get a bridge by ID:
     response = await client.bridge.async_get(12345)
-    # >>> response -> bridge=Bridge(...)
+    # >>> Bridge(...)
 
     # Create a bridge (with associated parameters):
     response = await client.bridge.async_create({"system_id": 12345, "name": "Test"})
-    # >>> response -> bridge=Bridge(...)
+    # >>> Bridge(...)
 
     # Update a bridge with new parameters:
     response = await client.bridge.async_update(12345, {"name": "Test"})
-    # >>> response -> bridge=Bridge(...)
+    # >>> Bridge(...)
 
     # Reset a bridge (deprovision its WiFi credentials):
     response = await client.bridge.async_reset(12345)
-    # >>> response -> bridge=Bridge(...)
+    # >>> Bridge(...)
 
     # Delete a bridge by ID:
     await client.bridge.async_delete(12345)
 
     # Get all devices associated with the account:
     response = await client.device.async_all()
-    # >>> response -> devices=[Device(...), ...]
+    # >>> [Device(...), Device(...), ...]
 
     # Get a device by ID:
     response = await client.device.async_get(12345)
-    # >>> response -> Device(...)
+    # >>> Device(...)
 
     # Create a device (with associated parameters):
     response = await client.device.async_create({"id": 12345})
-    # >>> response -> Device(...)
+    # >>> Device(...)
 
     # Delete a device by ID:
     await client.device.async_delete(12345)
 
     # Get all sensors:
     response = await client.sensor.async_all()
-    # >>> response -> sensors=[Sensor(...), ...]
+    # >>> [Sensor(...), Sensor(...), ...]
 
     # Get a sensor by ID:
     response = await client.sensor.async_get(12345)
-    # >>> response -> Sensor(...)
+    # >>> Sensor(...)
 
     # Get "listeners" (conditions that a sensor is monitoring) for all sensors:
     response = await client.sensor.async_listeners()
-    # >>> response -> listeners=[Listener(...), ...]
+    # >>> [Listener(...), Listener(...), ...]
 
     # Get "listeners" (conditions that a sensor is monitoring) for a specific sensor;
     # note that unlike other sensor endpoints, this one requires the sensor UUID, *not*
@@ -120,21 +120,22 @@ async def main() -> None:
     response = await client.sensor.async_listeners_for_sensor(
         "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
     )
-    # >>> response -> listeners=[Listener(...), ...]
+    # >>> [Listener(...), Listener(...), ...]
 
     # Create a sensor (with associated parameters):
     response = await client.sensor.async_create({"sensor_id": 12345, "name": "Test"})
-    # >>> response -> Sensor(...)
+    # >>> Sensor(...)
 
     # Update a sensor with new parameters:
     response = await client.sensor.async_update(12345, {"name": "Test"})
-    # >>> response -> Sensor(...)
+    # >>> Sensor(...)
 
     # Delete a sensor by ID:
     await client.sensor.async_delete(12345)
 
     # Get user preferences:
     user_preferences = await client.user.async_preferences()
+    # >>> UserPreferencesResponse(...)
 
 
 asyncio.run(main())
