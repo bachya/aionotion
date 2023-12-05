@@ -24,7 +24,7 @@ def auth_success_response_fixture() -> dict[str, Any]:
 
 @pytest.fixture(name="authenticated_notion_api_server")
 def authenticated_notion_api_server_fixture(
-    auth_success_response: dict[str, Any]
+    auth_success_response: dict[str, Any],
 ) -> Generator[ResponsesMockServer, None, None]:
     """Return a fixture that mocks an authenticated Notion API server.
 
