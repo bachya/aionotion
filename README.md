@@ -185,7 +185,7 @@ Thanks to all of [our contributors][contributors] so far!
 10. Submit a pull request!
 
 [aiohttp]: https://github.com/aio-libs/aiohttp
-[ci-badge]: https://github.com/bachya/aionotion/workflows/CI/badge.svg
+[ci-badge]: https://img.shields.io/github/actions/workflow/status/bachya/aionotion/test.yml
 [ci]: https://github.com/bachya/aionotion/actions
 [codecov-badge]: https://codecov.io/gh/bachya/aionotion/branch/dev/graph/badge.svg
 [codecov]: https://codecov.io/gh/bachya/aionotion
