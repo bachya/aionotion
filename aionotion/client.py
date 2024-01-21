@@ -49,7 +49,7 @@ def get_token_header_value(access_token: str, refresh_token: str | None) -> str:
     return f"Token token={access_token}"
 
 
-class Client:  # pylint: disable=too-few-public-methods
+class Client:
     """Define the API object."""
 
     def __init__(
