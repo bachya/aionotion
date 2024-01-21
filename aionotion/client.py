@@ -33,6 +33,10 @@ DEFAULT_TIMEOUT = 10
 def get_token_header_value(access_token: str, refresh_token: str | None) -> str:
     """Return the value for the Authorization header.
 
+    The old API uses a different format for the Authorization header than the new API.
+    We detect whether we're using the new API by checking whether a refresh token is
+    present.
+
     Args:
         access_token: An access token.
         refresh_token: A refresh token (if it exists).
