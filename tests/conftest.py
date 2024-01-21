@@ -8,7 +8,7 @@ import aiohttp
 import pytest
 from aresponses import ResponsesMockServer
 
-from tests.common import TEST_USER_ID, generate_jwt, load_fixture
+from tests.common import TEST_USER_UUID, generate_jwt, load_fixture
 
 
 def _generate_auth_response_success(
@@ -54,6 +54,19 @@ def auth_credentials_success_response_fixture(
     """
     return _generate_auth_response_success(
         access_token_issued_at, "auth_credentials_success_response.json"
+    )
+
+
+@pytest.fixture(name="auth_legacy_credentials_success_response")
+def auth_legacy_credentials_success_response_fixture() -> dict[str, Any]:
+    """Return a fixture for a successful auth response payload (legacy)
+
+    Returns:
+        A fixture for a successful legacy auth response payload.
+    """
+    return cast(
+        dict[str, Any],
+        json.loads(load_fixture("auth_legacy_credentials_success_response.json")),
     )
 
 
@@ -111,7 +124,7 @@ def authenticated_notion_api_server_fixture(
     )
     server.add(
         "api.getnotion.com",
-        f"/api/auth/{TEST_USER_ID}/refresh",
+        f"/api/auth/{TEST_USER_UUID}/refresh",
         "post",
         response=aiohttp.web_response.json_response(
             auth_refresh_token_success_response, status=200

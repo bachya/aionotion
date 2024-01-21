@@ -121,8 +121,10 @@ load-plugins = [
 
 [tool.pylint."MESSAGES CONTROL"]
 # Reasons disabled:
+# invalid-enum-extension – We need to backport StrEnums until we drop Python 3.10
 # unnecessary-pass - This can hurt readability
 disable = [
+  "invalid-enum-extension",
   "unnecessary-pass"
 ]
 extension-pkg-whitelist = "pydantic"

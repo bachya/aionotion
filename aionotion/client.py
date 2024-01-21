@@ -17,6 +17,7 @@ from aionotion.sensor import Sensor
 from aionotion.system import System
 from aionotion.user import User
 from aionotion.user.models import (
+    AuthenticateViaCredentialsLegacyResponse,
     AuthenticateViaCredentialsResponse,
     AuthenticateViaRefreshTokenResponse,
 )
@@ -24,9 +25,23 @@ from aionotion.util.auth import decode_jwt
 from aionotion.util.dt import utc_from_timestamp, utcnow
 
 API_BASE = "https://api.getnotion.com/api"
-API_VERSION = "2"
 
 DEFAULT_TIMEOUT = 10
+
+
+def get_token_header_value(access_token: str, refresh_token: str | None) -> str:
+    """Return the value for the Authorization header.
+
+    Args:
+        access_token: An access token.
+        refresh_token: A refresh token (if it exists).
+
+    Returns:
+        The value for the Authorization header.
+    """
+    if refresh_token:
+        return f"Bearer {access_token}"
+    return f"Token token={access_token}"
 
 
 class Client:  # pylint: disable=too-few-public-methods
@@ -85,6 +100,7 @@ class Client:  # pylint: disable=too-few-public-methods
                 "post",
                 "/auth/login",
                 AuthenticateViaCredentialsResponse,
+                headers={"Accept-Version": "2"},
                 json={
                     "auth": {
                         "email": email,
@@ -95,7 +111,7 @@ class Client:  # pylint: disable=too-few-public-methods
             )
         )
 
-        self.user_uuid = str(auth_response.user.id)
+        self.user_uuid = auth_response.user.uuid
         self._save_tokens_from_auth_response(auth_response)
 
     async def async_authenticate_from_refresh_token(
@@ -125,6 +141,7 @@ class Client:  # pylint: disable=too-few-public-methods
                 "post",
                 f"/auth/{self.user_uuid}/refresh",
                 AuthenticateViaRefreshTokenResponse,
+                headers={"Accept-Version": "2"},
                 json={"auth": {"refresh_token": self._refresh_token}},
             )
         )
@@ -141,26 +158,28 @@ class Client:  # pylint: disable=too-few-public-methods
             email: The email address of a Notion account.
             password: The account password.
         """
-        auth_response: AuthenticateViaCredentialsResponse = (
+        auth_response: AuthenticateViaCredentialsLegacyResponse = (
             await self.async_request_and_validate(
                 "post",
-                "/auth/login",
-                AuthenticateViaCredentialsResponse,
+                "/users/sign_in",
+                AuthenticateViaCredentialsLegacyResponse,
                 json={
-                    "auth": {
+                    "sessions": {
                         "email": email,
                         "password": password,
-                        "session_name": self._session_name,
                     }
                 },
             )
         )
 
-        self.user_uuid = str(auth_response.user.id)
-        self._save_tokens_from_auth_response(auth_response)
+        self.user_uuid = auth_response.users.uuid
+        self._access_token = auth_response.session.authentication_token
 
     async def async_request(
-        self, method: str, endpoint: str, **kwargs: dict[str, Any]
+        self,
+        method: str,
+        endpoint: str,
+        **kwargs: dict[str, Any],
     ) -> dict[str, Any]:
         """Make an API request.
 
@@ -188,9 +207,10 @@ class Client:  # pylint: disable=too-few-public-methods
         url: str = f"{API_BASE}{endpoint}"
 
         kwargs.setdefault("headers", {})
-        kwargs["headers"]["Accept-Version"] = API_VERSION
         if self._access_token:
-            kwargs["headers"]["Authorization"] = f"Bearer {self._access_token}"
+            kwargs["headers"]["Authorization"] = get_token_header_value(
+                self._access_token, self._refresh_token
+            )
 
         if use_running_session := self._session and not self._session.closed:
             session = self._session
@@ -213,6 +233,9 @@ class Client:  # pylint: disable=too-few-public-methods
             await session.close()
 
         LOGGER.debug("Received data from /%s: %s", endpoint, data)
+
+        if self._refreshing_access_token:
+            self._refreshing_access_token = False
 
         return data
 
@@ -266,6 +289,10 @@ async def async_get_client(
     """
     client = Client(session=session, session_name=session_name)
     if use_legacy_auth:
+        LOGGER.warning(
+            "Using legacy authentication endpoint; this is deprecated and will be "
+            "removed in a future release"
+        )
         await client.async_legacy_authenticate_from_credentials(email, password)
     else:
         await client.async_authenticate_from_credentials(email, password)

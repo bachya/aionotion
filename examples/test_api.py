@@ -1,6 +1,7 @@
 """Run an example script to quickly test."""
 import asyncio
 import logging
+import os
 
 from aiohttp import ClientSession
 
@@ -9,13 +10,21 @@ from aionotion.errors import NotionError
 
 _LOGGER = logging.getLogger()
 
-EMAIL = "email@address.com"
-PASSWORD = "password"  # noqa: S105
+EMAIL = os.environ.get("NOTION_EMAIL")
+PASSWORD = os.environ.get("NOTION_PASSWORD")
 
 
 async def main() -> None:
     """Create the aiohttp session and run the example."""
     logging.basicConfig(level=logging.INFO)
+
+    if not EMAIL or not PASSWORD:
+        _LOGGER.error(
+            "No email or password set (use NOTION_EMAIL and NOTION_PASSWORD "
+            "environment variables)"
+        )
+        return
+
     async with ClientSession() as session:
         try:
             client = await async_get_client(EMAIL, PASSWORD, session=session)

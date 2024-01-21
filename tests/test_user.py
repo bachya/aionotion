@@ -8,7 +8,7 @@ import pytest
 from aresponses import ResponsesMockServer
 
 from aionotion import async_get_client
-from tests.common import TEST_EMAIL, TEST_PASSWORD
+from tests.common import TEST_EMAIL, TEST_PASSWORD, TEST_USER_UUID
 
 
 @pytest.mark.asyncio
@@ -25,7 +25,7 @@ async def test_user_preferences(
     async with authenticated_notion_api_server:
         authenticated_notion_api_server.add(
             "api.getnotion.com",
-            "/api/users/12345/user_preferences",
+            f"/api/users/{TEST_USER_UUID}/user_preferences",
             "get",
             response=aiohttp.web_response.json_response(
                 user_preferences_response, status=200

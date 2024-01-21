@@ -120,8 +120,8 @@ class ListenerLocalizedStatus(NotionBaseModel):
 class InsightOrigin(NotionBaseModel):
     """Define an insight origin."""
 
-    id: str
-    type: str
+    id: Optional[str] = None
+    type: Optional[str] = None
 
 
 class PrimaryListenerInsight(NotionBaseModel):

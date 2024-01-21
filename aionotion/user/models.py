@@ -16,6 +16,36 @@ class AuthTokens(NotionBaseModel):
     refresh_token: str
 
 
+class LegacySession(NotionBaseModel):
+    """Define a legacy Notion session."""
+
+    user_id: str
+    authentication_token: str
+
+
+class LegacyUser(NotionBaseModel):
+    """Define a legacy Notion user."""
+
+    id: int
+    uuid: str
+    first_name: str
+    last_name: str
+    email: str
+    phone_number: str | None
+    role: str
+    organization: str
+    authentication_token: str
+    created_at: datetime
+    updated_at: datetime
+
+    validate_created_at = field_validator("created_at", mode="before")(
+        validate_timestamp
+    )
+    validate_updated_at = field_validator("updated_at", mode="before")(
+        validate_timestamp
+    )
+
+
 class User(NotionBaseModel):
     """Define a Notion user."""
 
@@ -43,6 +73,13 @@ class AuthenticateViaCredentialsResponse(NotionBaseModel):
 
     user: User
     auth: AuthTokens
+
+
+class AuthenticateViaCredentialsLegacyResponse(NotionBaseModel):
+    """Define an API response for authentication via credentials (legacy)."""
+
+    users: LegacyUser
+    session: LegacySession
 
 
 class AuthenticateViaRefreshTokenResponse(NotionBaseModel):
