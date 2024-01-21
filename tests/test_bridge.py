@@ -39,7 +39,6 @@ async def test_bridge_all(
             client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
             response = await client.bridge.async_all()
             assert len(response.bridges) == 1
-
             assert response.bridges[0].id == 12345
             assert response.bridges[0].name == "Laundry Closet"
             assert response.bridges[0].mode == "home"

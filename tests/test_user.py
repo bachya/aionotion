@@ -1,24 +1,26 @@
 """Define tests for users."""
 from __future__ import annotations
 
-import json
+from typing import Any
 
 import aiohttp
 import pytest
 from aresponses import ResponsesMockServer
 
 from aionotion import async_get_client
-from tests.common import TEST_EMAIL, TEST_PASSWORD, load_fixture
+from tests.common import TEST_EMAIL, TEST_PASSWORD
 
 
 @pytest.mark.asyncio
 async def test_user_preferences(
     authenticated_notion_api_server: ResponsesMockServer,
+    user_preferences_response: dict[str, Any],
 ) -> None:
     """Test getting user preferences.
 
     Args:
         authenticated_notion_api_server: A mock authenticated Notion API server
+        user_preferences_response: A fixture for a user preferences response payload.
     """
     async with authenticated_notion_api_server:
         authenticated_notion_api_server.add(
@@ -26,7 +28,7 @@ async def test_user_preferences(
             "/api/users/12345/user_preferences",
             "get",
             response=aiohttp.web_response.json_response(
-                json.loads(load_fixture("user_preferences_response.json")), status=200
+                user_preferences_response, status=200
             ),
         )
 

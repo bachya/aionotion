@@ -1,8 +1,8 @@
 """Define tests for sensors."""
 from __future__ import annotations
 
-import json
 from datetime import datetime, timezone
+from typing import Any
 
 import aiohttp
 import pytest
@@ -10,19 +10,21 @@ from aresponses import ResponsesMockServer
 
 from aionotion import async_get_client
 from aionotion.sensor.models import ListenerKind
-from tests.common import TEST_EMAIL, TEST_PASSWORD, load_fixture
+from tests.common import TEST_EMAIL, TEST_PASSWORD
 
 
 @pytest.mark.asyncio
 async def test_sensor_all(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
+    sensor_all_response: dict[str, Any],
 ) -> None:
     """Test getting all sensors.
 
     Args:
         aresponses: An aresponses server.
         authenticated_notion_api_server: A mock authenticated Notion API server
+        sensor_all_response: An API response payload
     """
     async with authenticated_notion_api_server:
         authenticated_notion_api_server.add(
@@ -30,7 +32,7 @@ async def test_sensor_all(
             "/api/sensors",
             "get",
             response=aiohttp.web_response.json_response(
-                json.loads(load_fixture("sensor_all_response.json")), status=200
+                sensor_all_response, status=200
             ),
         )
 
@@ -38,7 +40,6 @@ async def test_sensor_all(
             client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
             response = await client.sensor.async_all()
             assert len(response.sensors) == 1
-
             assert response.sensors[0].id == 123456
             assert response.sensors[0].uuid == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
             assert response.sensors[0].user.id == 12345
@@ -84,12 +85,14 @@ async def test_sensor_all(
 async def test_sensor_get(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
+    sensor_get_response: dict[str, Any],
 ) -> None:
     """Test getting a sensor by ID.
 
     Args:
         aresponses: An aresponses server.
         authenticated_notion_api_server: A mock authenticated Notion API server
+        sensor_get_response: An API response payload
     """
     async with authenticated_notion_api_server:
         authenticated_notion_api_server.add(
@@ -97,7 +100,7 @@ async def test_sensor_get(
             "/api/sensors/123456",
             "get",
             response=aiohttp.web_response.json_response(
-                json.loads(load_fixture("sensor_get_response.json")), status=200
+                sensor_get_response, status=200
             ),
         )
 
@@ -149,12 +152,14 @@ async def test_sensor_get(
 async def test_sensor_listeners(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
+    sensor_listeners_response: dict[str, Any],
 ) -> None:
     """Test getting listeners for all sensors.
 
     Args:
         aresponses: An aresponses server.
         authenticated_notion_api_server: A mock authenticated Notion API server
+        sensor_listeners_response: An API response payload
     """
     async with authenticated_notion_api_server:
         authenticated_notion_api_server.add(
@@ -162,7 +167,7 @@ async def test_sensor_listeners(
             "/api/sensor/listeners",
             "get",
             response=aiohttp.web_response.json_response(
-                json.loads(load_fixture("sensor_listeners.json")), status=200
+                sensor_listeners_response, status=200
             ),
         )
 
@@ -170,7 +175,6 @@ async def test_sensor_listeners(
             client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
             response = await client.sensor.async_listeners()
             assert len(response.listeners) == 1
-
             assert response.listeners[0].id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
             assert response.listeners[0].listener_kind == ListenerKind.UNKNOWN
             assert response.listeners[0].created_at == datetime(

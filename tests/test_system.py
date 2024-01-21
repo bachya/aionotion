@@ -1,7 +1,6 @@
 """Define tests for systems."""
 from __future__ import annotations
 
-import json
 from datetime import datetime, timezone
 
 import aiohttp
@@ -10,19 +9,21 @@ from aresponses import ResponsesMockServer
 
 from aionotion import async_get_client
 
-from .common import TEST_EMAIL, TEST_PASSWORD, load_fixture
+from .common import TEST_EMAIL, TEST_PASSWORD
 
 
 @pytest.mark.asyncio
 async def test_system_all(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
+    system_all_response: dict[str, str],
 ) -> None:
     """Test getting all systems.
 
     Args:
         aresponses: An aresponses server.
         authenticated_notion_api_server: A mock authenticated Notion API server
+        system_all_response: A fixture for a system all response.
     """
     async with authenticated_notion_api_server:
         authenticated_notion_api_server.add(
@@ -30,7 +31,7 @@ async def test_system_all(
             "/api/systems",
             "get",
             response=aiohttp.web_response.json_response(
-                json.loads(load_fixture("system_all_response.json")), status=200
+                system_all_response, status=200
             ),
         )
 
@@ -38,7 +39,6 @@ async def test_system_all(
             client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
             response = await client.system.async_all()
             assert len(response.systems) == 1
-
             assert response.systems[0].uuid == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
             assert response.systems[0].name == "Home"
             assert response.systems[0].mode == "home"
@@ -75,12 +75,14 @@ async def test_system_all(
 async def test_system_get(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
+    system_get_response: dict[str, str],
 ) -> None:
     """Test getting a system by ID.
 
     Args:
         aresponses: An aresponses server.
         authenticated_notion_api_server: A mock authenticated Notion API server
+        system_get_response: A fixture for a system get response.
     """
     async with authenticated_notion_api_server:
         authenticated_notion_api_server.add(
@@ -88,7 +90,7 @@ async def test_system_get(
             "/api/systems/12345",
             "get",
             response=aiohttp.web_response.json_response(
-                json.loads(load_fixture("system_get_response.json")), status=200
+                system_get_response, status=200
             ),
         )
 

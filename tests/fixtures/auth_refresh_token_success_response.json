@@ -1,0 +1,6 @@
+{
+  "auth": {
+    "jwt": "TBD",
+    "refresh_token": "12345"
+  }
+}
