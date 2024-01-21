@@ -13,6 +13,7 @@ from aionotion.bridge import Bridge
 from aionotion.const import LOGGER
 from aionotion.errors import InvalidCredentialsError, RequestError
 from aionotion.helpers.model import NotionBaseModel, NotionBaseModelT
+from aionotion.listener import Listener
 from aionotion.sensor import Sensor
 from aionotion.system import System
 from aionotion.user import User
@@ -65,6 +66,7 @@ class Client:  # pylint: disable=too-few-public-methods
         self.user_uuid: str = ""
 
         self.bridge = Bridge(self)
+        self.listener = Listener(self)
         self.sensor = Sensor(self)
         self.system = System(self)
         self.user = User(self)

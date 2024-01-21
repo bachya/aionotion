@@ -35,8 +35,11 @@ async def main() -> None:
             sensors = await client.sensor.async_all()
             _LOGGER.info("SENSORS: %s", sensors)
 
-            listeners = await client.sensor.async_listeners()
+            listeners = await client.listener.async_all()
             _LOGGER.info("LISTENERS: %s", listeners)
+
+            listener_definitions = await client.listener.async_definitions()
+            _LOGGER.info("LISTENER DEFINITIONS: %s", listener_definitions)
 
             systems = await client.system.async_all()
             _LOGGER.info("SYSTEMS: %s", systems)

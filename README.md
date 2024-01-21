@@ -70,7 +70,7 @@ async def main() -> None:
     # >>> Sensor(...)
 
     # Get "listeners" (conditions that a sensor is monitoring) for all sensors:
-    response = await client.sensor.async_listeners()
+    response = await client.listener.async_all()
     # >>> [Listener(...), Listener(...), ...]
 
     # Get user preferences:

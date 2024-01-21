@@ -3,11 +3,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from aionotion.sensor.models import (
-    ListenerAllResponse,
-    SensorAllResponse,
-    SensorGetResponse,
-)
+from aionotion.sensor.models import Sensor as SensorModel
+from aionotion.sensor.models import SensorAllResponse, SensorGetResponse
 
 if TYPE_CHECKING:
     from aionotion.client import Client
@@ -24,17 +21,18 @@ class Sensor:
         """
         self._client = client
 
-    async def async_all(self) -> SensorAllResponse:
+    async def async_all(self) -> list[SensorModel]:
         """Get all sensors.
 
         Returns:
             A validated API response payload.
         """
-        return await self._client.async_request_and_validate(
+        response: SensorAllResponse = await self._client.async_request_and_validate(
             "get", "/sensors", SensorAllResponse
         )
+        return response.sensors
 
-    async def async_get(self, sensor_id: int) -> SensorGetResponse:
+    async def async_get(self, sensor_id: int) -> SensorModel:
         """Get a sensor by ID.
 
         Args:
@@ -43,16 +41,7 @@ class Sensor:
         Returns:
             A validated API response payload.
         """
-        return await self._client.async_request_and_validate(
+        response: SensorGetResponse = await self._client.async_request_and_validate(
             "get", f"/sensors/{sensor_id}", SensorGetResponse
         )
-
-    async def async_listeners(self) -> ListenerAllResponse:
-        """Get all listeners for all sensors.
-
-        Returns:
-            A validated API response payload.
-        """
-        return await self._client.async_request_and_validate(
-            "get", "/sensor/listeners", ListenerAllResponse
-        )
+        return response.sensors

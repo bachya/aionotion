@@ -163,6 +163,18 @@ def bridge_get_response_fixture() -> dict[str, Any]:
     return cast(dict[str, Any], json.loads(load_fixture("bridge_get_response.json")))
 
 
+@pytest.fixture(name="listener_definitions_response", scope="session")
+def listener_definitions_response_fixture() -> dict[str, Any]:
+    """Return a fixture for a successful GET /api/listener_definitions response.
+
+    Returns:
+        A fixture for a successful GET /api/listener_definitions response.
+    """
+    return cast(
+        dict[str, Any], json.loads(load_fixture("listener_definitions_response.json"))
+    )
+
+
 @pytest.fixture(name="sensor_all_response", scope="session")
 def sensor_all_response_fixture() -> dict[str, Any]:
     """Return a fixture for a successful GET /api/sensors response.

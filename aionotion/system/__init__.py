@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from aionotion.system.models import System as SystemModel
 from aionotion.system.models import SystemAllResponse, SystemGetResponse
 
 if TYPE_CHECKING:
@@ -20,17 +21,18 @@ class System:
         """
         self._client = client
 
-    async def async_all(self) -> SystemAllResponse:
+    async def async_all(self) -> list[SystemModel]:
         """Get all systems.
 
         Returns:
             An API response payload.
         """
-        return await self._client.async_request_and_validate(
+        response: SystemAllResponse = await self._client.async_request_and_validate(
             "get", "/systems", SystemAllResponse
         )
+        return response.systems
 
-    async def async_get(self, system_id: int) -> SystemGetResponse:
+    async def async_get(self, system_id: int) -> SystemModel:
         """Get a system by ID.
 
         Args:
@@ -39,6 +41,7 @@ class System:
         Returns:
             An API response payload.
         """
-        return await self._client.async_request_and_validate(
+        response: SystemGetResponse = await self._client.async_request_and_validate(
             "get", f"/systems/{system_id}", SystemGetResponse
         )
+        return response.systems
