@@ -1,6 +1,7 @@
 """Define tests for users."""
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from typing import Any
 
 import aiohttp
@@ -9,6 +10,44 @@ from aresponses import ResponsesMockServer
 
 from aionotion import async_get_client
 from tests.common import TEST_EMAIL, TEST_PASSWORD, TEST_USER_UUID
+
+
+@pytest.mark.asyncio
+async def test_user_info(
+    authenticated_notion_api_server: ResponsesMockServer,
+    user_info_response: dict[str, Any],
+) -> None:
+    """Test getting user preferences.
+
+    Args:
+        authenticated_notion_api_server: A mock authenticated Notion API server
+        user_info_response: A fixture for a user information response payload.
+    """
+    async with authenticated_notion_api_server:
+        authenticated_notion_api_server.add(
+            "api.getnotion.com",
+            f"/api/users/{TEST_USER_UUID}",
+            "get",
+            response=aiohttp.web_response.json_response(user_info_response, status=200),
+        )
+
+        async with aiohttp.ClientSession() as session:
+            client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
+            user_info = await client.user.async_info()
+            assert user_info.id == 12345
+            assert user_info.uuid == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+            assert user_info.first_name == "The"
+            assert user_info.last_name == "Person"
+            assert user_info.email == "user@email.com"
+            assert user_info.phone_number is None
+            assert user_info.role == "user"
+            assert user_info.organization == "Notion User"
+            assert user_info.created_at == datetime(
+                2019, 4, 30, 1, 35, 3, 781000, tzinfo=timezone.utc
+            )
+            assert user_info.updated_at == datetime(
+                2023, 12, 21, 4, 13, 53, 48000, tzinfo=timezone.utc
+            )
 
 
 @pytest.mark.asyncio

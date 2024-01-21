@@ -31,18 +31,31 @@ async def main() -> None:
 
             bridges = await client.bridge.async_all()
             _LOGGER.info("BRIDGES: %s", bridges)
+            _LOGGER.info("============================================================")
 
             sensors = await client.sensor.async_all()
             _LOGGER.info("SENSORS: %s", sensors)
+            _LOGGER.info("============================================================")
 
             listeners = await client.listener.async_all()
             _LOGGER.info("LISTENERS: %s", listeners)
+            _LOGGER.info("============================================================")
 
             listener_definitions = await client.listener.async_definitions()
             _LOGGER.info("LISTENER DEFINITIONS: %s", listener_definitions)
+            _LOGGER.info("============================================================")
 
             systems = await client.system.async_all()
             _LOGGER.info("SYSTEMS: %s", systems)
+            _LOGGER.info("============================================================")
+
+            user_info = await client.user.async_info()
+            _LOGGER.info("USER_INFO: %s", user_info)
+            _LOGGER.info("============================================================")
+
+            user_preferences = await client.user.async_preferences()
+            _LOGGER.info("USER_PREFERENCES: %s", user_preferences)
+            _LOGGER.info("============================================================")
         except NotionError as err:
             _LOGGER.error("There was an error: %s", err)
 

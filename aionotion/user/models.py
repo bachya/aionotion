@@ -68,6 +68,12 @@ class User(NotionBaseModel):
     )
 
 
+class UserInformationResponse(NotionBaseModel):
+    """Define an API response containing user information."""
+
+    users: User
+
+
 class AuthenticateViaCredentialsResponse(NotionBaseModel):
     """Define an API response for authentication via credentials."""
 

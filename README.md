@@ -46,36 +46,44 @@ async def main() -> None:
     client = await async_get_client("<EMAIL>", "<PASSWORD>", session=session)
 
     # Get all "households" associated with the account:
-    response = await client.system.async_all()
+    systems = await client.system.async_all()
     # >>> [System(...), System(...), ...]
 
     # Get a system by ID:
-    response = await client.system.async_get(12345)
+    system = await client.system.async_get(12345)
     # >>> System(...)
 
     # Get all bridges associated with the account:
-    response = await client.bridge.async_all()
+    bridges = await client.bridge.async_all()
     # >>> [Bridge(...), Bridge(...), ...]
 
     # Get a bridge by ID:
-    response = await client.bridge.async_get(12345)
+    bridge = await client.bridge.async_get(12345)
     # >>> Bridge(...)
 
     # Get all sensors:
-    response = await client.sensor.async_all()
+    sensors = await client.sensor.async_all()
     # >>> [Sensor(...), Sensor(...), ...]
 
     # Get a sensor by ID:
-    response = await client.sensor.async_get(12345)
+    sensor = await client.sensor.async_get(12345)
     # >>> Sensor(...)
 
     # Get "listeners" (conditions that a sensor is monitoring) for all sensors:
-    response = await client.listener.async_all()
+    listeners = await client.listener.async_all()
     # >>> [Listener(...), Listener(...), ...]
+
+    # Get all listener definitions supported by Notion:
+    definitions = await client.listener.async_definitions()
+    # >>> [ListenerDefinition(...), ListenerDefinition(...), ...]
+
+    # Get user info:
+    user_info = await client.user.async_info()
+    # >>> User(...)
 
     # Get user preferences:
     user_preferences = await client.user.async_preferences()
-    # >>> UserPreferencesResponse(...)
+    # >>> UserPreferences(...)
 
 
 asyncio.run(main())

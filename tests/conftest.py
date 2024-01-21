@@ -227,6 +227,16 @@ def system_get_response_fixture() -> dict[str, Any]:
     return cast(dict[str, Any], json.loads(load_fixture("system_get_response.json")))
 
 
+@pytest.fixture(name="user_info_response", scope="session")
+def user_info_response_fixture() -> dict[str, Any]:
+    """Return a fixture for a successful GET /api/users/<ID>/user_info response.
+
+    Returns:
+        A fixture for a successful GET /api/users/<ID>/user_info response.
+    """
+    return cast(dict[str, Any], json.loads(load_fixture("user_info_response.json")))
+
+
 @pytest.fixture(name="user_preferences_response", scope="session")
 def user_preferences_response_fixture() -> dict[str, Any]:
     """Return a fixture for a successful GET /api/users/<ID>/user_preferences response.
