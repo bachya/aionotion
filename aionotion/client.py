@@ -144,7 +144,11 @@ class Client:  # pylint: disable=too-few-public-methods
                 f"/auth/{self.user_uuid}/refresh",
                 AuthenticateViaRefreshTokenResponse,
                 headers={"Accept-Version": "2"},
-                json={"auth": {"refresh_token": self._refresh_token}},
+                json={
+                    "auth": {
+                        "refresh_token": self._refresh_token,
+                    }
+                },
             )
         )
         self._save_tokens_from_auth_response(auth_response)
