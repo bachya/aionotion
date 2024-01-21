@@ -28,6 +28,6 @@ class User:  # pylint: disable=too-few-public-methods
         """
         return await self._client.async_request_and_validate(
             "get",
-            f"users/{self._client.user_uuid}/user_preferences",
+            f"/users/{self._client.user_uuid}/user_preferences",
             UserPreferencesResponse,
         )

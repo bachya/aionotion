@@ -53,17 +53,6 @@ async def main() -> None:
     response = await client.system.async_get(12345)
     # >>> System(...)
 
-    # Create a system (with associated parameters):
-    response = await client.system.async_create({"system_id": 12345, "name": "Test"})
-    # >>> System(...)
-
-    # Update a system with new parameters:
-    response = await client.system.async_update(12345, {"name": "Test"})
-    # >>> System(...)
-
-    # Delete a system by ID:
-    await client.system.async_delete(12345)
-
     # Get all bridges associated with the account:
     response = await client.bridge.async_all()
     # >>> [Bridge(...), Bridge(...), ...]
@@ -71,36 +60,6 @@ async def main() -> None:
     # Get a bridge by ID:
     response = await client.bridge.async_get(12345)
     # >>> Bridge(...)
-
-    # Create a bridge (with associated parameters):
-    response = await client.bridge.async_create({"system_id": 12345, "name": "Test"})
-    # >>> Bridge(...)
-
-    # Update a bridge with new parameters:
-    response = await client.bridge.async_update(12345, {"name": "Test"})
-    # >>> Bridge(...)
-
-    # Reset a bridge (deprovision its WiFi credentials):
-    response = await client.bridge.async_reset(12345)
-    # >>> Bridge(...)
-
-    # Delete a bridge by ID:
-    await client.bridge.async_delete(12345)
-
-    # Get all devices associated with the account:
-    response = await client.device.async_all()
-    # >>> [Device(...), Device(...), ...]
-
-    # Get a device by ID:
-    response = await client.device.async_get(12345)
-    # >>> Device(...)
-
-    # Create a device (with associated parameters):
-    response = await client.device.async_create({"id": 12345})
-    # >>> Device(...)
-
-    # Delete a device by ID:
-    await client.device.async_delete(12345)
 
     # Get all sensors:
     response = await client.sensor.async_all()
@@ -113,25 +72,6 @@ async def main() -> None:
     # Get "listeners" (conditions that a sensor is monitoring) for all sensors:
     response = await client.sensor.async_listeners()
     # >>> [Listener(...), Listener(...), ...]
-
-    # Get "listeners" (conditions that a sensor is monitoring) for a specific sensor;
-    # note that unlike other sensor endpoints, this one requires the sensor UUID, *not*
-    # the sensor ID:
-    response = await client.sensor.async_listeners_for_sensor(
-        "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-    )
-    # >>> [Listener(...), Listener(...), ...]
-
-    # Create a sensor (with associated parameters):
-    response = await client.sensor.async_create({"sensor_id": 12345, "name": "Test"})
-    # >>> Sensor(...)
-
-    # Update a sensor with new parameters:
-    response = await client.sensor.async_update(12345, {"name": "Test"})
-    # >>> Sensor(...)
-
-    # Delete a sensor by ID:
-    await client.sensor.async_delete(12345)
 
     # Get user preferences:
     user_preferences = await client.user.async_preferences()

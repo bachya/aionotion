@@ -120,16 +120,16 @@ class ListenerLocalizedStatus(NotionBaseModel):
 class InsightOrigin(NotionBaseModel):
     """Define an insight origin."""
 
-    type: Optional[str]
-    id: Optional[str]
+    id: str
+    type: str
 
 
 class PrimaryListenerInsight(NotionBaseModel):
     """Define a primary listener insight."""
 
-    origin: Optional[InsightOrigin]
-    value: Optional[str]
-    data_received_at: Optional[datetime]
+    origin: InsightOrigin
+    value: str
+    data_received_at: datetime
 
     validate_data_received_at = field_validator("data_received_at", mode="before")(
         validate_timestamp
@@ -169,14 +169,13 @@ class Listener(NotionBaseModel):
     created_at: datetime
     model_version: str
     sensor_id: str
+    status_localized: ListenerLocalizedStatus
     insights: ListenerInsights
     configuration: dict[str, Any]
     pro_monitoring_status: Literal["eligible", "ineligible"]
 
     device_type: str = Field(alias="type")
     listener_kind: ListenerKind = Field(alias="definition_id")
-    status: Optional[ListenerStatus] = None
-    status_localized: Optional[ListenerLocalizedStatus] = None
 
     @field_validator("listener_kind", mode="before")
     @classmethod

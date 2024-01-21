@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from typing import Any, cast
+from uuid import uuid4
 
 from aiohttp import ClientSession, ClientTimeout
 from aiohttp.client_exceptions import ClientError
@@ -9,16 +10,16 @@ from pydantic import ValidationError
 
 from aionotion.bridge import Bridge
 from aionotion.const import LOGGER
-from aionotion.device import Device
 from aionotion.errors import InvalidCredentialsError, RequestError
 from aionotion.helpers.model import NotionBaseModel, NotionBaseModelT
 from aionotion.sensor import Sensor
 from aionotion.system import System
 from aionotion.user import User
 
-API_BASE: str = "https://api.getnotion.com/api"
+API_BASE = "https://api.getnotion.com/api"
+API_VERSION = "2"
 
-DEFAULT_TIMEOUT: int = 10
+DEFAULT_TIMEOUT = 10
 
 
 class Client:  # pylint: disable=too-few-public-methods
@@ -31,11 +32,11 @@ class Client:  # pylint: disable=too-few-public-methods
             session: An optional aiohttp ClientSession.
         """
         self._session = session
+        self._session_uuid = uuid4().hex
         self._token: str | None = None
         self.user_uuid: str = ""
 
         self.bridge = Bridge(self)
-        self.device = Device(self)
         self.sensor = Sensor(self)
         self.system = System(self)
         self.user = User(self)
@@ -49,12 +50,18 @@ class Client:  # pylint: disable=too-few-public-methods
         """
         auth_response = await self.async_request(
             "post",
-            "users/sign_in",
-            json={"sessions": {"email": email, "password": password}},
+            "/auth/login",
+            json={
+                "auth": {
+                    "email": email,
+                    "password": password,
+                    "session_name": self._session_uuid,
+                }
+            },
         )
 
-        self._token = auth_response["session"]["authentication_token"]
-        self.user_uuid = auth_response["session"]["user_id"]
+        self._token = auth_response["auth"]["jwt"]
+        self.user_uuid = auth_response["user"]["id"]
 
     async def async_request(
         self, method: str, endpoint: str, **kwargs: dict[str, Any]
@@ -73,9 +80,10 @@ class Client:  # pylint: disable=too-few-public-methods
             InvalidCredentialsError: Raised upon invalid credentials.
             RequestError: Raised upon an underlying HTTP error.
         """
-        url: str = f"{API_BASE}/{endpoint}"
+        url: str = f"{API_BASE}{endpoint}"
 
         kwargs.setdefault("headers", {})
+        kwargs["headers"]["Accept-Version"] = API_VERSION
         if self._token:
             kwargs["headers"]["Authorization"] = f"Token token={self._token}"
 

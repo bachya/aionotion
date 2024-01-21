@@ -1,0 +1,14 @@
+{
+  "surface_types": [
+    {
+      "id": "03c8d427-54e7-4615-8ef7-4e10f28b0070",
+      "name": "door",
+      "slug": "door"
+    },
+    {
+      "id": "29bd2dfa-25a7-4a9a-84dd-e8deecbebe36",
+      "name": "window",
+      "slug": "window"
+    }
+  ]
+}

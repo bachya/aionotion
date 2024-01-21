@@ -34,7 +34,7 @@ def authenticated_notion_api_server_fixture(
     server = ResponsesMockServer()
     server.add(
         "api.getnotion.com",
-        "/api/users/sign_in",
+        "/api/auth/login",
         "post",
         response=aiohttp.web_response.json_response(auth_success_response, status=200),
     )

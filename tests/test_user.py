@@ -23,7 +23,7 @@ async def test_user_preferences(
     async with authenticated_notion_api_server:
         authenticated_notion_api_server.add(
             "api.getnotion.com",
-            "/api/users/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/user_preferences",
+            "/api/users/12345/user_preferences",
             "get",
             response=aiohttp.web_response.json_response(
                 json.loads(load_fixture("user_preferences_response.json")), status=200

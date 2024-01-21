@@ -40,7 +40,7 @@ async def test_api_error(
                 client = await async_get_client(
                     TEST_EMAIL, TEST_PASSWORD, session=session
                 )
-                await client.async_request("get", "bad_endpoint")
+                await client.async_request("get", "/bad_endpoint")
 
     aresponses.assert_plan_strictly_followed()
 
@@ -57,7 +57,7 @@ async def test_auth_failure(
     """
     aresponses.add(
         "api.getnotion.com",
-        "/api/users/sign_in",
+        "/api/auth/login",
         "post",
         response=aiohttp.web_response.json_response(auth_failure_response, status=401),
     )
