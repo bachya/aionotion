@@ -32,18 +32,21 @@ DEFAULT_TIMEOUT = 10
 class Client:  # pylint: disable=too-few-public-methods
     """Define the API object."""
 
-    def __init__(self, *, session: ClientSession | None = None) -> None:
+    def __init__(
+        self, *, session: ClientSession | None = None, session_name: str | None = None
+    ) -> None:
         """Initialize.
 
         Args:
             session: An optional aiohttp ClientSession.
+            session_name: An optional session name to use for authentication.
         """
         self._access_token: str | None = None
         self._access_token_expires_at: datetime | None = None
         self._refresh_token: str | None = None
         self._refreshing_access_token = False
         self._session = session
-        self._session_uuid = uuid4().hex
+        self._session_name = session_name or uuid4().hex
         self.user_uuid: str = ""
 
         self.bridge = Bridge(self)
@@ -86,7 +89,7 @@ class Client:  # pylint: disable=too-few-public-methods
                     "auth": {
                         "email": email,
                         "password": password,
-                        "session_name": self._session_uuid,
+                        "session_name": self._session_name,
                     }
                 },
             )
@@ -125,6 +128,35 @@ class Client:  # pylint: disable=too-few-public-methods
                 json={"auth": {"refresh_token": self._refresh_token}},
             )
         )
+        self._save_tokens_from_auth_response(auth_response)
+
+    async def async_legacy_authenticate_from_credentials(
+        self, email: str, password: str
+    ) -> None:
+        """Authenticate via username and password (via a legacy endpoint).
+
+        This is kept in place for compatibility, but should be considered deprecated.
+
+        Args:
+            email: The email address of a Notion account.
+            password: The account password.
+        """
+        auth_response: AuthenticateViaCredentialsResponse = (
+            await self.async_request_and_validate(
+                "post",
+                "/auth/login",
+                AuthenticateViaCredentialsResponse,
+                json={
+                    "auth": {
+                        "email": email,
+                        "password": password,
+                        "session_name": self._session_name,
+                    }
+                },
+            )
+        )
+
+        self.user_uuid = str(auth_response.user.id)
         self._save_tokens_from_auth_response(auth_response)
 
     async def async_request(
@@ -213,7 +245,12 @@ class Client:  # pylint: disable=too-few-public-methods
 
 
 async def async_get_client(
-    email: str, password: str, *, session: ClientSession | None = None
+    email: str,
+    password: str,
+    *,
+    session: ClientSession | None = None,
+    session_name: str | None = None,
+    use_legacy_auth: bool = False,
 ) -> Client:
     """Return an authenticated API object.
 
@@ -221,10 +258,15 @@ async def async_get_client(
         email: The email address of a Notion account.
         password: The account password.
         session: An optional aiohttp ClientSession.
+        session_name: An optional session name to use for authentication.
+        use_legacy_auth: Whether to use the legacy authentication endpoint.
 
     Returns:
         An authenticated Client object.
     """
-    client = Client(session=session)
-    await client.async_authenticate_from_credentials(email, password)
+    client = Client(session=session, session_name=session_name)
+    if use_legacy_auth:
+        await client.async_legacy_authenticate_from_credentials(email, password)
+    else:
+        await client.async_authenticate_from_credentials(email, password)
     return client
