@@ -168,6 +168,10 @@ class Client:
             email: The email address of a Notion account.
             password: The account password.
         """
+        LOGGER.warning(
+            "Using legacy authentication endpoint; this is deprecated and will be "
+            "removed in a future release"
+        )
         auth_response: AuthenticateViaCredentialsLegacyResponse = (
             await self.async_request_and_validate(
                 "post",
@@ -299,10 +303,6 @@ async def async_get_client(
     """
     client = Client(session=session, session_name=session_name)
     if use_legacy_auth:
-        LOGGER.warning(
-            "Using legacy authentication endpoint; this is deprecated and will be "
-            "removed in a future release"
-        )
         await client.async_legacy_authenticate_from_credentials(email, password)
     else:
         await client.async_authenticate_from_credentials(email, password)
