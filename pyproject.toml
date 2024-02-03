@@ -6,7 +6,7 @@ build-backend = "poetry.core.masonry.api"
 target-version = ["py39"]
 
 [tool.coverage.report]
-exclude_lines = ["raise NotImplementedError", "TYPE_CHECKING"]
+exclude_lines = ["raise NotImplementedError", "TYPE_CHECKING", "ImportError"]
 fail_under = 100
 show_missing = true
 
@@ -30,7 +30,7 @@ ignore_missing_imports = true
 no_implicit_optional = true
 platform = "linux"
 plugins = ["pydantic.mypy"]
-python_version = "3.10"
+python_version = "3.12"
 show_error_codes = true
 strict_equality = true
 warn_incomplete_stub = true
@@ -60,6 +60,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
+PyJWT = ">=2.4.0"
 aiohttp = ">=3.9.0"
 certifi = ">=2023.07.22"
 frozenlist = "^1.4.0"
@@ -87,7 +88,8 @@ pytest-cov = "^4.0.0"
 pyupgrade = "^3.1.0"
 pyyaml = "^6.0.1"
 requests = ">=2.31.0"
-ruff = ">=0.0.261,<0.2.1"
+ruff = ">=0.0.261"
+types-pyjwt = "^1.7.1"
 vulture = "^2.6"
 yamllint = "^1.28.0"
 
@@ -120,8 +122,10 @@ load-plugins = [
 
 [tool.pylint."MESSAGES CONTROL"]
 # Reasons disabled:
+# invalid-enum-extension – We need to backport StrEnums until we drop Python 3.10
 # unnecessary-pass - This can hurt readability
 disable = [
+  "invalid-enum-extension",
   "unnecessary-pass"
 ]
 extension-pkg-whitelist = "pydantic"

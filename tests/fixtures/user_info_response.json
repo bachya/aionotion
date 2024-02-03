@@ -1,0 +1,14 @@
+{
+  "users": {
+    "id": 12345,
+    "uuid": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "first_name": "The",
+    "last_name": "Person",
+    "email": "user@email.com",
+    "phone_number": null,
+    "role": "user",
+    "organization": "Notion User",
+    "created_at": "2019-04-30T01:35:03.781Z",
+    "updated_at": "2023-12-21T04:13:53.048Z"
+  }
+}

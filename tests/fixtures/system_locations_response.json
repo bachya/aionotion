@@ -1,0 +1,15 @@
+{
+  "locations": [
+    {
+      "id": 123456,
+      "display_name": "Kitchen",
+      "created_at": "2019-06-16T21:11:01.846Z",
+      "updated_at": "2019-06-16T21:11:01.846Z",
+      "sensor_ids": ["xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"],
+      "system_id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+      "links": {
+        "sensors": [123456]
+      }
+    }
+  ]
+}

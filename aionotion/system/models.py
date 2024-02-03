@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Optional
 
-from pydantic import Field, field_validator
+from pydantic import field_validator
 
 from aionotion.helpers.model import NotionBaseModel
 from aionotion.helpers.validator import validate_timestamp
@@ -58,4 +58,4 @@ class SystemAllResponse(NotionBaseModel):
 class SystemGetResponse(NotionBaseModel):
     """Define an API response containing a single system."""
 
-    system: System = Field(alias="systems")
+    systems: System

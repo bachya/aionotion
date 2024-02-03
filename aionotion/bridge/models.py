@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Optional, Union
 
-from pydantic import Field, field_validator
+from pydantic import field_validator
 
 from aionotion.helpers.model import NotionBaseModel
 from aionotion.helpers.validator import validate_timestamp
@@ -50,10 +50,10 @@ class Bridge(NotionBaseModel):
 class BridgeAllResponse(NotionBaseModel):
     """Define an API response containing all bridges."""
 
-    bridges: list[Bridge] = Field(alias="base_stations")
+    base_stations: list[Bridge]
 
 
 class BridgeGetResponse(NotionBaseModel):
     """Define an API response containing a single bridge."""
 
-    bridge: Bridge = Field(alias="base_stations")
+    base_stations: Bridge

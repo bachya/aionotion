@@ -1,0 +1,43 @@
+{
+  "system_users": [
+    {
+      "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+      "role": "owner",
+      "mode": "home",
+      "created_at": "2019-04-30T01:35:21.885Z",
+      "updated_at": "2019-07-09T04:57:01.075Z",
+      "user": {
+        "id": 45868,
+        "uuid": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+        "first_name": "The",
+        "last_name": "Person",
+        "email": "user@email.com",
+        "phone_number": null,
+        "role": "user",
+        "organization": "Notion User",
+        "created_at": "2019-04-30T01:35:03.781Z",
+        "updated_at": "2023-12-21T04:13:53.048Z"
+      },
+      "system": {
+        "uuid": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+        "name": "Home",
+        "mode": "home",
+        "partners": [],
+        "latitude": 51.5286416,
+        "longitude": -0.1015987,
+        "timezone_id": "Europe/London",
+        "created_at": "2019-04-30T01:35:21.870Z",
+        "updated_at": "2019-07-09T04:57:01.068Z",
+        "night_time_start": "2019-05-01T04:00:00.000Z",
+        "night_time_end": "2019-05-01T13:00:00.000Z",
+        "id": 32453,
+        "locality": "London",
+        "postal_code": "12345",
+        "administrative_area": "England",
+        "fire_number": "(123) 456.7890",
+        "police_number": "(123) 456.7890",
+        "emergency_number": "(123) 456.7890"
+      }
+    }
+  ]
+}

@@ -1,0 +1,251 @@
+{
+  "listener_definitions": [
+    {
+      "id": 0,
+      "name": "battery",
+      "conflict_type": "battery",
+      "priority": 50,
+      "hidden": true,
+      "conflicting_types": [],
+      "resources": {},
+      "compatible_hardware_revisions": [3, 4, 5, 6, 7],
+      "type": "sensor"
+    },
+    {
+      "id": 2,
+      "name": "mold",
+      "conflict_type": "mold",
+      "priority": 4,
+      "hidden": false,
+      "conflicting_types": [],
+      "resources": null,
+      "compatible_hardware_revisions": [5, 6],
+      "type": "sensor"
+    },
+    {
+      "id": 4,
+      "name": "leak",
+      "conflict_type": "probe",
+      "priority": 1,
+      "hidden": false,
+      "conflicting_types": [],
+      "resources": {
+        "install_image": "some_url",
+        "icon": "some_other_url"
+      },
+      "compatible_hardware_revisions": [4, 5, 6],
+      "type": "sensor"
+    },
+    {
+      "id": 13,
+      "name": "garage_door",
+      "conflict_type": "motion",
+      "priority": 7,
+      "hidden": false,
+      "conflicting_types": ["sound"],
+      "resources": {
+        "install_image": "some_url",
+        "icon": "some_other_url"
+      },
+      "compatible_hardware_revisions": [4, 5, 6],
+      "type": "sensor"
+    },
+    {
+      "id": 3,
+      "name": "temperature",
+      "conflict_type": "temperature",
+      "priority": 3,
+      "hidden": false,
+      "conflicting_types": [],
+      "resources": {
+        "install_image": "some_url",
+        "icon": "some_other_url"
+      },
+      "compatible_hardware_revisions": [4, 5, 6],
+      "type": "sensor"
+    },
+    {
+      "id": 35,
+      "name": "system_status",
+      "conflict_type": "system_status",
+      "priority": 50,
+      "hidden": true,
+      "conflicting_types": [],
+      "resources": {},
+      "compatible_hardware_revisions": [],
+      "type": "system"
+    },
+    {
+      "id": 25,
+      "name": "firmware",
+      "conflict_type": "firmware",
+      "priority": 50,
+      "hidden": true,
+      "conflicting_types": [],
+      "resources": {},
+      "compatible_hardware_revisions": [0, 2, 3, 4, 5],
+      "type": "bridge"
+    },
+    {
+      "id": 1,
+      "name": "waterflow",
+      "conflict_type": "waterflow",
+      "priority": 1,
+      "hidden": false,
+      "conflicting_types": [],
+      "resources": null,
+      "compatible_hardware_revisions": [7],
+      "type": "sensor"
+    },
+    {
+      "id": 23,
+      "name": "occupancy",
+      "conflict_type": "occupancy",
+      "priority": 50,
+      "hidden": true,
+      "conflicting_types": [],
+      "resources": {},
+      "compatible_hardware_revisions": [],
+      "type": "system"
+    },
+    {
+      "id": 10,
+      "name": "connection",
+      "conflict_type": "connection",
+      "priority": 50,
+      "hidden": true,
+      "conflicting_types": [],
+      "resources": {},
+      "compatible_hardware_revisions": [3, 4, 5, 6, 7],
+      "type": "sensor"
+    },
+    {
+      "id": 26,
+      "name": "connection",
+      "conflict_type": "connection",
+      "priority": 50,
+      "hidden": true,
+      "conflicting_types": [],
+      "resources": {},
+      "compatible_hardware_revisions": [0, 2, 3, 4, 5],
+      "type": "bridge"
+    },
+    {
+      "id": 7,
+      "name": "alarm",
+      "conflict_type": "sound",
+      "priority": 2,
+      "hidden": false,
+      "conflicting_types": ["motion"],
+      "resources": {
+        "install_image": "some_url",
+        "icon": "some_other_url"
+      },
+      "compatible_hardware_revisions": [4, 5, 6],
+      "type": "sensor"
+    },
+    {
+      "id": 24,
+      "name": "firmware",
+      "conflict_type": "firmware",
+      "priority": 50,
+      "hidden": true,
+      "conflicting_types": [],
+      "resources": {},
+      "compatible_hardware_revisions": [3, 4, 5, 6, 7],
+      "type": "sensor"
+    },
+    {
+      "id": 34,
+      "name": "escalation",
+      "conflict_type": "escalation",
+      "priority": 50,
+      "hidden": true,
+      "conflicting_types": [],
+      "resources": {},
+      "compatible_hardware_revisions": [],
+      "type": "integration"
+    },
+    {
+      "id": 16,
+      "name": "window_hinged_horizontal",
+      "conflict_type": "motion",
+      "priority": 8,
+      "hidden": false,
+      "conflicting_types": ["sound"],
+      "resources": {
+        "install_image": "some_url",
+        "icon": "some_other_url"
+      },
+      "compatible_hardware_revisions": [4, 5, 6],
+      "type": "sensor"
+    },
+    {
+      "id": 33,
+      "name": "occupancy",
+      "conflict_type": "occupancy",
+      "priority": 50,
+      "hidden": true,
+      "conflicting_types": [],
+      "resources": {},
+      "compatible_hardware_revisions": [],
+      "type": "system_user"
+    },
+    {
+      "id": 5,
+      "name": "safe",
+      "conflict_type": "motion",
+      "priority": 9,
+      "hidden": false,
+      "conflicting_types": ["sound"],
+      "resources": {
+        "install_image": "some_url",
+        "icon": "some_other_url"
+      },
+      "compatible_hardware_revisions": [4, 5, 6],
+      "type": "sensor"
+    },
+    {
+      "id": 32,
+      "name": "sliding",
+      "conflict_type": "motion",
+      "priority": 6,
+      "hidden": false,
+      "conflicting_types": ["sound"],
+      "resources": {
+        "install_image": "some_url",
+        "icon": "some_other_url"
+      },
+      "compatible_hardware_revisions": [4, 5, 6],
+      "type": "sensor"
+    },
+    {
+      "id": 12,
+      "name": "window_hinged_vertical",
+      "conflict_type": "motion",
+      "priority": 8,
+      "hidden": false,
+      "conflicting_types": ["sound"],
+      "resources": {
+        "install_image": "some_url",
+        "icon": "some_other_url"
+      },
+      "compatible_hardware_revisions": [4, 5, 6],
+      "type": "sensor"
+    },
+    {
+      "id": 6,
+      "name": "door",
+      "conflict_type": "motion",
+      "priority": 5,
+      "hidden": false,
+      "conflicting_types": ["sound"],
+      "resources": {
+        "install_image": "some_url",
+        "icon": "some_other_url"
+      },
+      "compatible_hardware_revisions": [4, 5, 6],
+      "type": "sensor"
+    }
+  ]
+}

@@ -1,7 +1,6 @@
 """Define tests for systems."""
 from __future__ import annotations
 
-import json
 from datetime import datetime, timezone
 
 import aiohttp
@@ -10,19 +9,21 @@ from aresponses import ResponsesMockServer
 
 from aionotion import async_get_client
 
-from .common import TEST_EMAIL, TEST_PASSWORD, load_fixture
+from .common import TEST_EMAIL, TEST_PASSWORD
 
 
 @pytest.mark.asyncio
 async def test_system_all(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
+    system_all_response: dict[str, str],
 ) -> None:
     """Test getting all systems.
 
     Args:
         aresponses: An aresponses server.
         authenticated_notion_api_server: A mock authenticated Notion API server
+        system_all_response: A fixture for a system all response.
     """
     async with authenticated_notion_api_server:
         authenticated_notion_api_server.add(
@@ -30,131 +31,42 @@ async def test_system_all(
             "/api/systems",
             "get",
             response=aiohttp.web_response.json_response(
-                json.loads(load_fixture("system_all_response.json")), status=200
+                system_all_response, status=200
             ),
         )
 
         async with aiohttp.ClientSession() as session:
             client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
-            response = await client.system.async_all()
-            assert len(response.systems) == 1
-
-            assert response.systems[0].uuid == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-            assert response.systems[0].name == "Home"
-            assert response.systems[0].mode == "home"
-            assert response.systems[0].partners == []
-            assert response.systems[0].latitude == 89.0
-            assert response.systems[0].longitude == -170.0
-            assert response.systems[0].timezone_id == "Some/Timezone"
-            assert response.systems[0].created_at == datetime(
+            systems = await client.system.async_all()
+            assert len(systems) == 1
+            assert systems[0].uuid == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+            assert systems[0].name == "Home"
+            assert systems[0].mode == "home"
+            assert systems[0].partners == []
+            assert systems[0].latitude == 89.0
+            assert systems[0].longitude == -170.0
+            assert systems[0].timezone_id == "Some/Timezone"
+            assert systems[0].created_at == datetime(
                 2019, 4, 30, 1, 35, 21, 870000, tzinfo=timezone.utc
             )
-            assert response.systems[0].updated_at == datetime(
+            assert systems[0].updated_at == datetime(
                 2019, 7, 9, 4, 57, 1, 68000, tzinfo=timezone.utc
             )
-            assert response.systems[0].night_time_start == datetime(
+            assert systems[0].night_time_start == datetime(
                 2019, 5, 1, 4, 0, tzinfo=timezone.utc
             )
-            assert response.systems[0].night_time_end == datetime(
+            assert systems[0].night_time_end == datetime(
                 2019, 5, 1, 13, 0, tzinfo=timezone.utc
             )
-            assert response.systems[0].id == 12345
-            assert response.systems[0].locality == "Moon"
-            assert response.systems[0].postal_code == "11111"
-            assert response.systems[0].administrative_area == "Moon"
-            assert response.systems[0].fire_number == "(123) 456-7890"
-            assert response.systems[0].police_number == "(123) 456-7890"
-            assert response.systems[0].emergency_number == "(123) 456-7890"
-            assert response.systems[0].address is None
-            assert response.systems[0].notion_pro_permit is None
-
-    aresponses.assert_plan_strictly_followed()
-
-
-@pytest.mark.asyncio
-async def test_system_create(
-    aresponses: ResponsesMockServer,
-    authenticated_notion_api_server: ResponsesMockServer,
-) -> None:
-    """Test creating a system.
-
-    Args:
-        aresponses: An aresponses server.
-        authenticated_notion_api_server: A mock authenticated Notion API server
-    """
-    async with authenticated_notion_api_server:
-        authenticated_notion_api_server.add(
-            "api.getnotion.com",
-            "/api/systems",
-            "post",
-            response=aiohttp.web_response.json_response(
-                json.loads(load_fixture("system_create_response.json")), status=200
-            ),
-        )
-
-        async with aiohttp.ClientSession() as session:
-            client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
-            response = await client.system.async_create(
-                {"name": "New System", "id": 12345}
-            )
-            assert response.system.uuid == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-            assert response.system.name == "New System"
-            assert response.system.mode == "home"
-            assert response.system.partners == []
-            assert response.system.latitude == 89.0
-            assert response.system.longitude == -170.0
-            assert response.system.timezone_id == "Some/Timezone"
-            assert response.system.created_at == datetime(
-                2019, 4, 30, 1, 35, 21, 870000, tzinfo=timezone.utc
-            )
-            assert response.system.updated_at == datetime(
-                2019, 7, 9, 4, 57, 1, 68000, tzinfo=timezone.utc
-            )
-            assert response.system.night_time_start == datetime(
-                2019, 5, 1, 4, 0, tzinfo=timezone.utc
-            )
-            assert response.system.night_time_end == datetime(
-                2019, 5, 1, 13, 0, tzinfo=timezone.utc
-            )
-            assert response.system.id == 12345
-            assert response.system.locality == "Moon"
-            assert response.system.postal_code == "11111"
-            assert response.system.administrative_area == "Moon"
-            assert response.system.fire_number == "(123) 456-7890"
-            assert response.system.police_number == "(123) 456-7890"
-            assert response.system.emergency_number == "(123) 456-7890"
-            assert response.system.address is None
-            assert response.system.notion_pro_permit is None
-
-    aresponses.assert_plan_strictly_followed()
-
-
-@pytest.mark.asyncio
-async def test_system_delete(
-    aresponses: ResponsesMockServer,
-    authenticated_notion_api_server: ResponsesMockServer,
-) -> None:
-    """Test deleting a system.
-
-    Args:
-        aresponses: An aresponses server.
-        authenticated_notion_api_server: A mock authenticated Notion API server
-    """
-    async with authenticated_notion_api_server:
-        authenticated_notion_api_server.add(
-            "api.getnotion.com",
-            "/api/systems/12345",
-            "delete",
-            aresponses.Response(
-                text=None,
-                status=200,
-                headers={"Content-Type": "application/json; charset=utf-8"},
-            ),
-        )
-
-        async with aiohttp.ClientSession() as session:
-            client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
-            await client.system.async_delete(12345)
+            assert systems[0].id == 12345
+            assert systems[0].locality == "Moon"
+            assert systems[0].postal_code == "11111"
+            assert systems[0].administrative_area == "Moon"
+            assert systems[0].fire_number == "(123) 456-7890"
+            assert systems[0].police_number == "(123) 456-7890"
+            assert systems[0].emergency_number == "(123) 456-7890"
+            assert systems[0].address is None
+            assert systems[0].notion_pro_permit is None
 
     aresponses.assert_plan_strictly_followed()
 
@@ -163,12 +75,14 @@ async def test_system_delete(
 async def test_system_get(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
+    system_get_response: dict[str, str],
 ) -> None:
     """Test getting a system by ID.
 
     Args:
         aresponses: An aresponses server.
         authenticated_notion_api_server: A mock authenticated Notion API server
+        system_get_response: A fixture for a system get response.
     """
     async with authenticated_notion_api_server:
         authenticated_notion_api_server.add(
@@ -176,98 +90,40 @@ async def test_system_get(
             "/api/systems/12345",
             "get",
             response=aiohttp.web_response.json_response(
-                json.loads(load_fixture("system_get_response.json")), status=200
+                system_get_response, status=200
             ),
         )
 
         async with aiohttp.ClientSession() as session:
             client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
-            response = await client.system.async_get(12345)
-            assert response.system.uuid == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-            assert response.system.name == "Home"
-            assert response.system.mode == "home"
-            assert response.system.partners == []
-            assert response.system.latitude == 89.0
-            assert response.system.longitude == -170.0
-            assert response.system.timezone_id == "Some/Timezone"
-            assert response.system.created_at == datetime(
+            system = await client.system.async_get(12345)
+            assert system.uuid == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+            assert system.name == "Home"
+            assert system.mode == "home"
+            assert system.partners == []
+            assert system.latitude == 89.0
+            assert system.longitude == -170.0
+            assert system.timezone_id == "Some/Timezone"
+            assert system.created_at == datetime(
                 2019, 4, 30, 1, 35, 21, 870000, tzinfo=timezone.utc
             )
-            assert response.system.updated_at == datetime(
+            assert system.updated_at == datetime(
                 2019, 7, 9, 4, 57, 1, 68000, tzinfo=timezone.utc
             )
-            assert response.system.night_time_start == datetime(
+            assert system.night_time_start == datetime(
                 2019, 5, 1, 4, 0, tzinfo=timezone.utc
             )
-            assert response.system.night_time_end == datetime(
+            assert system.night_time_end == datetime(
                 2019, 5, 1, 13, 0, tzinfo=timezone.utc
             )
-            assert response.system.id == 12345
-            assert response.system.locality == "Moon"
-            assert response.system.postal_code == "11111"
-            assert response.system.administrative_area == "Moon"
-            assert response.system.fire_number == "(123) 456-7890"
-            assert response.system.police_number == "(123) 456-7890"
-            assert response.system.emergency_number == "(123) 456-7890"
-            assert response.system.address is None
-            assert response.system.notion_pro_permit is None
-
-    aresponses.assert_plan_strictly_followed()
-
-
-@pytest.mark.asyncio
-async def test_system_update(
-    aresponses: ResponsesMockServer,
-    authenticated_notion_api_server: ResponsesMockServer,
-) -> None:
-    """Test deleting a system.
-
-    Args:
-        aresponses: An aresponses server.
-        authenticated_notion_api_server: A mock authenticated Notion API server
-    """
-    async with authenticated_notion_api_server:
-        authenticated_notion_api_server.add(
-            "api.getnotion.com",
-            "/api/systems/12345",
-            "put",
-            response=aiohttp.web_response.json_response(
-                json.loads(load_fixture("system_update_response.json")), status=200
-            ),
-        )
-
-        async with aiohttp.ClientSession() as session:
-            client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
-            response = await client.system.async_update(
-                12345, {"name": "Updated System Name"}
-            )
-            assert response.system.uuid == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-            assert response.system.name == "Updated System Name"
-            assert response.system.mode == "home"
-            assert response.system.partners == []
-            assert response.system.latitude == 89.0
-            assert response.system.longitude == -170.0
-            assert response.system.timezone_id == "Some/Timezone"
-            assert response.system.created_at == datetime(
-                2019, 4, 30, 1, 35, 21, 870000, tzinfo=timezone.utc
-            )
-            assert response.system.updated_at == datetime(
-                2019, 7, 9, 4, 57, 1, 68000, tzinfo=timezone.utc
-            )
-            assert response.system.night_time_start == datetime(
-                2019, 5, 1, 4, 0, tzinfo=timezone.utc
-            )
-            assert response.system.night_time_end == datetime(
-                2019, 5, 1, 13, 0, tzinfo=timezone.utc
-            )
-            assert response.system.id == 12345
-            assert response.system.locality == "Moon"
-            assert response.system.postal_code == "11111"
-            assert response.system.administrative_area == "Moon"
-            assert response.system.fire_number == "(123) 456-7890"
-            assert response.system.police_number == "(123) 456-7890"
-            assert response.system.emergency_number == "(123) 456-7890"
-            assert response.system.address is None
-            assert response.system.notion_pro_permit is None
+            assert system.id == 12345
+            assert system.locality == "Moon"
+            assert system.postal_code == "11111"
+            assert system.administrative_area == "Moon"
+            assert system.fire_number == "(123) 456-7890"
+            assert system.police_number == "(123) 456-7890"
+            assert system.emergency_number == "(123) 456-7890"
+            assert system.address is None
+            assert system.notion_pro_permit is None
 
     aresponses.assert_plan_strictly_followed()
