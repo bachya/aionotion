@@ -37,7 +37,7 @@ class Listener:
         return response.listeners
 
     async def async_definitions(self) -> list[ListenerDefinition]:
-        """Get all listeners.
+        """Get all listener definitions.
 
         Returns:
             A validated API response payload.
