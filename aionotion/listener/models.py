@@ -6,6 +6,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Literal
 
+import ciso8601
 from mashumaro import DataClassDictMixin, field_options
 
 
@@ -31,7 +32,9 @@ class PrimaryListenerInsight(DataClassDictMixin):
 
     origin: InsightOrigin
     value: str
-    data_received_at: datetime
+    data_received_at: datetime = field(
+        metadata={"deserialize": ciso8601.parse_datetime}
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -64,7 +67,7 @@ class Listener(DataClassDictMixin):
 
     id: str
     definition_id: int
-    created_at: datetime
+    created_at: datetime = field(metadata={"deserialize": ciso8601.parse_datetime})
     model_version: str
     sensor_id: str
     status_localized: ListenerLocalizedStatus

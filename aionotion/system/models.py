@@ -1,9 +1,10 @@
 """Define system models."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 
+import ciso8601
 from mashumaro import DataClassDictMixin
 
 
@@ -18,10 +19,12 @@ class System(DataClassDictMixin):
     latitude: float
     longitude: float
     timezone_id: str
-    created_at: datetime
-    updated_at: datetime
-    night_time_start: datetime
-    night_time_end: datetime
+    created_at: datetime = field(metadata={"deserialize": ciso8601.parse_datetime})
+    updated_at: datetime = field(metadata={"deserialize": ciso8601.parse_datetime})
+    night_time_start: datetime = field(
+        metadata={"deserialize": ciso8601.parse_datetime}
+    )
+    night_time_end: datetime = field(metadata={"deserialize": ciso8601.parse_datetime})
     id: int
     locality: str
     postal_code: str

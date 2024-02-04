@@ -1,9 +1,10 @@
 """Define sensor models."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 
+import ciso8601
 from mashumaro import DataClassDictMixin
 
 
@@ -56,12 +57,20 @@ class Sensor(DataClassDictMixin):  # pylint: disable=too-many-instance-attribute
     firmware_version: str
     device_key: str
     encryption_key: bool
-    installed_at: datetime | None
-    calibrated_at: datetime | None
-    last_reported_at: datetime | None
-    missing_at: datetime | None
-    updated_at: datetime
-    created_at: datetime
+    installed_at: datetime | None = field(
+        default=None, metadata={"deserialize": ciso8601.parse_datetime}
+    )
+    calibrated_at: datetime | None = field(
+        default=None, metadata={"deserialize": ciso8601.parse_datetime}
+    )
+    last_reported_at: datetime | None = field(
+        default=None, metadata={"deserialize": ciso8601.parse_datetime}
+    )
+    missing_at: datetime | None = field(
+        default=None, metadata={"deserialize": ciso8601.parse_datetime}
+    )
+    updated_at: datetime = field(metadata={"deserialize": ciso8601.parse_datetime})
+    created_at: datetime = field(metadata={"deserialize": ciso8601.parse_datetime})
     signal_strength: int
     firmware: Firmware
     surface_type: SurfaceType | None

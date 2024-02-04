@@ -1,9 +1,10 @@
 """Define user models."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 
+import ciso8601
 from mashumaro import DataClassDictMixin
 
 
@@ -36,8 +37,8 @@ class LegacyUser(DataClassDictMixin):
     role: str
     organization: str
     authentication_token: str
-    created_at: datetime
-    updated_at: datetime
+    created_at: datetime = field(metadata={"deserialize": ciso8601.parse_datetime})
+    updated_at: datetime = field(metadata={"deserialize": ciso8601.parse_datetime})
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -52,8 +53,8 @@ class User(DataClassDictMixin):
     phone_number: str | None
     role: str
     organization: str
-    created_at: datetime
-    updated_at: datetime
+    created_at: datetime = field(metadata={"deserialize": ciso8601.parse_datetime})
+    updated_at: datetime = field(metadata={"deserialize": ciso8601.parse_datetime})
 
 
 @dataclass(frozen=True, kw_only=True)
