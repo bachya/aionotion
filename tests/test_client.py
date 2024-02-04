@@ -309,6 +309,7 @@ async def test_refresh_token_callback(
 
         # Cancel the callback and refresh the access token again:
         remove_callback()
+        await client.async_authenticate_from_refresh_token()
 
         # Ensure that the callback was called only once:
         refresh_token_callback.assert_called_once_with(client._refresh_token)
