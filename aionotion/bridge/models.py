@@ -1,59 +1,52 @@
 """Define bridge models."""
-# pylint: disable=consider-alternative-union-syntax
 from __future__ import annotations
 
+from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional, Union
 
-from pydantic import field_validator
-
-from aionotion.helpers.model import NotionBaseModel
-from aionotion.helpers.validator import validate_timestamp
+import ciso8601
+from mashumaro import DataClassDictMixin
 
 
-class FirmwareVersion(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class FirmwareVersion(DataClassDictMixin):
     """Define firmware version info."""
 
     wifi: str
     wifi_app: str
-    silabs: Optional[str] = None
-    ti: Optional[str] = None
+    silabs: str | None = None
+    ti: str | None = None
 
 
-class Bridge(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class Bridge(DataClassDictMixin):
     """Define a bridge."""
 
     id: int
-    name: Optional[str]
+    name: str | None
     mode: str
     hardware_id: str
     hardware_revision: int
     firmware_version: FirmwareVersion
-    missing_at: Optional[datetime]
-    created_at: datetime
-    updated_at: datetime
+    missing_at: datetime | None = field(
+        default=None, metadata={"deserialize": ciso8601.parse_datetime}
+    )
+    created_at: datetime = field(metadata={"deserialize": ciso8601.parse_datetime})
+    updated_at: datetime = field(metadata={"deserialize": ciso8601.parse_datetime})
     system_id: int
     firmware: FirmwareVersion
-    links: dict[str, Union[int, str]]
-
-    validate_missing_at = field_validator("missing_at", mode="before")(
-        validate_timestamp
-    )
-    validate_created_at = field_validator("created_at", mode="before")(
-        validate_timestamp
-    )
-    validate_updated_at = field_validator("updated_at", mode="before")(
-        validate_timestamp
-    )
+    links: dict[str, int | str]
 
 
-class BridgeAllResponse(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class BridgeAllResponse(DataClassDictMixin):
     """Define an API response containing all bridges."""
 
     base_stations: list[Bridge]
 
 
-class BridgeGetResponse(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class BridgeGetResponse(DataClassDictMixin):
     """Define an API response containing a single bridge."""
 
     base_stations: Bridge

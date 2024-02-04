@@ -1,45 +1,44 @@
 """Define sensor models."""
-# pylint: disable=consider-alternative-union-syntax
 from __future__ import annotations
 
+from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Literal, Optional
+from typing import Any, Literal
 
-from pydantic import ConfigDict, Field, field_validator
-
-from aionotion.const import LOGGER
-from aionotion.helpers.model import NotionBaseModel
-from aionotion.helpers.validator import validate_timestamp
+import ciso8601
+from mashumaro import DataClassDictMixin, field_options
 
 
-class ListenerLocalizedStatus(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class ListenerLocalizedStatus(DataClassDictMixin):
     """Define a localized listener status."""
 
     state: str
     description: str
 
 
-class InsightOrigin(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class InsightOrigin(DataClassDictMixin):
     """Define an insight origin."""
 
-    id: Optional[str] = None
-    type: Optional[str] = None
+    id: str | None = None
+    type: str | None = None
 
 
-class PrimaryListenerInsight(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class PrimaryListenerInsight(DataClassDictMixin):
     """Define a primary listener insight."""
 
     origin: InsightOrigin
     value: str
-    data_received_at: datetime
-
-    validate_data_received_at = field_validator("data_received_at", mode="before")(
-        validate_timestamp
+    data_received_at: datetime = field(
+        metadata={"deserialize": ciso8601.parse_datetime}
     )
 
 
-class ListenerInsights(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class ListenerInsights(DataClassDictMixin):
     """Define listener insights:"""
 
     primary: PrimaryListenerInsight
@@ -62,55 +61,31 @@ class ListenerKind(Enum):
     UNKNOWN = 99
 
 
-class Listener(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class Listener(DataClassDictMixin):
     """Define a listener."""
 
-    model_config = ConfigDict(frozen=True, protected_namespaces=())
-
     id: str
-    created_at: datetime
+    definition_id: int
+    created_at: datetime = field(metadata={"deserialize": ciso8601.parse_datetime})
     model_version: str
     sensor_id: str
     status_localized: ListenerLocalizedStatus
     insights: ListenerInsights
     configuration: dict[str, Any]
     pro_monitoring_status: Literal["eligible", "ineligible"]
-
-    device_type: str = Field(alias="type")
-    listener_kind: ListenerKind = Field(alias="definition_id")
-
-    @field_validator("listener_kind", mode="before")
-    @classmethod
-    def validate_listener_kind(cls, value: str) -> ListenerKind:
-        """Validate the API key type.
-
-        Args:
-            value: An API key to validate.
-
-        Returns:
-            A parsed ApiKeyType.
-
-        Raises:
-            ValueError: An invalid API key type was received.
-        """
-        try:
-            return ListenerKind(value)
-        except ValueError:
-            LOGGER.warning("Received an unknown listener kind: %s", value)
-            return ListenerKind.UNKNOWN
-
-    validate_created_at = field_validator("created_at", mode="before")(
-        validate_timestamp
-    )
+    device_type: str = field(metadata=field_options(alias="type"))
 
 
-class ListenerAllResponse(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class ListenerAllResponse(DataClassDictMixin):
     """Define an API response containing all listeners."""
 
     listeners: list[Listener]
 
 
-class ListenerDefinition(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class ListenerDefinition(DataClassDictMixin):
     """Define an API response containing all listener definitions."""
 
     id: int
@@ -124,7 +99,8 @@ class ListenerDefinition(NotionBaseModel):
     type: str
 
 
-class ListenerDefinitionResponse(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class ListenerDefinitionResponse(DataClassDictMixin):
     """Define an API response containing all listener definitions."""
 
     listener_definitions: list[ListenerDefinition]

@@ -1,29 +1,31 @@
 """Define user models."""
 from __future__ import annotations
 
+from dataclasses import dataclass, field
 from datetime import datetime
 
-from pydantic import field_validator
-
-from aionotion.helpers.model import NotionBaseModel
-from aionotion.helpers.validator import validate_timestamp
+import ciso8601
+from mashumaro import DataClassDictMixin
 
 
-class AuthTokens(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class AuthTokens(DataClassDictMixin):
     """Define auth tokens."""
 
     jwt: str
     refresh_token: str
 
 
-class LegacySession(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class LegacySession(DataClassDictMixin):
     """Define a legacy Notion session."""
 
     user_id: str
     authentication_token: str
 
 
-class LegacyUser(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class LegacyUser(DataClassDictMixin):
     """Define a legacy Notion user."""
 
     id: int
@@ -35,18 +37,12 @@ class LegacyUser(NotionBaseModel):
     role: str
     organization: str
     authentication_token: str
-    created_at: datetime
-    updated_at: datetime
-
-    validate_created_at = field_validator("created_at", mode="before")(
-        validate_timestamp
-    )
-    validate_updated_at = field_validator("updated_at", mode="before")(
-        validate_timestamp
-    )
+    created_at: datetime = field(metadata={"deserialize": ciso8601.parse_datetime})
+    updated_at: datetime = field(metadata={"deserialize": ciso8601.parse_datetime})
 
 
-class User(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class User(DataClassDictMixin):
     """Define a Notion user."""
 
     id: int
@@ -57,44 +53,42 @@ class User(NotionBaseModel):
     phone_number: str | None
     role: str
     organization: str
-    created_at: datetime
-    updated_at: datetime
-
-    validate_created_at = field_validator("created_at", mode="before")(
-        validate_timestamp
-    )
-    validate_updated_at = field_validator("updated_at", mode="before")(
-        validate_timestamp
-    )
+    created_at: datetime = field(metadata={"deserialize": ciso8601.parse_datetime})
+    updated_at: datetime = field(metadata={"deserialize": ciso8601.parse_datetime})
 
 
-class UserInformationResponse(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class UserInformationResponse(DataClassDictMixin):
     """Define an API response containing user information."""
 
     users: User
 
 
-class AuthenticateViaCredentialsResponse(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class AuthenticateViaCredentialsResponse(DataClassDictMixin):
     """Define an API response for authentication via credentials."""
 
     user: User
     auth: AuthTokens
 
 
-class AuthenticateViaCredentialsLegacyResponse(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class AuthenticateViaCredentialsLegacyResponse(DataClassDictMixin):
     """Define an API response for authentication via credentials (legacy)."""
 
     users: LegacyUser
     session: LegacySession
 
 
-class AuthenticateViaRefreshTokenResponse(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class AuthenticateViaRefreshTokenResponse(DataClassDictMixin):
     """Define an API response for authentication via refresh token."""
 
     auth: AuthTokens
 
 
-class UserPreferences(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class UserPreferences(DataClassDictMixin):
     """Define user preferences."""
 
     user_id: int
@@ -105,7 +99,8 @@ class UserPreferences(NotionBaseModel):
     battery_alerts_enabled: bool
 
 
-class UserPreferencesResponse(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class UserPreferencesResponse(DataClassDictMixin):
     """Define an API response containing all devices."""
 
     user_preferences: UserPreferences

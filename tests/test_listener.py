@@ -9,7 +9,6 @@ import pytest
 from aresponses import ResponsesMockServer
 
 from aionotion import async_get_client
-from aionotion.listener.models import ListenerKind
 from tests.common import TEST_EMAIL, TEST_PASSWORD
 
 
@@ -41,7 +40,7 @@ async def test_listener_all(
             listeners = await client.listener.async_all()
             assert len(listeners) == 1
             assert listeners[0].id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-            assert listeners[0].listener_kind == ListenerKind.UNKNOWN
+            assert listeners[0].definition_id == 24
             assert listeners[0].created_at == datetime(
                 2019, 6, 17, 3, 29, 45, 722000, tzinfo=timezone.utc
             )
