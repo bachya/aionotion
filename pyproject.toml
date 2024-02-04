@@ -29,7 +29,6 @@ follow_imports = "silent"
 ignore_missing_imports = true
 no_implicit_optional = true
 platform = "linux"
-plugins = ["pydantic.mypy"]
 python_version = "3.12"
 show_error_codes = true
 strict_equality = true
@@ -64,7 +63,7 @@ PyJWT = ">=2.4.0"
 aiohttp = ">=3.9.0"
 certifi = ">=2023.07.22"
 frozenlist = "^1.4.0"
-pydantic = ">=2.0.0,<3.0.0"
+mashumaro = "^3.12"
 python = "^3.10"
 yarl = ">=1.9.2"
 
@@ -128,7 +127,6 @@ disable = [
   "invalid-enum-extension",
   "unnecessary-pass"
 ]
-extension-pkg-whitelist = "pydantic"
 
 [tool.pylint.REPORTS]
 score = false

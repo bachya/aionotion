@@ -1,30 +1,29 @@
 """Define sensor models."""
-# pylint: disable=consider-alternative-union-syntax
 from __future__ import annotations
 
+from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional
 
-from pydantic import field_validator
-
-from aionotion.helpers.model import NotionBaseModel
-from aionotion.helpers.validator import validate_timestamp
+from mashumaro import DataClassDictMixin
 
 
-class Bridge(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class Bridge(DataClassDictMixin):
     """Define a bridge representation."""
 
     id: int
     hardware_id: str
 
 
-class Firmware(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class Firmware(DataClassDictMixin):
     """Define firmware information."""
 
     status: str
 
 
-class SurfaceType(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class SurfaceType(DataClassDictMixin):
     """Define a surface type."""
 
     id: str
@@ -32,14 +31,16 @@ class SurfaceType(NotionBaseModel):
     slug: str
 
 
-class User(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class User(DataClassDictMixin):
     """Define a user representation."""
 
     id: int
     email: str
 
 
-class Sensor(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class Sensor(DataClassDictMixin):  # pylint: disable=too-many-instance-attributes
     """Define a sensor."""
 
     id: int
@@ -55,43 +56,26 @@ class Sensor(NotionBaseModel):
     firmware_version: str
     device_key: str
     encryption_key: bool
-    installed_at: Optional[datetime]
-    calibrated_at: Optional[datetime]
-    last_reported_at: Optional[datetime]
-    missing_at: Optional[datetime]
+    installed_at: datetime | None
+    calibrated_at: datetime | None
+    last_reported_at: datetime | None
+    missing_at: datetime | None
     updated_at: datetime
     created_at: datetime
     signal_strength: int
     firmware: Firmware
-    surface_type: Optional[SurfaceType]
-
-    validate_installed_at = field_validator("installed_at", mode="before")(
-        validate_timestamp
-    )
-    validate_calibrated_at = field_validator("calibrated_at", mode="before")(
-        validate_timestamp
-    )
-    validate_last_reported_at = field_validator("last_reported_at", mode="before")(
-        validate_timestamp
-    )
-    validate_missing_at = field_validator("missing_at", mode="before")(
-        validate_timestamp
-    )
-    validate_created_at = field_validator("created_at", mode="before")(
-        validate_timestamp
-    )
-    validate_updated_at = field_validator("updated_at", mode="before")(
-        validate_timestamp
-    )
+    surface_type: SurfaceType | None
 
 
-class SensorAllResponse(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class SensorAllResponse(DataClassDictMixin):
     """Define an API response containing all sensors."""
 
     sensors: list[Sensor]
 
 
-class SensorGetResponse(NotionBaseModel):
+@dataclass(frozen=True, kw_only=True)
+class SensorGetResponse(DataClassDictMixin):
     """Define an API response containing a single sensor."""
 
     sensors: Sensor

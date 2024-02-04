@@ -2,17 +2,21 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, cast
+from typing import Any, TypeVar, cast
 from uuid import uuid4
 
 from aiohttp import ClientSession, ClientTimeout
 from aiohttp.client_exceptions import ClientError
-from pydantic import ValidationError
+from mashumaro import DataClassDictMixin
+from mashumaro.exceptions import (
+    MissingField,
+    SuitableVariantNotFoundError,
+    UnserializableDataError,
+)
 
 from aionotion.bridge import Bridge
 from aionotion.const import LOGGER
 from aionotion.errors import InvalidCredentialsError, RequestError
-from aionotion.helpers.model import NotionBaseModel, NotionBaseModelT
 from aionotion.listener import Listener
 from aionotion.sensor import Sensor
 from aionotion.system import System
@@ -28,6 +32,8 @@ from aionotion.util.dt import utc_from_timestamp, utcnow
 API_BASE = "https://api.getnotion.com/api"
 
 DEFAULT_TIMEOUT = 10
+
+NotionBaseModelT = TypeVar("NotionBaseModelT", bound=DataClassDictMixin)
 
 
 def get_token_header_value(access_token: str, refresh_token: str | None) -> str:
@@ -257,7 +263,7 @@ class Client:
         self,
         method: str,
         endpoint: str,
-        model: type[NotionBaseModel],
+        model: type[DataClassDictMixin],
         **kwargs: dict[str, Any],
     ) -> NotionBaseModelT:
         """Make an API request and validate the response against a Pydantic model.
@@ -274,8 +280,12 @@ class Client:
         raw_data = await self.async_request(method, endpoint, **kwargs)
 
         try:
-            return cast(NotionBaseModelT, model.model_validate(raw_data))
-        except ValidationError as err:
+            return cast(NotionBaseModelT, model.from_dict(raw_data))
+        except (
+            MissingField,
+            SuitableVariantNotFoundError,
+            UnserializableDataError,
+        ) as err:
             raise RequestError(
                 f"Error while parsing response from {endpoint}: {err}"
             ) from err
