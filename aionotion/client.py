@@ -84,6 +84,11 @@ class Client:
         self.system = System(self)
         self.user = User(self)
 
+    @property
+    def refresh_token(self) -> str | None:
+        """Return the refresh token."""
+        return self._refresh_token
+
     def _save_tokens_from_auth_response(
         self,
         auth_response: AuthenticateViaCredentialsResponse

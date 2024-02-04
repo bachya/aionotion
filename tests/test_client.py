@@ -171,6 +171,7 @@ async def test_auth_refresh_token_success(
         client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
         old_access_token = client._access_token
         assert old_access_token is not None
+        assert client.refresh_token is not None
 
         await client.async_authenticate_from_refresh_token(refresh_token=refresh_token)
         new_access_token = client._access_token
