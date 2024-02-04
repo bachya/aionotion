@@ -8,7 +8,7 @@ import aiohttp
 import pytest
 from aresponses import ResponsesMockServer
 
-from aionotion import async_get_client
+from aionotion import async_get_client_with_credentials
 from tests.common import TEST_EMAIL, TEST_PASSWORD, TEST_USER_UUID
 
 
@@ -32,7 +32,9 @@ async def test_user_info(
         )
 
         async with aiohttp.ClientSession() as session:
-            client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
+            client = await async_get_client_with_credentials(
+                TEST_EMAIL, TEST_PASSWORD, session=session
+            )
             user_info = await client.user.async_info()
             assert user_info.id == 12345
             assert user_info.uuid == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
@@ -72,7 +74,9 @@ async def test_user_preferences(
         )
 
         async with aiohttp.ClientSession() as session:
-            client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
+            client = await async_get_client_with_credentials(
+                TEST_EMAIL, TEST_PASSWORD, session=session
+            )
             user_preferences = await client.user.async_preferences()
             assert user_preferences.user_id == 12345
             assert user_preferences.military_time_enabled is False

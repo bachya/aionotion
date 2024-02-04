@@ -8,7 +8,7 @@ import aiohttp
 import pytest
 from aresponses import ResponsesMockServer
 
-from aionotion import async_get_client
+from aionotion import async_get_client_with_credentials
 from tests.common import TEST_EMAIL, TEST_PASSWORD
 
 
@@ -36,7 +36,9 @@ async def test_bridge_all(
         )
 
         async with aiohttp.ClientSession() as session:
-            client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
+            client = await async_get_client_with_credentials(
+                TEST_EMAIL, TEST_PASSWORD, session=session
+            )
             bridges = await client.bridge.async_all()
             assert len(bridges) == 1
             assert bridges[0].id == 12345
@@ -88,7 +90,9 @@ async def test_bridge_get(
         )
 
         async with aiohttp.ClientSession() as session:
-            client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
+            client = await async_get_client_with_credentials(
+                TEST_EMAIL, TEST_PASSWORD, session=session
+            )
             bridge = await client.bridge.async_get(12345)
             assert bridge.id == 12345
             assert bridge.name == "Laundry Closet"
