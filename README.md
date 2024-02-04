@@ -89,6 +89,40 @@ async def main() -> None:
 asyncio.run(main())
 ```
 
+## Refresh Token Callbacks
+
+`aionotion` allows implementers to defining callbacks that get called when a new refresh
+token is generated. These callbacks accept a single string parameter (the refresh
+token):
+
+```python
+import asyncio
+
+from aiohttp import ClientSession
+
+from aionotion import async_get_client
+
+
+async def main() -> None:
+    """Create the aiohttp session and run the example."""
+    client = await async_get_client("<EMAIL>", "<PASSWORD>", session=session)
+
+    def do_somethng_with_refresh_token(refresh_token: str) -> None:
+        """Do something interesting."""
+        pass
+
+    # Attach the callback to the client:
+    remove_callback = client.add_refresh_token_callback(do_somethng_with_refresh_token)
+
+    # Later, if you want to remove the callback:
+    remove_callback()
+
+
+asyncio.run(main())
+```
+
+## Connection Pooling
+
 By default, the library creates a new connection to Notion with each coroutine. If you
 are calling a large number of coroutines (or merely want to squeeze out every second of
 runtime savings possible), an [`aiohttp`][aiohttp] `ClientSession` can be used for

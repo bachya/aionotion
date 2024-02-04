@@ -1,6 +1,7 @@
 """Define a base client for interacting with Notion."""
 from __future__ import annotations
 
+from collections.abc import Callable
 from datetime import datetime
 from typing import Any, TypeVar, cast
 from uuid import uuid4
@@ -34,6 +35,7 @@ API_BASE = "https://api.getnotion.com/api"
 DEFAULT_TIMEOUT = 10
 
 NotionBaseModelT = TypeVar("NotionBaseModelT", bound=DataClassDictMixin)
+RefreshTokenCallbackT = Callable[[str], None]
 
 
 def get_token_header_value(access_token: str, refresh_token: str | None) -> str:
@@ -70,6 +72,7 @@ class Client:
         self._access_token: str | None = None
         self._access_token_expires_at: datetime | None = None
         self._refresh_token: str | None = None
+        self._refresh_token_callbacks: list[RefreshTokenCallbackT] = []
         self._refreshing_access_token = False
         self._session = session
         self._session_name = session_name or uuid4().hex
@@ -97,6 +100,22 @@ class Client:
         # Determine the expiration time of the access token:
         decoded_jwt = decode_jwt(self._access_token)
         self._access_token_expires_at = utc_from_timestamp(decoded_jwt["exp"])
+
+        # Call all refresh token callbacks:
+        for callback in self._refresh_token_callbacks:
+            callback(self._refresh_token)
+
+    def add_refresh_token_callback(
+        self, callback: RefreshTokenCallbackT
+    ) -> Callable[[], None]:
+        """Add a callback to be called when the refresh token is updated."""
+        self._refresh_token_callbacks.append(callback)
+
+        def remove_callback() -> None:
+            """Remove the callback from the list of callbacks."""
+            self._refresh_token_callbacks.remove(callback)
+
+        return remove_callback
 
     async def async_authenticate_from_credentials(
         self, email: str, password: str
