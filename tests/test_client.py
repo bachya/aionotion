@@ -16,7 +16,7 @@ from aionotion import async_get_client
 from aionotion.client import Client
 from aionotion.errors import InvalidCredentialsError, RequestError
 
-from .common import TEST_EMAIL, TEST_PASSWORD
+from .common import TEST_EMAIL, TEST_PASSWORD, TEST_USER_UUID
 
 
 @pytest.mark.asyncio
@@ -272,6 +272,46 @@ async def test_no_explicit_session(
     async with authenticated_notion_api_server:
         client = await async_get_client(TEST_EMAIL, TEST_PASSWORD)
         assert client._access_token is not None
+
+    aresponses.assert_plan_strictly_followed()
+
+
+@pytest.mark.asyncio
+async def test_refresh_token_callback(
+    aresponses: ResponsesMockServer,
+    auth_refresh_token_success_response: dict[str, Any],
+    authenticated_notion_api_server: ResponsesMockServer,
+) -> None:
+    """Test that a refresh token callback is called when the access token is refreshed.
+
+    Args:
+        aresponses: An aresponses server.
+        auth_refresh_token_success_response: An API response payload
+        authenticated_notion_api_server: A mock authenticated Notion API server
+    """
+    async with authenticated_notion_api_server:
+        authenticated_notion_api_server.add(
+            "api.getnotion.com",
+            f"/api/auth/{TEST_USER_UUID}/refresh",
+            "post",
+            response=aiohttp.web_response.json_response(
+                auth_refresh_token_success_response, status=200
+            ),
+        )
+
+        client = await async_get_client(TEST_EMAIL, TEST_PASSWORD)
+        assert client._access_token is not None
+
+        # Define and attach a refresh token callback, then refresh the access token:
+        refresh_token_callback = Mock()
+        remove_callback = client.add_refresh_token_callback(refresh_token_callback)
+        await client.async_authenticate_from_refresh_token()
+
+        # Cancel the callback and refresh the access token again:
+        remove_callback()
+
+        # Ensure that the callback was called only once:
+        refresh_token_callback.assert_called_once_with(client._refresh_token)
 
     aresponses.assert_plan_strictly_followed()
 
