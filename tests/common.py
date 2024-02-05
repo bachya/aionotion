@@ -6,6 +6,7 @@ import jwt
 
 TEST_EMAIL = "user@email.com"
 TEST_PASSWORD = "password123"  # noqa: S105
+TEST_REFRESH_TOKEN = "abcde12345"
 TEST_USER_UUID = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 
 

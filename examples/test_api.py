@@ -5,7 +5,7 @@ import os
 
 from aiohttp import ClientSession
 
-from aionotion import async_get_client
+from aionotion import async_get_client_with_credentials
 from aionotion.errors import NotionError
 
 _LOGGER = logging.getLogger()
@@ -27,7 +27,9 @@ async def main() -> None:
 
     async with ClientSession() as session:
         try:
-            client = await async_get_client(EMAIL, PASSWORD, session=session)
+            client = await async_get_client_with_credentials(
+                EMAIL, PASSWORD, session=session
+            )
 
             bridges = await client.bridge.async_all()
             _LOGGER.info("BRIDGES: %s", bridges)

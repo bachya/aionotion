@@ -38,12 +38,22 @@ import asyncio
 
 from aiohttp import ClientSession
 
-from aionotion import async_get_client
+from aionotion import async_get_client_with_credentials
 
 
 async def main() -> None:
     """Create the aiohttp session and run the example."""
-    client = await async_get_client("<EMAIL>", "<PASSWORD>", session=session)
+    client = await async_get_client_with_credentials(
+        "<EMAIL>", "<PASSWORD>", session=session
+    )
+
+    # Get the UUID of the authenticated user:
+    client.user_uuid
+    # >>> xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+    # Get the current refresh token of the authenticated user (BE CAREFUL):
+    client.refresh_token
+    # >>> abcde12345
 
     # Get all "households" associated with the account:
     systems = await client.system.async_all()
@@ -89,7 +99,13 @@ async def main() -> None:
 asyncio.run(main())
 ```
 
-## Refresh Token Callbacks
+## Using a Refresh Token
+
+During the normal course of operations, `aionotion` will automatically maintain a refresh
+token and use it when needed. At times, you may wish to manage that token yourself (so
+that you can use it later)–`aionotion` provides a few useful capabilities there.
+
+### Refresh Token Callbacks
 
 `aionotion` allows implementers to defining callbacks that get called when a new refresh
 token is generated. These callbacks accept a single string parameter (the refresh
@@ -100,12 +116,14 @@ import asyncio
 
 from aiohttp import ClientSession
 
-from aionotion import async_get_client
+from aionotion import async_get_client_with_credentials
 
 
 async def main() -> None:
     """Create the aiohttp session and run the example."""
-    client = await async_get_client("<EMAIL>", "<PASSWORD>", session=session)
+    client = await async_get_client_with_credentials(
+        "<EMAIL>", "<PASSWORD>", session=session
+    )
 
     def do_somethng_with_refresh_token(refresh_token: str) -> None:
         """Do something interesting."""
@@ -116,6 +134,34 @@ async def main() -> None:
 
     # Later, if you want to remove the callback:
     remove_callback()
+
+
+asyncio.run(main())
+```
+
+### Getting a Client via a Refresh Token
+
+All of previous examples retrieved an authenticated client with
+`async_get_client_with_credentials`. However, implementers may also create an
+authenticated client by providing a previously retrieved user UUID and refresh token:
+
+```python
+import asyncio
+
+from aiohttp import ClientSession
+
+from aionotion import async_get_client_with_refresh_token
+
+
+async def main() -> None:
+    """Create the aiohttp session and run the example."""
+    async with ClientSession() as session:
+        # Create a Notion API client:
+        client = await async_get_client_with_refresh_token(
+            "<USER UUID>", "<REFRESH TOKEN>", session=session
+        )
+
+        # Get to work...
 
 
 asyncio.run(main())
@@ -133,14 +179,16 @@ import asyncio
 
 from aiohttp import ClientSession
 
-from aionotion import async_get_client
+from aionotion import async_get_client_with_credentials
 
 
 async def main() -> None:
     """Create the aiohttp session and run the example."""
     async with ClientSession() as session:
         # Create a Notion API client:
-        client = await async_get_client("<EMAIL>", "<PASSWORD>", session=session)
+        client = await async_get_client_with_credentials(
+            "<EMAIL>", "<PASSWORD>", session=session
+        )
 
         # Get to work...
 

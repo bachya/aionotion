@@ -276,7 +276,7 @@ class Client:
         if not use_running_session:
             await session.close()
 
-        LOGGER.debug("Received data from /%s: %s", endpoint, data)
+        LOGGER.debug("Received data from %s: %s", endpoint, data)
 
         if self._refreshing_access_token:
             self._refreshing_access_token = False
@@ -315,7 +315,7 @@ class Client:
             ) from err
 
 
-async def async_get_client(
+async def async_get_client_with_credentials(
     email: str,
     password: str,
     *,
@@ -323,7 +323,7 @@ async def async_get_client(
     session_name: str | None = None,
     use_legacy_auth: bool = False,
 ) -> Client:
-    """Return an authenticated API object.
+    """Return an authenticated API object (using username/password)
 
     Args:
         email: The email address of a Notion account.
@@ -340,4 +340,32 @@ async def async_get_client(
         await client.async_legacy_authenticate_from_credentials(email, password)
     else:
         await client.async_authenticate_from_credentials(email, password)
+    return client
+
+
+# Alias for backwards compatibility:
+async_get_client = async_get_client_with_credentials
+
+
+async def async_get_client_with_refresh_token(
+    user_uuid: str,
+    refresh_token: str,
+    *,
+    session: ClientSession | None = None,
+    session_name: str | None = None,
+) -> Client:
+    """Return an authenticated API object (using a refresh token).
+
+    Args:
+        user_uuid: The UUID of the user.
+        refresh_token: A refresh token.
+        session: An optional aiohttp ClientSession.
+        session_name: An optional session name to use for authentication.
+
+    Returns:
+        An authenticated Client object.
+    """
+    client = Client(session=session, session_name=session_name)
+    client.user_uuid = user_uuid
+    await client.async_authenticate_from_refresh_token(refresh_token=refresh_token)
     return client

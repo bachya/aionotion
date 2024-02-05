@@ -8,7 +8,7 @@ import aiohttp
 import pytest
 from aresponses import ResponsesMockServer
 
-from aionotion import async_get_client
+from aionotion import async_get_client_with_credentials
 from tests.common import TEST_EMAIL, TEST_PASSWORD
 
 
@@ -36,7 +36,9 @@ async def test_listener_all(
         )
 
         async with aiohttp.ClientSession() as session:
-            client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
+            client = await async_get_client_with_credentials(
+                TEST_EMAIL, TEST_PASSWORD, session=session
+            )
             listeners = await client.listener.async_all()
             assert len(listeners) == 1
             assert listeners[0].id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
@@ -87,7 +89,9 @@ async def test_listener_definitions(
         )
 
         async with aiohttp.ClientSession() as session:
-            client = await async_get_client(TEST_EMAIL, TEST_PASSWORD, session=session)
+            client = await async_get_client_with_credentials(
+                TEST_EMAIL, TEST_PASSWORD, session=session
+            )
             definitions = await client.listener.async_definitions()
             assert len(definitions) == 20
             assert definitions[0].id == 0
