@@ -41,7 +41,7 @@ warn_unused_ignores = true
 
 [tool.poetry]
 name = "aionotion"
-version = "2024.02.1"
+version = "2024.02.2"
 description = "A simple Python 3 library for Notion Home Monitoring"
 readme = "README.md"
 authors = ["Aaron Bach <bachya1208@gmail.com>"]
