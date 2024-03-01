@@ -1,4 +1,5 @@
 """Define auth utilities."""
+
 from typing import Any
 
 import jwt

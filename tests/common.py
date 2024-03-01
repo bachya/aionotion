@@ -1,4 +1,5 @@
 """Define common test utilities."""
+
 import os
 from uuid import uuid4
 

@@ -1,4 +1,5 @@
 """Define a base client for interacting with Notion."""
+
 from __future__ import annotations
 
 from collections.abc import Callable
