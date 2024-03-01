@@ -1,4 +1,5 @@
 """Define tests for systems."""
+
 from __future__ import annotations
 
 from datetime import datetime, timezone

@@ -1,4 +1,5 @@
 """Define endpoints for interacting with listeners."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING

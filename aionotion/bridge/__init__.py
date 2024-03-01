@@ -1,4 +1,5 @@
 """Define endpoints for interacting with bridges."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
