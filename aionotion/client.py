@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from collections.abc import Callable
 from datetime import datetime
 from typing import Any, TypeVar, cast
@@ -72,9 +73,11 @@ class Client:
         """
         self._access_token: str | None = None
         self._access_token_expires_at: datetime | None = None
+        self._refresh_event = asyncio.Event()
+        self._refresh_lock = asyncio.Lock()
         self._refresh_token: str | None = None
         self._refresh_token_callbacks: list[RefreshTokenCallbackT] = []
-        self._refreshing_access_token = False
+        self._refreshing = False
         self._session = session
         self._session_name = session_name or uuid4().hex
         self.user_uuid: str = ""
@@ -167,26 +170,36 @@ class Client:
         if refresh_token is None and self._refresh_token is None:
             raise InvalidCredentialsError("No valid refresh token provided")
 
-        if refresh_token:
+        self._refreshing = True
+
+        async with self._refresh_lock:
             # If a refresh token is explicitly provided, use it:
-            self._refresh_token = refresh_token
+            if refresh_token:
+                self._refresh_token = refresh_token
 
-        assert self._refresh_token is not None
+            assert self._refresh_token is not None
 
-        auth_response: AuthenticateViaRefreshTokenResponse = (
-            await self.async_request_and_validate(
-                "post",
-                f"/auth/{self.user_uuid}/refresh",
-                AuthenticateViaRefreshTokenResponse,
-                headers={"Accept-Version": "2"},
-                json={
-                    "auth": {
-                        "refresh_token": self._refresh_token,
-                    }
-                },
-            )
-        )
-        self._save_tokens_from_auth_response(auth_response)
+            self._refresh_event.clear()
+
+            try:
+                auth_response: AuthenticateViaRefreshTokenResponse = (
+                    await self.async_request_and_validate(
+                        "post",
+                        f"/auth/{self.user_uuid}/refresh",
+                        AuthenticateViaRefreshTokenResponse,
+                        refresh_request=True,
+                        headers={"Accept-Version": "2"},
+                        json={
+                            "auth": {
+                                "refresh_token": self._refresh_token,
+                            }
+                        },
+                    )
+                )
+                self._save_tokens_from_auth_response(auth_response)
+            finally:
+                self._refreshing = False
+                self._refresh_event.set()
 
     async def async_legacy_authenticate_from_credentials(
         self, email: str, password: str
@@ -224,6 +237,8 @@ class Client:
         self,
         method: str,
         endpoint: str,
+        *,
+        refresh_request: bool = False,
         **kwargs: dict[str, Any],
     ) -> dict[str, Any]:
         """Make an API request.
@@ -231,6 +246,7 @@ class Client:
         Args:
             method: An HTTP method.
             endpoint: A relative API endpoint.
+            refresh_request: Whether this is a request to refresh the access token.
             **kwargs: Additional kwargs to send with the request.
 
         Returns:
@@ -240,14 +256,16 @@ class Client:
             InvalidCredentialsError: Raised upon invalid credentials.
             RequestError: Raised upon an underlying HTTP error.
         """
-        if (
-            not self._refreshing_access_token
-            and self._access_token_expires_at
-            and utcnow() >= self._access_token_expires_at
-        ):
+        if self._access_token_expires_at and utcnow() >= self._access_token_expires_at:
             LOGGER.debug("Access token expired, refreshing...")
-            self._refreshing_access_token = True
+            self._access_token = None
+            self._access_token_expires_at = None
             await self.async_authenticate_from_refresh_token()
+
+        # If an authenticated request arrives while we're refreshing, hold until the
+        # refresh process is done:
+        if not refresh_request and self._refreshing:
+            await self._refresh_event.wait()
 
         url: str = f"{API_BASE}{endpoint}"
 
@@ -279,9 +297,6 @@ class Client:
 
         LOGGER.debug("Received data from %s: %s", endpoint, data)
 
-        if self._refreshing_access_token:
-            self._refreshing_access_token = False
-
         return data
 
     async def async_request_and_validate(
@@ -289,6 +304,8 @@ class Client:
         method: str,
         endpoint: str,
         model: type[DataClassDictMixin],
+        *,
+        refresh_request: bool = False,
         **kwargs: dict[str, Any],
     ) -> NotionBaseModelT:
         """Make an API request and validate the response against a Pydantic model.
@@ -297,12 +314,15 @@ class Client:
             method: An HTTP method.
             endpoint: A relative API endpoint.
             model: A Pydantic model to validate the response against.
+            refresh_request: Whether this is a request to refresh the access token.
             **kwargs: Additional kwargs to send with the request.
 
         Returns:
             A parsed, validated Pydantic model representing the response.
         """
-        raw_data = await self.async_request(method, endpoint, **kwargs)
+        raw_data = await self.async_request(
+            method, endpoint, refresh_request=refresh_request, **kwargs
+        )
 
         try:
             return cast(NotionBaseModelT, model.from_dict(raw_data))

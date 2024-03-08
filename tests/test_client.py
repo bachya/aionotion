@@ -3,6 +3,7 @@
 # pylint: disable=protected-access
 from __future__ import annotations
 
+import asyncio
 import logging
 from time import time
 from typing import Any
@@ -31,7 +32,7 @@ async def test_api_error(
     """Test an invalid API call.
 
     Args:
-        aresponses: An aresponses server.
+        aresponses: An aresponses server
         authenticated_notion_api_server: A mock authenticated Notion API server
         bad_api_response: An API response payload
     """
@@ -61,7 +62,7 @@ async def test_auth_credentials_success(
     """Test authenticating against the API with credentials.
 
     Args:
-        aresponses: An aresponses server.
+        aresponses: An aresponses server
         authenticated_notion_api_server: A mock authenticated Notion API server
     """
     async with authenticated_notion_api_server, aiohttp.ClientSession() as session:
@@ -80,7 +81,7 @@ async def test_auth_failure(
     """Test invalid credentials.
 
     Args:
-        aresponses: An aresponses server.
+        aresponses: An aresponses server
         auth_failure_response: An API response payload
     """
     aresponses.add(
@@ -108,7 +109,7 @@ async def test_auth_legacy_credentials_success(
     """Test authenticating against the API with credentials (legacy).
 
     Args:
-        aresponses: An aresponses server.
+        aresponses: An aresponses server
         auth_legacy_credentials_success_response: An API response payload
         bridge_all_response: An API response payload
     """
@@ -144,10 +145,10 @@ async def test_auth_refresh_token_success(
     aresponses: ResponsesMockServer,
     auth_refresh_token_success_response: dict[str, Any],
 ) -> None:
-    """Test authenticating against the API with credentials.
+    """Test authenticating against the API with a refresh token.
 
     Args:
-        aresponses: An aresponses server.
+        aresponses: An aresponses server
         auth_refresh_token_success_response: An API response payload
     """
     aresponses.add(
@@ -174,10 +175,10 @@ async def test_auth_refresh_token_success_existing_client(
     authenticated_notion_api_server: ResponsesMockServer,
     refresh_token: str | None,
 ) -> None:
-    """Test authenticating against the API with a refresh token.
+    """Test authenticating against the API with a refresh token with an existing client.
 
     Args:
-        aresponses: An aresponses server.
+        aresponses: An aresponses server
         authenticated_notion_api_server: A mock authenticated Notion API server
         refresh_token: An optional refresh token
     """
@@ -205,10 +206,10 @@ async def test_expired_access_token(
     bridge_all_response: dict[str, Any],
     caplog: Mock,
 ) -> None:
-    """Test authenticating against the API with a refresh token.
+    """Test handling an expired access token.
 
     Args:
-        aresponses: An aresponses server.
+        aresponses: An aresponses server
         authenticated_notion_api_server: A mock authenticated Notion API server
         bridge_all_response: An API response payload
         caplog: A mocked logging utility.
@@ -237,6 +238,62 @@ async def test_expired_access_token(
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize("access_token_issued_at", [time() - 30 * 60])
+async def test_expired_access_token_concurrent_calls(
+    aresponses: ResponsesMockServer,
+    authenticated_notion_api_server: ResponsesMockServer,
+    bridge_all_response: dict[str, Any],
+    caplog: Mock,
+    sensor_all_response: dict[str, Any],
+) -> None:
+    """Test handling an expired access token with multiple concurrent calls.
+
+    Args:
+        aresponses: An aresponses server
+        authenticated_notion_api_server: A mock authenticated Notion API server.
+        bridge_all_response: An API response payload.
+        caplog: A mocked logging utility.
+        sensor_all_response: An API response payload.
+    """
+    caplog.set_level(logging.DEBUG)
+
+    async with authenticated_notion_api_server, aiohttp.ClientSession() as session:
+        authenticated_notion_api_server.add(
+            "api.getnotion.com",
+            "/api/base_stations",
+            "get",
+            response=aiohttp.web_response.json_response(
+                bridge_all_response, status=200
+            ),
+        )
+        authenticated_notion_api_server.add(
+            "api.getnotion.com",
+            "/api/sensors",
+            "get",
+            response=aiohttp.web_response.json_response(
+                sensor_all_response, status=200
+            ),
+        )
+
+        client = await async_get_client_with_credentials(
+            TEST_EMAIL, TEST_PASSWORD, session=session
+        )
+
+        tasks = [client.bridge.async_all(), client.sensor.async_all()]
+        results = await asyncio.gather(*tasks)
+
+        # Assert the we got the results of both calls, even with a refreshed access
+        # token in the middle:
+        assert len(results) == 2
+
+        assert any(
+            m for m in caplog.messages if "Access token expired, refreshing..." in m
+        )
+
+    aresponses.assert_plan_strictly_followed()
+
+
+@pytest.mark.asyncio
 async def test_premature_refresh_token(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
@@ -244,7 +301,7 @@ async def test_premature_refresh_token(
     """Test attempting to refresh the access token before actually getting one.
 
     Args:
-        aresponses: An aresponses server.
+        aresponses: An aresponses server
         authenticated_notion_api_server: A mock authenticated Notion API server
     """
     async with authenticated_notion_api_server, aiohttp.ClientSession() as session:
@@ -263,7 +320,7 @@ async def test_no_explicit_session(
     """Test authentication without an explicit ClientSession.
 
     Args:
-        aresponses: An aresponses server.
+        aresponses: An aresponses server
         authenticated_notion_api_server: A mock authenticated Notion API server
     """
     async with authenticated_notion_api_server:
@@ -282,7 +339,7 @@ async def test_refresh_token_callback(
     """Test that a refresh token callback is called when the access token is refreshed.
 
     Args:
-        aresponses: An aresponses server.
+        aresponses: An aresponses server
         auth_refresh_token_success_response: An API response payload
         authenticated_notion_api_server: A mock authenticated Notion API server
     """
