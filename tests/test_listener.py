@@ -41,7 +41,8 @@ async def test_listener_all(
                 TEST_EMAIL, TEST_PASSWORD, session=session
             )
             listeners = await client.listener.async_all()
-            assert len(listeners) == 1
+            assert len(listeners) == 2
+ 
             assert listeners[0].id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
             assert listeners[0].definition_id == 24
             assert listeners[0].created_at == datetime(
@@ -63,6 +64,21 @@ async def test_listener_all(
             )
             assert listeners[0].configuration == {}
             assert listeners[0].pro_monitoring_status == "ineligible"
+
+            assert listeners[1].id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+            assert listeners[1].definition_id == 24
+            assert listeners[1].created_at == datetime(
+                2019, 6, 17, 3, 29, 45, 722000, tzinfo=timezone.utc
+            )
+            assert listeners[1].device_type == "sensor"
+            assert listeners[1].model_version == "1.0"
+            assert listeners[1].sensor_id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+            assert listeners[1].status_localized.state == "Idle"
+            assert listeners[1].insights.primary.origin is None
+            assert listeners[1].insights.primary.value is None
+            assert listeners[1].insights.primary.data_received_at is None
+            assert listeners[1].configuration == {}
+            assert listeners[1].pro_monitoring_status == "ineligible"
 
     aresponses.assert_plan_strictly_followed()
 
