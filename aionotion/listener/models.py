@@ -31,10 +31,10 @@ class InsightOrigin(DataClassDictMixin):
 class PrimaryListenerInsight(DataClassDictMixin):
     """Define a primary listener insight."""
 
-    origin: InsightOrigin
-    value: str
-    data_received_at: datetime = field(
-        metadata={"deserialize": ciso8601.parse_datetime}
+    origin: InsightOrigin | None
+    value: str | None
+    data_received_at: datetime | None = field(
+        default=None, metadata={"deserialize": ciso8601.parse_datetime}
     )
 
 
