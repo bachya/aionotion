@@ -13,9 +13,12 @@
       },
       "insights": {
         "primary": {
-          "origin": null,
-          "value": null,
-          "data_received_at": null
+          "origin": {
+            "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+            "type": "Sensor"
+          },
+          "value": "idle",
+          "data_received_at": "2023-06-18T06:17:00.697Z"
         }
       },
       "configuration": {},
@@ -34,12 +37,9 @@
       },
       "insights": {
         "primary": {
-          "origin": {
-            "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-            "type": "Sensor"
-          },
-          "value": "idle",
-          "data_received_at": "2023-06-18T06:17:00.697Z"
+          "origin": null,
+          "value": null,
+          "data_received_at": null
         }
       },
       "configuration": {},
