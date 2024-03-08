@@ -51,6 +51,7 @@ async def test_listener_all(
             assert listeners[0].model_version == "1.0"
             assert listeners[0].sensor_id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
             assert listeners[0].status_localized.state == "Idle"
+            assert listeners[0].insights.primary.origin is not None
             assert (
                 listeners[0].insights.primary.origin.id
                 == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
