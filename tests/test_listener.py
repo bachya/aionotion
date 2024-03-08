@@ -42,7 +42,7 @@ async def test_listener_all(
             )
             listeners = await client.listener.async_all()
             assert len(listeners) == 2
- 
+
             assert listeners[0].id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
             assert listeners[0].definition_id == 24
             assert listeners[0].created_at == datetime(
