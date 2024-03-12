@@ -2,14 +2,17 @@
 
 from __future__ import annotations
 
+import logging
 from datetime import datetime, timezone
 from typing import Any
+from unittest.mock import Mock
 
 import aiohttp
 import pytest
 from aresponses import ResponsesMockServer
 
 from aionotion import async_get_client_with_credentials
+from aionotion.listener.models import ListenerKind
 from tests.common import TEST_EMAIL, TEST_PASSWORD
 
 
@@ -17,6 +20,7 @@ from tests.common import TEST_EMAIL, TEST_PASSWORD
 async def test_listener_all(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
+    caplog: Mock,
     sensor_listeners_response: dict[str, Any],
 ) -> None:
     """Test getting listeners for all sensors.
@@ -24,8 +28,11 @@ async def test_listener_all(
     Args:
         aresponses: An aresponses server.
         authenticated_notion_api_server: A mock authenticated Notion API server
+        caplog: A mocked logging utility.
         sensor_listeners_response: An API response payload
     """
+    caplog.set_level(logging.INFO)
+
     async with authenticated_notion_api_server:
         authenticated_notion_api_server.add(
             "api.getnotion.com",
@@ -41,7 +48,7 @@ async def test_listener_all(
                 TEST_EMAIL, TEST_PASSWORD, session=session
             )
             listeners = await client.listener.async_all()
-            assert len(listeners) == 2
+            assert len(listeners) == 3
 
             assert listeners[0].id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
             assert listeners[0].definition_id == 24
@@ -64,21 +71,39 @@ async def test_listener_all(
             )
             assert listeners[0].configuration == {}
             assert listeners[0].pro_monitoring_status == "ineligible"
+            assert listeners[0].kind == ListenerKind.SENSOR_FIRMWARE
 
             assert listeners[1].id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-            assert listeners[1].definition_id == 24
+            assert listeners[1].definition_id == 3
             assert listeners[1].created_at == datetime(
-                2019, 6, 17, 3, 29, 45, 722000, tzinfo=timezone.utc
+                2023, 6, 2, 15, 56, 37, 826000, tzinfo=timezone.utc
             )
             assert listeners[1].device_type == "sensor"
-            assert listeners[1].model_version == "1.0"
+            assert listeners[1].model_version == "3.1"
             assert listeners[1].sensor_id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-            assert listeners[1].status_localized.state == "Idle"
-            assert listeners[1].insights.primary.origin is None
-            assert listeners[1].insights.primary.value is None
-            assert listeners[1].insights.primary.data_received_at is None
-            assert listeners[1].configuration == {}
-            assert listeners[1].pro_monitoring_status == "ineligible"
+            assert listeners[1].status_localized.state == "71°"
+            assert listeners[1].insights.primary.origin is not None
+            assert (
+                listeners[0].insights.primary.origin.id
+                == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+            )
+            assert listeners[1].insights.primary.origin.type == "Sensor"
+            assert listeners[1].insights.primary.value == "inside"
+            assert listeners[1].insights.primary.data_received_at == datetime(
+                2024, 2, 5, 1, 34, 20, 240000, tzinfo=timezone.utc
+            )
+            assert listeners[1].configuration == {
+                "lower": 15.56,
+                "upper": 29.44,
+                "offset": 0.0,
+            }
+            assert listeners[1].pro_monitoring_status == "eligible"
+            assert listeners[1].kind == ListenerKind.TEMPERATURE
+
+            assert any(
+                m for m in caplog.messages if "Unknown listener kind: 99999" in m
+            )
+            assert listeners[2].kind == ListenerKind.UNKNOWN
 
     aresponses.assert_plan_strictly_followed()
 

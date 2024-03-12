@@ -10,6 +10,8 @@ from typing import Any, Literal
 import ciso8601
 from mashumaro import DataClassDictMixin, field_options
 
+from aionotion.const import LOGGER
+
 
 @dataclass(frozen=True, kw_only=True)
 class ListenerLocalizedStatus(DataClassDictMixin):
@@ -85,6 +87,15 @@ class Listener(DataClassDictMixin):
     configuration: dict[str, Any]
     pro_monitoring_status: Literal["eligible", "ineligible"]
     device_type: str = field(metadata=field_options(alias="type"))
+    kind: ListenerKind = field(init=False)
+
+    def __post_init__(self) -> None:
+        """Perform post-init initialization."""
+        try:
+            object.__setattr__(self, "kind", ListenerKind(self.definition_id))
+        except ValueError:
+            LOGGER.info("Unknown listener kind: %s", self.definition_id)
+            object.__setattr__(self, "kind", ListenerKind.UNKNOWN)
 
 
 @dataclass(frozen=True, kw_only=True)
