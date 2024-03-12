@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import logging
 from datetime import datetime, timezone
 from typing import Any
+from unittest.mock import Mock
 
 import aiohttp
 import pytest
@@ -18,6 +20,7 @@ from tests.common import TEST_EMAIL, TEST_PASSWORD
 async def test_listener_all(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
+    caplog: Mock,
     sensor_listeners_response: dict[str, Any],
 ) -> None:
     """Test getting listeners for all sensors.
@@ -25,8 +28,11 @@ async def test_listener_all(
     Args:
         aresponses: An aresponses server.
         authenticated_notion_api_server: A mock authenticated Notion API server
+        caplog: A mocked logging utility.
         sensor_listeners_response: An API response payload
     """
+    caplog.set_level(logging.INFO)
+
     async with authenticated_notion_api_server:
         authenticated_notion_api_server.add(
             "api.getnotion.com",
@@ -42,7 +48,7 @@ async def test_listener_all(
                 TEST_EMAIL, TEST_PASSWORD, session=session
             )
             listeners = await client.listener.async_all()
-            assert len(listeners) == 2
+            assert len(listeners) == 3
 
             assert listeners[0].id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
             assert listeners[0].definition_id == 24
@@ -93,6 +99,11 @@ async def test_listener_all(
             }
             assert listeners[1].pro_monitoring_status == "eligible"
             assert listeners[1].kind == ListenerKind.TEMPERATURE
+
+            assert any(
+                m for m in caplog.messages if "Unknown listener kind: 99999" in m
+            )
+            assert listeners[2].kind == ListenerKind.UNKNOWN
 
     aresponses.assert_plan_strictly_followed()
 
