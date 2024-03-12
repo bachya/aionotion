@@ -85,6 +85,11 @@ class Listener(DataClassDictMixin):
     configuration: dict[str, Any]
     pro_monitoring_status: Literal["eligible", "ineligible"]
     device_type: str = field(metadata=field_options(alias="type"))
+    kind: ListenerKind = field(init=False)
+
+    def __post_init__(self) -> None:
+        """Perform post-init initialization."""
+        object.__setattr__(self, "kind", ListenerKind(self.definition_id))
 
 
 @dataclass(frozen=True, kw_only=True)

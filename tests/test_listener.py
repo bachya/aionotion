@@ -10,6 +10,7 @@ import pytest
 from aresponses import ResponsesMockServer
 
 from aionotion import async_get_client_with_credentials
+from aionotion.listener.models import ListenerKind
 from tests.common import TEST_EMAIL, TEST_PASSWORD
 
 
@@ -64,21 +65,34 @@ async def test_listener_all(
             )
             assert listeners[0].configuration == {}
             assert listeners[0].pro_monitoring_status == "ineligible"
+            assert listeners[0].kind == ListenerKind.SENSOR_FIRMWARE
 
             assert listeners[1].id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-            assert listeners[1].definition_id == 24
+            assert listeners[1].definition_id == 3
             assert listeners[1].created_at == datetime(
-                2019, 6, 17, 3, 29, 45, 722000, tzinfo=timezone.utc
+                2023, 6, 2, 15, 56, 37, 826000, tzinfo=timezone.utc
             )
             assert listeners[1].device_type == "sensor"
-            assert listeners[1].model_version == "1.0"
+            assert listeners[1].model_version == "3.1"
             assert listeners[1].sensor_id == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-            assert listeners[1].status_localized.state == "Idle"
-            assert listeners[1].insights.primary.origin is None
-            assert listeners[1].insights.primary.value is None
-            assert listeners[1].insights.primary.data_received_at is None
-            assert listeners[1].configuration == {}
-            assert listeners[1].pro_monitoring_status == "ineligible"
+            assert listeners[1].status_localized.state == "71°"
+            assert listeners[1].insights.primary.origin is not None
+            assert (
+                listeners[0].insights.primary.origin.id
+                == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+            )
+            assert listeners[1].insights.primary.origin.type == "Sensor"
+            assert listeners[1].insights.primary.value == "inside"
+            assert listeners[1].insights.primary.data_received_at == datetime(
+                2024, 2, 5, 1, 34, 20, 240000, tzinfo=timezone.utc
+            )
+            assert listeners[1].configuration == {
+                "lower": 15.56,
+                "upper": 29.44,
+                "offset": 0.0,
+            }
+            assert listeners[1].pro_monitoring_status == "eligible"
+            assert listeners[1].kind == ListenerKind.TEMPERATURE
 
     aresponses.assert_plan_strictly_followed()
 
