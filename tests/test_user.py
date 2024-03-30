@@ -6,14 +6,14 @@ from datetime import datetime, timezone
 from typing import Any
 
 import aiohttp
-import pytest
 from aresponses import ResponsesMockServer
+import pytest
 
 from aionotion import async_get_client_with_credentials
 from tests.common import TEST_EMAIL, TEST_PASSWORD, TEST_USER_UUID
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_user_info(
     authenticated_notion_api_server: ResponsesMockServer,
     user_info_response: dict[str, Any],
@@ -21,8 +21,10 @@ async def test_user_info(
     """Test getting user preferences.
 
     Args:
+    ----
         authenticated_notion_api_server: A mock authenticated Notion API server
         user_info_response: A fixture for a user information response payload.
+
     """
     async with authenticated_notion_api_server:
         authenticated_notion_api_server.add(
@@ -53,7 +55,7 @@ async def test_user_info(
             )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_user_preferences(
     authenticated_notion_api_server: ResponsesMockServer,
     user_preferences_response: dict[str, Any],
@@ -61,8 +63,10 @@ async def test_user_preferences(
     """Test getting user preferences.
 
     Args:
+    ----
         authenticated_notion_api_server: A mock authenticated Notion API server
         user_preferences_response: A fixture for a user preferences response payload.
+
     """
     async with authenticated_notion_api_server:
         authenticated_notion_api_server.add(

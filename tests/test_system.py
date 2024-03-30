@@ -5,15 +5,15 @@ from __future__ import annotations
 from datetime import datetime, timezone
 
 import aiohttp
-import pytest
 from aresponses import ResponsesMockServer
+import pytest
 
 from aionotion import async_get_client_with_credentials
 
 from .common import TEST_EMAIL, TEST_PASSWORD
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_system_all(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
@@ -22,9 +22,11 @@ async def test_system_all(
     """Test getting all systems.
 
     Args:
+    ----
         aresponses: An aresponses server.
         authenticated_notion_api_server: A mock authenticated Notion API server
         system_all_response: A fixture for a system all response.
+
     """
     async with authenticated_notion_api_server:
         authenticated_notion_api_server.add(
@@ -74,7 +76,7 @@ async def test_system_all(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_system_get(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
@@ -83,9 +85,11 @@ async def test_system_get(
     """Test getting a system by ID.
 
     Args:
+    ----
         aresponses: An aresponses server.
         authenticated_notion_api_server: A mock authenticated Notion API server
         system_get_response: A fixture for a system get response.
+
     """
     async with authenticated_notion_api_server:
         authenticated_notion_api_server.add(

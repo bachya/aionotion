@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from aionotion.listener.models import Listener as ListenerModel
 from aionotion.listener.models import (
+    Listener as ListenerModel,
     ListenerAllResponse,
     ListenerDefinition,
     ListenerDefinitionResponse,
@@ -22,15 +22,19 @@ class Listener:
         """Initialize.
 
         Args:
+        ----
             client: The aionotion client
+
         """
         self._client = client
 
     async def async_all(self) -> list[ListenerModel]:
         """Get all listeners.
 
-        Returns:
+        Returns
+        -------
             A validated API response payload.
+
         """
         response: ListenerAllResponse = await self._client.async_request_and_validate(
             "get", "/sensor/listeners", ListenerAllResponse
@@ -40,8 +44,10 @@ class Listener:
     async def async_definitions(self) -> list[ListenerDefinition]:
         """Get all listener definitions.
 
-        Returns:
+        Returns
+        -------
             A validated API response payload.
+
         """
         response: ListenerDefinitionResponse = (
             await self._client.async_request_and_validate(

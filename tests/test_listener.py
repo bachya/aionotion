@@ -2,21 +2,21 @@
 
 from __future__ import annotations
 
-import logging
 from datetime import datetime, timezone
+import logging
 from typing import Any
 from unittest.mock import Mock
 
 import aiohttp
-import pytest
 from aresponses import ResponsesMockServer
+import pytest
 
 from aionotion import async_get_client_with_credentials
 from aionotion.listener.models import ListenerKind
 from tests.common import TEST_EMAIL, TEST_PASSWORD
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_listener_all(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
@@ -26,10 +26,12 @@ async def test_listener_all(
     """Test getting listeners for all sensors.
 
     Args:
+    ----
         aresponses: An aresponses server.
         authenticated_notion_api_server: A mock authenticated Notion API server
         caplog: A mocked logging utility.
         sensor_listeners_response: An API response payload
+
     """
     caplog.set_level(logging.INFO)
 
@@ -108,7 +110,7 @@ async def test_listener_all(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_listener_definitions(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
@@ -117,9 +119,11 @@ async def test_listener_definitions(
     """Test getting listeners for all sensors.
 
     Args:
+    ----
         aresponses: An aresponses server.
         authenticated_notion_api_server: A mock authenticated Notion API server
         listener_definitions_response: An API response payload
+
     """
     async with authenticated_notion_api_server:
         authenticated_notion_api_server.add(

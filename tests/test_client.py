@@ -10,8 +10,8 @@ from typing import Any
 from unittest.mock import Mock
 
 import aiohttp
-import pytest
 from aresponses import ResponsesMockServer
+import pytest
 
 from aionotion import (
     async_get_client_with_credentials,
@@ -23,7 +23,7 @@ from aionotion.errors import InvalidCredentialsError, RequestError
 from .common import TEST_EMAIL, TEST_PASSWORD, TEST_REFRESH_TOKEN, TEST_USER_UUID
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_api_error(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
@@ -32,9 +32,11 @@ async def test_api_error(
     """Test an invalid API call.
 
     Args:
+    ----
         aresponses: An aresponses server
         authenticated_notion_api_server: A mock authenticated Notion API server
         bad_api_response: An API response payload
+
     """
     async with authenticated_notion_api_server:
         authenticated_notion_api_server.add(
@@ -54,7 +56,7 @@ async def test_api_error(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_auth_credentials_success(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
@@ -62,8 +64,10 @@ async def test_auth_credentials_success(
     """Test authenticating against the API with credentials.
 
     Args:
+    ----
         aresponses: An aresponses server
         authenticated_notion_api_server: A mock authenticated Notion API server
+
     """
     async with authenticated_notion_api_server, aiohttp.ClientSession() as session:
         client = await async_get_client_with_credentials(
@@ -74,15 +78,17 @@ async def test_auth_credentials_success(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_auth_failure(
     aresponses: ResponsesMockServer, auth_failure_response: dict[str, Any]
 ) -> None:
     """Test invalid credentials.
 
     Args:
+    ----
         aresponses: An aresponses server
         auth_failure_response: An API response payload
+
     """
     aresponses.add(
         "api.getnotion.com",
@@ -100,7 +106,7 @@ async def test_auth_failure(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_auth_legacy_credentials_success(
     aresponses: ResponsesMockServer,
     auth_legacy_credentials_success_response: dict[str, Any],
@@ -109,9 +115,11 @@ async def test_auth_legacy_credentials_success(
     """Test authenticating against the API with credentials (legacy).
 
     Args:
+    ----
         aresponses: An aresponses server
         auth_legacy_credentials_success_response: An API response payload
         bridge_all_response: An API response payload
+
     """
     aresponses.add(
         "api.getnotion.com",
@@ -140,7 +148,7 @@ async def test_auth_legacy_credentials_success(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_auth_refresh_token_success(
     aresponses: ResponsesMockServer,
     auth_refresh_token_success_response: dict[str, Any],
@@ -148,8 +156,10 @@ async def test_auth_refresh_token_success(
     """Test authenticating against the API with a refresh token.
 
     Args:
+    ----
         aresponses: An aresponses server
         auth_refresh_token_success_response: An API response payload
+
     """
     aresponses.add(
         "api.getnotion.com",
@@ -168,7 +178,7 @@ async def test_auth_refresh_token_success(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 @pytest.mark.parametrize("refresh_token", [None, "new_refresh_token"])
 async def test_auth_refresh_token_success_existing_client(
     aresponses: ResponsesMockServer,
@@ -178,9 +188,11 @@ async def test_auth_refresh_token_success_existing_client(
     """Test authenticating against the API with a refresh token with an existing client.
 
     Args:
+    ----
         aresponses: An aresponses server
         authenticated_notion_api_server: A mock authenticated Notion API server
         refresh_token: An optional refresh token
+
     """
     async with authenticated_notion_api_server, aiohttp.ClientSession() as session:
         client = await async_get_client_with_credentials(
@@ -198,7 +210,7 @@ async def test_auth_refresh_token_success_existing_client(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 @pytest.mark.parametrize("access_token_issued_at", [time() - 30 * 60])
 async def test_expired_access_token(
     aresponses: ResponsesMockServer,
@@ -209,10 +221,12 @@ async def test_expired_access_token(
     """Test handling an expired access token.
 
     Args:
+    ----
         aresponses: An aresponses server
         authenticated_notion_api_server: A mock authenticated Notion API server
         bridge_all_response: An API response payload
         caplog: A mocked logging utility.
+
     """
     caplog.set_level(logging.DEBUG)
 
@@ -237,7 +251,7 @@ async def test_expired_access_token(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 @pytest.mark.parametrize("access_token_issued_at", [time() - 30 * 60])
 async def test_expired_access_token_concurrent_calls(
     aresponses: ResponsesMockServer,
@@ -249,11 +263,13 @@ async def test_expired_access_token_concurrent_calls(
     """Test handling an expired access token with multiple concurrent calls.
 
     Args:
+    ----
         aresponses: An aresponses server
         authenticated_notion_api_server: A mock authenticated Notion API server.
         bridge_all_response: An API response payload.
         caplog: A mocked logging utility.
         sensor_all_response: An API response payload.
+
     """
     caplog.set_level(logging.DEBUG)
 
@@ -293,7 +309,7 @@ async def test_expired_access_token_concurrent_calls(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_premature_refresh_token(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
@@ -301,8 +317,10 @@ async def test_premature_refresh_token(
     """Test attempting to refresh the access token before actually getting one.
 
     Args:
+    ----
         aresponses: An aresponses server
         authenticated_notion_api_server: A mock authenticated Notion API server
+
     """
     async with authenticated_notion_api_server, aiohttp.ClientSession() as session:
         client = Client(session=session)
@@ -312,7 +330,7 @@ async def test_premature_refresh_token(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_no_explicit_session(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
@@ -320,8 +338,10 @@ async def test_no_explicit_session(
     """Test authentication without an explicit ClientSession.
 
     Args:
+    ----
         aresponses: An aresponses server
         authenticated_notion_api_server: A mock authenticated Notion API server
+
     """
     async with authenticated_notion_api_server:
         client = await async_get_client_with_credentials(TEST_EMAIL, TEST_PASSWORD)
@@ -330,7 +350,7 @@ async def test_no_explicit_session(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_refresh_token_callback(
     aresponses: ResponsesMockServer,
     auth_refresh_token_success_response: dict[str, Any],
@@ -339,9 +359,11 @@ async def test_refresh_token_callback(
     """Test that a refresh token callback is called when the access token is refreshed.
 
     Args:
+    ----
         aresponses: An aresponses server
         auth_refresh_token_success_response: An API response payload
         authenticated_notion_api_server: A mock authenticated Notion API server
+
     """
     async with authenticated_notion_api_server:
         authenticated_notion_api_server.add(
@@ -371,7 +393,7 @@ async def test_refresh_token_callback(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 @pytest.mark.parametrize("bridge_get_response", [{}])
 async def test_validation_error(
     authenticated_notion_api_server: ResponsesMockServer,
@@ -380,8 +402,10 @@ async def test_validation_error(
     """Test a response validation error.
 
     Args:
+    ----
         authenticated_notion_api_server: A mock authenticated Notion API server
         bridge_get_response: An API response payload
+
     """
     async with authenticated_notion_api_server:
         authenticated_notion_api_server.add(

@@ -42,7 +42,7 @@ class PrimaryListenerInsight(DataClassDictMixin):
 
 @dataclass(frozen=True, kw_only=True)
 class ListenerInsights(DataClassDictMixin):
-    """Define listener insights:"""
+    """Define listener insights."""
 
     primary: PrimaryListenerInsight
 
