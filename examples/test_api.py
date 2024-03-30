@@ -59,8 +59,8 @@ async def main() -> None:
             user_preferences = await client.user.async_preferences()
             _LOGGER.info("USER_PREFERENCES: %s", user_preferences)
             _LOGGER.info("============================================================")
-        except NotionError as err:
-            _LOGGER.error("There was an error: %s", err)
+        except NotionError:
+            _LOGGER.exception("There was an error")
 
 
 asyncio.run(main())

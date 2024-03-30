@@ -5,11 +5,12 @@ from __future__ import annotations
 import asyncio
 from collections.abc import Callable
 from datetime import datetime
+from http import HTTPStatus
 from typing import Any, TypeVar, cast
 from uuid import uuid4
 
 from aiohttp import ClientSession, ClientTimeout
-from aiohttp.client_exceptions import ClientError
+from aiohttp.client_exceptions import ClientResponseError
 from mashumaro import DataClassDictMixin
 from mashumaro.exceptions import (
     MissingField,
@@ -48,11 +49,14 @@ def get_token_header_value(access_token: str, refresh_token: str | None) -> str:
     present.
 
     Args:
+    ----
         access_token: An access token.
         refresh_token: A refresh token (if it exists).
 
     Returns:
+    -------
         The value for the Authorization header.
+
     """
     if refresh_token:
         return f"Bearer {access_token}"
@@ -68,8 +72,10 @@ class Client:
         """Initialize.
 
         Args:
+        ----
             session: An optional aiohttp ClientSession.
             session_name: An optional session name to use for authentication.
+
         """
         self._access_token: str | None = None
         self._access_token_expires_at: datetime | None = None
@@ -101,7 +107,9 @@ class Client:
         """Save the authentication and refresh tokens from an auth response.
 
         Args:
-            auth: An API response containing auth info.
+        ----
+            auth_response: An API response containing auth info.
+
         """
         self._access_token = auth_response.auth.jwt
         self._refresh_token = auth_response.auth.refresh_token
@@ -132,8 +140,10 @@ class Client:
         """Authenticate via username and password.
 
         Args:
+        ----
             email: The email address of a Notion account.
             password: The account password.
+
         """
         auth_response: AuthenticateViaCredentialsResponse = (
             await self.async_request_and_validate(
@@ -160,25 +170,25 @@ class Client:
         """Authenticate via a refresh token.
 
         Args:
+        ----
             refresh_token: The refresh token to use. If not provided, the refresh token
                 that was used to authenticate the user initially will be used.
 
         Raises:
+        ------
             InvalidCredentialsError: If no refresh token is provided and the user has
                 not been authenticated yet.
-        """
-        if refresh_token is None and self._refresh_token is None:
-            raise InvalidCredentialsError("No valid refresh token provided")
 
-        self._refreshing = True
+        """
+        if not refresh_token:
+            refresh_token = self._refresh_token
+
+        if not refresh_token:
+            msg = "No valid refresh token provided"
+            raise InvalidCredentialsError(msg)
 
         async with self._refresh_lock:
-            # If a refresh token is explicitly provided, use it:
-            if refresh_token:
-                self._refresh_token = refresh_token
-
-            assert self._refresh_token is not None
-
+            self._refreshing = True
             self._refresh_event.clear()
 
             try:
@@ -209,8 +219,10 @@ class Client:
         This is kept in place for compatibility, but should be considered deprecated.
 
         Args:
+        ----
             email: The email address of a Notion account.
             password: The account password.
+
         """
         LOGGER.warning(
             "Using legacy authentication endpoint; this is deprecated and will be "
@@ -244,17 +256,21 @@ class Client:
         """Make an API request.
 
         Args:
+        ----
             method: An HTTP method.
             endpoint: A relative API endpoint.
             refresh_request: Whether this is a request to refresh the access token.
             **kwargs: Additional kwargs to send with the request.
 
         Returns:
+        -------
             An API response payload.
 
         Raises:
+        ------
             InvalidCredentialsError: Raised upon invalid credentials.
             RequestError: Raised upon an underlying HTTP error.
+
         """
         if self._access_token_expires_at and utcnow() >= self._access_token_expires_at:
             LOGGER.debug("Access token expired, refreshing...")
@@ -287,9 +303,10 @@ class Client:
 
             try:
                 resp.raise_for_status()
-            except ClientError as err:
-                if "401" in str(err):
-                    raise InvalidCredentialsError("Invalid credentials") from err
+            except ClientResponseError as err:
+                if resp.status == HTTPStatus.UNAUTHORIZED:
+                    msg = "Invalid credentials"
+                    raise InvalidCredentialsError(msg) from err
                 raise RequestError(data["errors"][0]["title"]) from err
 
         if not use_running_session:
@@ -311,6 +328,7 @@ class Client:
         """Make an API request and validate the response against a Pydantic model.
 
         Args:
+        ----
             method: An HTTP method.
             endpoint: A relative API endpoint.
             model: A Pydantic model to validate the response against.
@@ -318,7 +336,9 @@ class Client:
             **kwargs: Additional kwargs to send with the request.
 
         Returns:
+        -------
             A parsed, validated Pydantic model representing the response.
+
         """
         raw_data = await self.async_request(
             method, endpoint, refresh_request=refresh_request, **kwargs
@@ -331,9 +351,8 @@ class Client:
             SuitableVariantNotFoundError,
             UnserializableDataError,
         ) as err:
-            raise RequestError(
-                f"Error while parsing response from {endpoint}: {err}"
-            ) from err
+            msg = f"Error while parsing response from {endpoint}: {err}"
+            raise RequestError(msg) from err
 
 
 async def async_get_client_with_credentials(
@@ -344,9 +363,10 @@ async def async_get_client_with_credentials(
     session_name: str | None = None,
     use_legacy_auth: bool = False,
 ) -> Client:
-    """Return an authenticated API object (using username/password)
+    """Return an authenticated API object (using username/password).
 
     Args:
+    ----
         email: The email address of a Notion account.
         password: The account password.
         session: An optional aiohttp ClientSession.
@@ -354,7 +374,9 @@ async def async_get_client_with_credentials(
         use_legacy_auth: Whether to use the legacy authentication endpoint.
 
     Returns:
+    -------
         An authenticated Client object.
+
     """
     client = Client(session=session, session_name=session_name)
     if use_legacy_auth:
@@ -378,13 +400,16 @@ async def async_get_client_with_refresh_token(
     """Return an authenticated API object (using a refresh token).
 
     Args:
+    ----
         user_uuid: The UUID of the user.
         refresh_token: A refresh token.
         session: An optional aiohttp ClientSession.
         session_name: An optional session name to use for authentication.
 
     Returns:
+    -------
         An authenticated Client object.
+
     """
     client = Client(session=session, session_name=session_name)
     client.user_uuid = user_uuid

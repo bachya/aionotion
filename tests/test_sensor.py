@@ -6,14 +6,14 @@ from datetime import datetime, timezone
 from typing import Any
 
 import aiohttp
-import pytest
 from aresponses import ResponsesMockServer
+import pytest
 
 from aionotion import async_get_client_with_credentials
 from tests.common import TEST_EMAIL, TEST_PASSWORD
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_sensor_all(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
@@ -22,9 +22,11 @@ async def test_sensor_all(
     """Test getting all sensors.
 
     Args:
+    ----
         aresponses: An aresponses server.
         authenticated_notion_api_server: A mock authenticated Notion API server
         sensor_all_response: An API response payload
+
     """
     async with authenticated_notion_api_server:
         authenticated_notion_api_server.add(
@@ -83,7 +85,7 @@ async def test_sensor_all(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_sensor_get(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
@@ -92,9 +94,11 @@ async def test_sensor_get(
     """Test getting a sensor by ID.
 
     Args:
+    ----
         aresponses: An aresponses server.
         authenticated_notion_api_server: A mock authenticated Notion API server
         sensor_get_response: An API response payload
+
     """
     async with authenticated_notion_api_server:
         authenticated_notion_api_server.add(
