@@ -251,6 +251,7 @@ class Client:
         endpoint: str,
         *,
         refresh_request: bool = False,
+        headers: dict[str, str] | None = None,
         json: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         """Make an API request.
@@ -260,6 +261,7 @@ class Client:
             method: An HTTP method.
             endpoint: A relative API endpoint.
             refresh_request: Whether this is a request to refresh the access token.
+            headers: Additional headers to include in the request.
             json: A JSON payload to send with the request.
 
         Returns:
@@ -323,7 +325,8 @@ class Client:
         model: type[DataClassDictMixin],
         *,
         refresh_request: bool = False,
-        **kwargs: dict[str, Any],
+        headers: dict[str, str] | None = None,
+        json: dict[str, Any] | None = None,
     ) -> NotionBaseModelT:
         """Make an API request and validate the response against a Pydantic model.
 
@@ -333,7 +336,8 @@ class Client:
             endpoint: A relative API endpoint.
             model: A Pydantic model to validate the response against.
             refresh_request: Whether this is a request to refresh the access token.
-            **kwargs: Additional kwargs to send with the request.
+            headers: Additional headers to include in the request.
+            json: A JSON payload to send with the request.
 
         Returns:
         -------
@@ -341,7 +345,11 @@ class Client:
 
         """
         raw_data = await self.async_request(
-            method, endpoint, refresh_request=refresh_request, **kwargs
+            method,
+            endpoint,
+            refresh_request=refresh_request,
+            headers=headers,
+            json=json,
         )
 
         try:
