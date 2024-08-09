@@ -251,7 +251,7 @@ class Client:
         endpoint: str,
         *,
         refresh_request: bool = False,
-        **kwargs: dict[str, Any],
+        json: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         """Make an API request.
 
@@ -260,7 +260,7 @@ class Client:
             method: An HTTP method.
             endpoint: A relative API endpoint.
             refresh_request: Whether this is a request to refresh the access token.
-            **kwargs: Additional kwargs to send with the request.
+            json: A JSON payload to send with the request.
 
         Returns:
         -------
@@ -285,9 +285,9 @@ class Client:
 
         url: str = f"{API_BASE}{endpoint}"
 
-        kwargs.setdefault("headers", {})
+        headers = {}
         if self._access_token:
-            kwargs["headers"]["Authorization"] = get_token_header_value(
+            headers["Authorization"] = get_token_header_value(
                 self._access_token, self._refresh_token
             )
 
@@ -298,7 +298,7 @@ class Client:
 
         data: dict[str, Any] = {}
 
-        async with session.request(method, url, **kwargs) as resp:
+        async with session.request(method, url, headers=headers, json=json) as resp:
             data = await resp.json()
 
             try:
