@@ -23,7 +23,7 @@ from aionotion.errors import InvalidCredentialsError, RequestError
 from .common import TEST_EMAIL, TEST_PASSWORD, TEST_REFRESH_TOKEN, TEST_USER_UUID
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_api_error(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
@@ -56,7 +56,7 @@ async def test_api_error(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_auth_credentials_success(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
@@ -78,7 +78,7 @@ async def test_auth_credentials_success(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_auth_failure(
     aresponses: ResponsesMockServer, auth_failure_response: dict[str, Any]
 ) -> None:
@@ -106,7 +106,7 @@ async def test_auth_failure(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_auth_legacy_credentials_success(
     aresponses: ResponsesMockServer,
     auth_legacy_credentials_success_response: dict[str, Any],
@@ -148,7 +148,7 @@ async def test_auth_legacy_credentials_success(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_auth_refresh_token_success(
     aresponses: ResponsesMockServer,
     auth_refresh_token_success_response: dict[str, Any],
@@ -178,7 +178,7 @@ async def test_auth_refresh_token_success(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 @pytest.mark.parametrize("refresh_token", [None, "new_refresh_token"])
 async def test_auth_refresh_token_success_existing_client(
     aresponses: ResponsesMockServer,
@@ -210,7 +210,7 @@ async def test_auth_refresh_token_success_existing_client(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 @pytest.mark.parametrize("access_token_issued_at", [time() - 30 * 60])
 async def test_expired_access_token(
     aresponses: ResponsesMockServer,
@@ -251,7 +251,7 @@ async def test_expired_access_token(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 @pytest.mark.parametrize("access_token_issued_at", [time() - 30 * 60])
 async def test_expired_access_token_concurrent_calls(
     aresponses: ResponsesMockServer,
@@ -309,7 +309,7 @@ async def test_expired_access_token_concurrent_calls(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_premature_refresh_token(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
@@ -330,7 +330,7 @@ async def test_premature_refresh_token(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_no_explicit_session(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
@@ -350,7 +350,7 @@ async def test_no_explicit_session(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_refresh_token_callback(
     aresponses: ResponsesMockServer,
     auth_refresh_token_success_response: dict[str, Any],
@@ -393,7 +393,7 @@ async def test_refresh_token_callback(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 @pytest.mark.parametrize("bridge_get_response", [{}])
 async def test_validation_error(
     authenticated_notion_api_server: ResponsesMockServer,
