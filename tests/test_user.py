@@ -13,7 +13,7 @@ from aionotion import async_get_client_with_credentials
 from tests.common import TEST_EMAIL, TEST_PASSWORD, TEST_USER_UUID
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_user_info(
     authenticated_notion_api_server: ResponsesMockServer,
     user_info_response: dict[str, Any],
@@ -55,7 +55,7 @@ async def test_user_info(
             )
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_user_preferences(
     authenticated_notion_api_server: ResponsesMockServer,
     user_preferences_response: dict[str, Any],

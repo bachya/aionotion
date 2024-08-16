@@ -16,7 +16,7 @@ from aionotion.listener.models import ListenerKind
 from tests.common import TEST_EMAIL, TEST_PASSWORD
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_listener_all(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
@@ -110,7 +110,7 @@ async def test_listener_all(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_listener_definitions(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,

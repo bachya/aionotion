@@ -13,7 +13,7 @@ from aionotion import async_get_client_with_credentials
 from tests.common import TEST_EMAIL, TEST_PASSWORD
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_sensor_all(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
@@ -85,7 +85,7 @@ async def test_sensor_all(
     aresponses.assert_plan_strictly_followed()
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_sensor_get(
     aresponses: ResponsesMockServer,
     authenticated_notion_api_server: ResponsesMockServer,
