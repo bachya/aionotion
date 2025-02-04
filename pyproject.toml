@@ -29,7 +29,7 @@ follow_imports = "silent"
 ignore_missing_imports = true
 no_implicit_optional = true
 platform = "linux"
-python_version = "3.12"
+python_version = "3.11"
 show_error_codes = true
 strict_equality = true
 warn_incomplete_stub = true
@@ -108,7 +108,7 @@ max-attributes = 20
 max-line-length = 88
 
 [tool.pylint.MAIN]
-py-version = "3.12"
+py-version = "3.11"
 ignore = [
     "tests",
 ]
