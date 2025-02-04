@@ -78,7 +78,7 @@ wheels = [
 
 [[package]]
 name = "aionotion"
-version = "2024.3.1"
+version = "2025.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },
