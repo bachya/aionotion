@@ -29,7 +29,7 @@ follow_imports = "silent"
 ignore_missing_imports = true
 no_implicit_optional = true
 platform = "linux"
-python_version = "3.12"
+python_version = "3.11"
 show_error_codes = true
 strict_equality = true
 warn_incomplete_stub = true
@@ -51,9 +51,9 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
@@ -65,7 +65,7 @@ certifi = ">=2023.07.22"
 # We can remove ciso8601 when we drop Python 3.10:
 ciso8601 = "^2.3.0"
 frozenlist = "^1.4.0"
-mashumaro = "^3.12"
+mashumaro = "^3.15"
 python = "^3.10"
 yarl = ">=1.9.2"
 
@@ -108,7 +108,7 @@ max-attributes = 20
 max-line-length = 88
 
 [tool.pylint.MAIN]
-py-version = "3.12"
+py-version = "3.11"
 ignore = [
     "tests",
 ]

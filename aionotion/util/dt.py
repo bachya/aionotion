@@ -1,14 +1,6 @@
 """Define datetime utilities."""
 
-from datetime import datetime
-
-try:
-    from datetime import UTC
-except ImportError:
-    # In place for support of Python 3.10
-    from datetime import timezone
-
-    UTC = timezone.utc
+from datetime import UTC, datetime
 
 
 def utcnow() -> datetime:
